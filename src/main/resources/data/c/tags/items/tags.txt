@@ -1,0 +1,26 @@
+{
+    // 标签的价值。
+    "values": [
+        // 一个价值的对象。必须指定要添加对象的ID，以及是否需要添加。
+        // 如果条目是必需的，但对象不存在，标签将不会加载。"required"字段
+        // 理论上是可选的，但当移除时，条目等同于简写形式。
+        {
+            "id": "examplemod:example_ingot",
+            "required": false
+        }
+        // 简写形式为{"id": "minecraft:gold_ingot", "required": true}，即必需的条目。
+        "minecraft:gold_ingot",
+        // 一个标签对象。通过前导#区分。
+        // 将被视为标签的条目。与普通条目一样，这也可以采用“id”/“required”格式。
+        // 警告：循环标签依赖将导致数据包无法加载！
+        "#minecraft:planks"
+    ],
+    // 是否在添加自己的条目之前移除所有现有的条目（true）还是只是添加自己的条目（false）。
+    // 这通常应该为false，将此设置为true的选项主要 aimed at pack developers.
+    "replace": false,
+    // 另一种更精细的方法，如果存在，则从标签中再次移除条目。可选，NeoForge添加。
+    // 条目语法与“values”数组中的相同。
+    "remove": [
+        "minecraft:iron_ingot"
+    ]
+}
