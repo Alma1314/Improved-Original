@@ -14,7 +14,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import java.util.function.Supplier;
 
 public class ModBlocks {
-    // 创建延迟注册器1
+    // 创建延迟注册器
     // 在 NeoForge 1.21+ 中，DeferredRegister 被进一步细化为泛型专用的静态内部类，如DeferredRegister.Blocks
     // DeferredRegister.createBlocks(modId)，这是一个工厂方法，用于创建一个专门注册方块的 DeferredRegister.Blocks 实例
     public static final DeferredRegister.Blocks BLOCKS =
