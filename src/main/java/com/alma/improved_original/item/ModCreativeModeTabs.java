@@ -1,7 +1,7 @@
-package com.alma.elementalsorcery.item;
+package com.alma.improved_original.item;
 
-import com.alma.elementalsorcery.ElementalSorcery;
-import com.alma.elementalsorcery.block.ModBlocks;
+import com.alma.improved_original.ElementalSorcery;
+import com.alma.improved_original.block.ModBlocks;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;

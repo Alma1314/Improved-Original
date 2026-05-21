@@ -1,6 +1,6 @@
 {
   "required": true,
-  "package": "com.alma.elementalsorcery.mixin",
+  "package": "com.alma.improved_original.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [],
   "injectors": {

@@ -1,4 +1,4 @@
-package com.alma.elementalsorcery;
+package com.alma.improved_original;
 
 import net.minecraft.client.Minecraft;
 import net.neoforged.api.distmarker.Dist;
