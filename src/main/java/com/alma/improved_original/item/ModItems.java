@@ -1,6 +1,6 @@
-package com.alma.elementalsorcery.item;
+package com.alma.improved_original.item;
 
-import com.alma.elementalsorcery.ElementalSorcery;
+import com.alma.improved_original.ElementalSorcery;
 import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredItem;

@@ -1,7 +1,7 @@
-package com.alma.elementalsorcery.block;
+package com.alma.improved_original.block;
 
-import com.alma.elementalsorcery.ElementalSorcery;
-import com.alma.elementalsorcery.item.ModItems;
+import com.alma.improved_original.ElementalSorcery;
+import com.alma.improved_original.item.ModItems;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
