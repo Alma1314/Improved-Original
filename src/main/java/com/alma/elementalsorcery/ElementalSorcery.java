@@ -38,7 +38,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 @Mod(ElementalSorcery.MOD_ID)
 public class ElementalSorcery {
     // 在一个通用的地方定义模组ID，方便所有内容引用
-    public static final String MOD_ID = "elemental_sorcery";
+    public static final String MOD_ID = "improved_original";
     // 直接引用slf4j日志机
     public static final Logger LOGGER = LogUtils.getLogger();
 
