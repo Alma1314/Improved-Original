@@ -1,6 +1,6 @@
 package com.alma.improved_original.block;
 
-import com.alma.improved_original.ElementalSorcery;
+import com.alma.improved_original.ImprovedOriginal;
 import com.alma.improved_original.item.ModItems;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -18,7 +18,7 @@ public class ModBlocks {
     // 在 NeoForge 1.21+ 中，DeferredRegister 被进一步细化为泛型专用的静态内部类，如DeferredRegister.Blocks
     // DeferredRegister.createBlocks(modId)，这是一个工厂方法，用于创建一个专门注册方块的 DeferredRegister.Blocks 实例
     public static final DeferredRegister.Blocks BLOCKS =
-            DeferredRegister.createBlocks(ElementalSorcery.MOD_ID);
+            DeferredRegister.createBlocks(ImprovedOriginal.MOD_ID);
 
     // BlockBehaviour.Properties，在 Minecraft 1.20+ 中，Block.Properties 被重命名为 BlockBehaviour.Properties
     // 它定义了方块的物理和交互属性，例如：
