@@ -19,8 +19,8 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 
 // 这里的值应该与 META-INF/neoforge.mods.toml 文件中的条目相匹配
-@Mod(ElementalSorcery.MOD_ID)
-public class ElementalSorcery {
+@Mod(ImprovedOriginal.MOD_ID)
+public class ImprovedOriginal {
     // 在一个通用的地方定义模组ID，方便所有内容引用
     public static final String MOD_ID = "improved_original";
     // 直接引用slf4j日志机
@@ -28,7 +28,7 @@ public class ElementalSorcery {
 
     // mod类的构造子是加载mod时运行的第一个代码。
     // FML 会识别一些参数类型，比如 IEventBus 或 ModContainer，并自动传递。
-    public ElementalSorcery(IEventBus modEventBus, ModContainer modContainer) {
+    public ImprovedOriginal(IEventBus modEventBus, ModContainer modContainer) {
         // 注册 commonSetup 方法进行模组加载
         modEventBus.addListener(this::commonSetup);
 

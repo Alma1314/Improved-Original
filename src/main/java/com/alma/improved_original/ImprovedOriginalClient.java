@@ -11,11 +11,11 @@ import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 
 // 这个职业不会在专用服务器上加载。从这里访问客户端代码是安全的。
-@Mod(value = ElementalSorcery.MOD_ID, dist = Dist.CLIENT)
+@Mod(value = ImprovedOriginal.MOD_ID, dist = Dist.CLIENT)
 // 你可以使用 EventBusSubscriber 自动注册所有标注为 @SubscribeEvent 的类中的所有静态方法。
-@EventBusSubscriber(modid = ElementalSorcery.MOD_ID, value = Dist.CLIENT)
-public class ElementalSorceryClient {
-    public ElementalSorceryClient(ModContainer container) {
+@EventBusSubscriber(modid = ImprovedOriginal.MOD_ID, value = Dist.CLIENT)
+public class ImprovedOriginalClient {
+    public ImprovedOriginalClient(ModContainer container) {
         // 允许NeoForge为该模组的配置创建配置界面。
         // 配置界面通过访问模组屏幕 > 点击你的模组 > 点击配置来访问。
         // 不要忘记为你的配置选项添加翻译到 en_us.json 文件。
@@ -25,7 +25,7 @@ public class ElementalSorceryClient {
     @SubscribeEvent
     static void onClientSetup(FMLClientSetupEvent event) {
         // 一些客户端设置代码
-        ElementalSorcery.LOGGER.info("HELLO FROM CLIENT SETUP");
-        ElementalSorcery.LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());
+        ImprovedOriginal.LOGGER.info("HELLO FROM CLIENT SETUP");
+        ImprovedOriginal.LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());
     }
 }

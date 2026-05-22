@@ -1,6 +1,6 @@
 package com.alma.improved_original.item;
 
-import com.alma.improved_original.ElementalSorcery;
+import com.alma.improved_original.ImprovedOriginal;
 import com.alma.improved_original.block.ModBlocks;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -14,7 +14,7 @@ import java.util.function.Supplier;
 
 public class ModCreativeModeTabs {
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS =
-            DeferredRegister.create(Registries.CREATIVE_MODE_TAB, ElementalSorcery.MOD_ID);
+            DeferredRegister.create(Registries.CREATIVE_MODE_TAB, ImprovedOriginal.MOD_ID);
 
     public static final Supplier<CreativeModeTab> GEMSTONES_TAB =
             CREATIVE_MODE_TABS.register("gemstones_tab", () -> CreativeModeTab.builder()
