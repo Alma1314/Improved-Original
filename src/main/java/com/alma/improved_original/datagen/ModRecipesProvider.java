@@ -3,21 +3,14 @@ package com.alma.improved_original.datagen;
 import com.alma.improved_original.ImprovedOriginal;
 import com.alma.improved_original.block.ModBlocks;
 import com.alma.improved_original.item.ModItems;
-import jdk.jshell.ImportSnippet;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.recipes.RecipeCategory;
-import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.data.recipes.RecipeProvider;
-import net.minecraft.data.recipes.SimpleCookingRecipeBuilder;
-import net.minecraft.world.item.Item;
+import net.minecraft.data.recipes.*;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.conditions.IConditionBuilder;
 import net.neoforged.neoforge.registries.DeferredBlock;
-import net.neoforged.neoforge.registries.DeferredItem;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -99,6 +92,22 @@ public class ModRecipesProvider extends RecipeProvider implements IConditionBuil
 
     @Override
     protected void buildRecipes(RecipeOutput recipeOutput) {
-        oreSmelting(recipeOutput, addSameProduct(ModBlocks.AMETHYST_ORE, ModBlocks.DEEPSLATE_AMETHYST_ORE), RecipeCategory.MISC, ModItems.AMETHYST, 0.25f, 200, "gemstome");
+        oreSmelting(recipeOutput, addSameProduct(ModBlocks.AMETHYST_ORE, ModBlocks.DEEPSLATE_AMETHYST_ORE),
+                RecipeCategory.MISC, ModItems.AMETHYST, 0.25f, 200, "gemstone");
+        oreBlasting(recipeOutput, addSameProduct(ModBlocks.AMETHYST_ORE, ModBlocks.DEEPSLATE_AMETHYST_ORE),
+                RecipeCategory.MISC, ModItems.AMETHYST, 0.25f, 100, "gemstone");
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, ModBlocks.AMETHYST_BLOCK)
+                .pattern("###")
+                .pattern("###")
+                .pattern("###")
+                .define('#', ModItems.AMETHYST)
+                .unlockedBy(getHasName(ModItems.AMETHYST), has(ModItems.AMETHYST))
+                .save(recipeOutput);
+
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.BUILDING_BLOCKS, ModBlocks.AMETHYST_BLOCK, 9)
+                .requires(ModItems.AMETHYST)
+                .unlockedBy(getHasName(ModBlocks.AMETHYST_BLOCK), has(ModBlocks.AMETHYST_BLOCK))
+                .save(recipeOutput);
     }
 }

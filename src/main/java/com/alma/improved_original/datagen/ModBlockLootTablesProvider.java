@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Set;
 
 public class ModBlockLootTablesProvider extends BlockLootSubProvider {
-    protected ModBlockLootTablesProvider(HolderLookup.Provider registries) {
+    public ModBlockLootTablesProvider(HolderLookup.Provider registries) {
         super(Set.of(), FeatureFlags.REGISTRY.allFlags(), registries);
     }
 
