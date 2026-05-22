@@ -9,7 +9,9 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 public class ModItems {
     // 创建延迟注册器，详细见 ModBlock 文件
     public static final DeferredRegister.Items ITEMS =
-            DeferredRegister.createItems(ImprovedOriginal.MOD_ID);
+
+     DeferredRegister.createItems(ImprovedOriginal.MOD_ID);
+
 
     // 在字段初始化阶段，游戏注册表还未准备好，不能直接创建或使用 Item，DeferredItem<Item> 是一个代表“尚未注册但将在未来注册的物品”的引用类型
     // ITEMS是一个 DeferredRegister.Items 类型的静态字段，在 ModItems 类中定义，专门用于注册 Item 的延迟注册器
