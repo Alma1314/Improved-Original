@@ -1,3 +1,4 @@
+// 创造模式标签页：包含所有宝石、宝石块、矿石及原版绿宝石物品
 package com.alma.improved_original.item;
 
 import com.alma.improved_original.ImprovedOriginal;

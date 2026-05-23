@@ -1,3 +1,4 @@
+// 单个槽位状态（不可变记录）：任务(可选)、进度、是否锁定
 package com.alma.improved_original.quest;
 
 import com.mojang.serialization.Codec;

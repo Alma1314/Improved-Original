@@ -1,3 +1,4 @@
+// 客户端→服务端：切换锁定/解锁指定槽位的任务
 package com.alma.improved_original.quest.network;
 
 import com.alma.improved_original.ImprovedOriginal;

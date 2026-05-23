@@ -1,3 +1,4 @@
+// 任务核心逻辑：生成、刷新、进度追踪、锁定/解锁、完成奖励、手动刷新、网络同步
 package com.alma.improved_original.quest;
 
 import com.alma.improved_original.Config;

@@ -1,3 +1,4 @@
+// 玩家完整任务数据：3个槽位、上次刷新时间、激活状态，支持NBT持久化和网络传输
 package com.alma.improved_original.quest;
 
 import com.mojang.serialization.Codec;

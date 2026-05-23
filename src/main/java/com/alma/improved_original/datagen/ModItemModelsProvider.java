@@ -1,3 +1,4 @@
+// 数据生成-物品模型：为5种宝石生成item/generated模型
 package com.alma.improved_original.datagen;
 
 import com.alma.improved_original.ImprovedOriginal;

@@ -1,3 +1,4 @@
+// 方块注册：5种宝石块+5种矿石+5种深层矿石，自动注册对应的BlockItem
 package com.alma.improved_original.block;
 
 import com.alma.improved_original.ImprovedOriginal;

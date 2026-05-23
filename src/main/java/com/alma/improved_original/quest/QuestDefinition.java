@@ -1,3 +1,4 @@
+// 任务定义（不可变记录）：类型、目标ID、目标数量、奖励绿宝石数，含Codec/StreamCodec序列化
 package com.alma.improved_original.quest;
 
 import com.alma.improved_original.ImprovedOriginal;

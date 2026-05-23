@@ -1,3 +1,4 @@
+// 任务类型枚举：BREAK_BLOCK(破坏方块)、CRAFT_ITEM(合成物品)、KILL_ENTITY(击杀实体)、COLLECT_ITEM(收集物品)
 package com.alma.improved_original.quest;
 
 import com.mojang.serialization.Codec;

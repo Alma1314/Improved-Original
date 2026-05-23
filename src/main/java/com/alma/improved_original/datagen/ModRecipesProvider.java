@@ -1,3 +1,4 @@
+// 数据生成-配方：5种宝石的烧炼/高炉配方、3x3合成块配方、分解配方
 package com.alma.improved_original.datagen;
 
 import com.alma.improved_original.ImprovedOriginal;

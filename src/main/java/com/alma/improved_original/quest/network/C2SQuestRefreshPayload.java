@@ -1,3 +1,4 @@
+// 客户端→服务端：请求手动刷新任务（消耗绿宝石）
 package com.alma.improved_original.quest.network;
 
 import com.alma.improved_original.ImprovedOriginal;

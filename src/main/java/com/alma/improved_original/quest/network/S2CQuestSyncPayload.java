@@ -1,3 +1,4 @@
+// 服务端→客户端：同步任务数据，可选携带完成信息和打开面板标记
 package com.alma.improved_original.quest.network;
 
 import com.alma.improved_original.ImprovedOriginal;

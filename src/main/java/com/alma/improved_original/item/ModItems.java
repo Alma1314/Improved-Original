@@ -1,3 +1,4 @@
+// 物品注册：5种宝石（红宝石、蓝宝石、黄宝石、紫宝石、黑宝石）
 package com.alma.improved_original.item;
 
 import com.alma.improved_original.ImprovedOriginal;

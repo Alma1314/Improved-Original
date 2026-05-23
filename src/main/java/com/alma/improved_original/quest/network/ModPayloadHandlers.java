@@ -1,3 +1,4 @@
+// 网络包注册器：注册S2C同步包和C2S锁定包、刷新包的处理函数
 package com.alma.improved_original.quest.network;
 
 import com.alma.improved_original.ImprovedOriginal;

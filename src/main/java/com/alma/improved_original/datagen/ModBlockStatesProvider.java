@@ -1,3 +1,4 @@
+// 数据生成-方块状态：为15种方块生成blockstate JSON和cube_all模型
 package com.alma.improved_original.datagen;
 
 import com.alma.improved_original.ImprovedOriginal;

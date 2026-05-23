@@ -1,3 +1,4 @@
+// 数据生成-战利品表：宝石块掉落自身，矿石按精准采集/时运逻辑掉落对应宝石
 package com.alma.improved_original.datagen;
 
 import com.alma.improved_original.block.ModBlocks;

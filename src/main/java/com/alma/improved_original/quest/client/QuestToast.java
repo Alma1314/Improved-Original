@@ -1,3 +1,4 @@
+// 任务完成Toast通知：模仿原版成就弹出效果，显示标题+目标名+绿宝石奖励，5秒自动消失
 package com.alma.improved_original.quest.client;
 
 import net.minecraft.client.gui.Font;

@@ -1,3 +1,4 @@
+// 数据生成-物品标签
 package com.alma.improved_original.datagen;
 
 import com.alma.improved_original.ImprovedOriginal;

@@ -1,3 +1,4 @@
+// 玩家数据附加器：注册AttachmentType<QuestData>，为每个玩家附加独立的每日任务数据
 package com.alma.improved_original.quest;
 
 import com.alma.improved_original.ImprovedOriginal;

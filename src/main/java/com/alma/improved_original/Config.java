@@ -1,3 +1,4 @@
+// 模组配置文件：任务刷新间隔、绿宝石消耗、奖励范围等可配置项
 package com.alma.improved_original;
 
 import java.util.List;

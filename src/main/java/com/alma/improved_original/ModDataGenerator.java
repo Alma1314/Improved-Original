@@ -1,3 +1,4 @@
+// 数据生成入口：注册所有DataProvider（战利品表、配方、标签、模型、语言文件）
 package com.alma.improved_original;
 
 import com.alma.improved_original.datagen.*;

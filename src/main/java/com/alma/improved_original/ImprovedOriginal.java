@@ -1,3 +1,4 @@
+// 主模组类：注册所有组件（物品、方块、创造标签、附件、网络包），监听服务端启动事件
 package com.alma.improved_original;
 
 import com.alma.improved_original.block.ModBlocks;

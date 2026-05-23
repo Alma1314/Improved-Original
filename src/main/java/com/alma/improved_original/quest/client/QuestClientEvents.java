@@ -1,3 +1,4 @@
+// 客户端网络事件处理：接收服务端同步包，更新缓存，刷新面板，显示完成Toast
 package com.alma.improved_original.quest.client;
 
 import com.alma.improved_original.quest.network.S2CQuestSyncPayload;

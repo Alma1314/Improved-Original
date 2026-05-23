@@ -1,3 +1,4 @@
+// 数据生成-中文翻译：物品/方块名、任务系统所有文本
 package com.alma.improved_original.datagen;
 
 import com.alma.improved_original.ImprovedOriginal;

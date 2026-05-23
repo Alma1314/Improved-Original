@@ -1,3 +1,4 @@
+// /quest命令：无参数打开面板、lock/unlock锁定/解锁槽位
 package com.alma.improved_original.quest.command;
 
 import com.alma.improved_original.ImprovedOriginal;

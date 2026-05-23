@@ -1,3 +1,4 @@
+// 任务界面：显示3个任务槽位（描述+进度条+奖励+锁定按钮）、刷新倒计时、手动刷新按钮
 package com.alma.improved_original.quest.screen;
 
 import com.alma.improved_original.Config;

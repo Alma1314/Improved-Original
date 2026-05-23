@@ -1,3 +1,4 @@
+// 客户端类：注册模组配置界面，监听客户端设置事件
 package com.alma.improved_original;
 
 import net.minecraft.client.Minecraft;
