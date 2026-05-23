@@ -4,6 +4,8 @@
       "type": "BREAK_BLOCK",
       "countMax": 64,
       "countMin": 10,
+      "description": "Break stone blocks to earn emerald rewards",
+      "name": "Stone Miner",
       "reward": {
         "countMax": 10,
         "countMin": 1,
@@ -16,6 +18,8 @@
       "type": "BREAK_BLOCK",
       "countMax": 48,
       "countMin": 10,
+      "description": "Chop down oak logs",
+      "name": "Lumberjack",
       "reward": {
         "countMax": 8,
         "countMin": 1,
@@ -28,6 +32,8 @@
       "type": "BREAK_BLOCK",
       "countMax": 32,
       "countMin": 8,
+      "description": "Mine coal ore deep underground",
+      "name": "Coal Miner",
       "reward": {
         "countMax": 5,
         "countMin": 1,
@@ -40,6 +46,8 @@
       "type": "BREAK_BLOCK",
       "countMax": 24,
       "countMin": 5,
+      "description": "Extract iron ore from the earth",
+      "name": "Iron Miner",
       "reward": {
         "countMax": 7,
         "countMin": 1,
@@ -52,6 +60,8 @@
       "type": "BREAK_BLOCK",
       "countMax": 80,
       "countMin": 20,
+      "description": "Dig up dirt blocks",
+      "name": "Dirt Digger",
       "reward": {
         "countMax": 8,
         "countMin": 1,
@@ -64,6 +74,8 @@
       "type": "BREAK_BLOCK",
       "countMax": 64,
       "countMin": 16,
+      "description": "Excavate deepslate deep underground",
+      "name": "Deepslate Excavator",
       "reward": {
         "countMax": 8,
         "countMin": 1,
@@ -76,6 +88,8 @@
       "type": "BREAK_BLOCK",
       "countMax": 48,
       "countMin": 12,
+      "description": "Gather sand from beaches and deserts",
+      "name": "Sand Collector",
       "reward": {
         "countMax": 6,
         "countMin": 1,
@@ -88,6 +102,8 @@
       "type": "BREAK_BLOCK",
       "countMax": 32,
       "countMin": 10,
+      "description": "Collect gravel from riverbeds",
+      "name": "Gravel Gatherer",
       "reward": {
         "countMax": 3,
         "countMin": 1,
@@ -100,6 +116,8 @@
       "type": "BREAK_BLOCK",
       "countMax": 80,
       "countMin": 20,
+      "description": "Mine netherrack in the Nether",
+      "name": "Nether Miner",
       "reward": {
         "countMax": 5,
         "countMin": 1,
@@ -112,6 +130,8 @@
       "type": "KILL_ENTITY",
       "countMax": 20,
       "countMin": 5,
+      "description": "Defeat zombies to protect the village",
+      "name": "Zombie Slayer",
       "reward": {
         "countMax": 5,
         "countMin": 1,
@@ -124,6 +144,8 @@
       "type": "KILL_ENTITY",
       "countMax": 20,
       "countMin": 5,
+      "description": "Take down skeletons from a distance",
+      "name": "Skeleton Hunter",
       "reward": {
         "countMax": 5,
         "countMin": 1,
@@ -136,6 +158,8 @@
       "type": "KILL_ENTITY",
       "countMax": 15,
       "countMin": 3,
+      "description": "Eliminate spiders and their webs",
+      "name": "Spider Exterminator",
       "reward": {
         "countMax": 5,
         "countMin": 1,
@@ -148,6 +172,8 @@
       "type": "KILL_ENTITY",
       "countMax": 15,
       "countMin": 3,
+      "description": "Neutralize creepers before they explode",
+      "name": "Creeper Buster",
       "reward": {
         "countMax": 6,
         "countMin": 1,
@@ -160,6 +186,8 @@
       "type": "KILL_ENTITY",
       "countMax": 10,
       "countMin": 3,
+      "description": "Challenge the tall, dark endermen",
+      "name": "Enderman Vanquisher",
       "reward": {
         "countMax": 8,
         "countMin": 2,
@@ -172,6 +200,8 @@
       "type": "KILL_ENTITY",
       "countMax": 10,
       "countMin": 3,
+      "description": "Stop witches and their potions",
+      "name": "Witch Neutralizer",
       "reward": {
         "countMax": 8,
         "countMin": 2,
@@ -184,6 +214,8 @@
       "type": "KILL_ENTITY",
       "countMax": 15,
       "countMin": 3,
+      "description": "Hunt drowned in the depths",
+      "name": "Drowned Hunter",
       "reward": {
         "countMax": 4,
         "countMin": 1,
@@ -196,6 +228,8 @@
       "type": "KILL_ENTITY",
       "countMax": 15,
       "countMin": 3,
+      "description": "Take down husks in the desert",
+      "name": "Husk Eliminator",
       "reward": {
         "countMax": 4,
         "countMin": 1,
@@ -208,6 +242,8 @@
       "type": "CRAFT_ITEM",
       "countMax": 10,
       "countMin": 3,
+      "description": "Craft basic crafting tables",
+      "name": "Crafting Table Crafter",
       "reward": {
         "countMax": 3,
         "countMin": 1,
@@ -220,6 +256,8 @@
       "type": "CRAFT_ITEM",
       "countMax": 8,
       "countMin": 3,
+      "description": "Smelt your way to a furnace",
+      "name": "Furnace Maker",
       "reward": {
         "countMax": 3,
         "countMin": 1,
@@ -232,6 +270,8 @@
       "type": "CRAFT_ITEM",
       "countMax": 5,
       "countMin": 1,
+      "description": "Forge an iron pickaxe",
+      "name": "Tool Smith",
       "reward": {
         "countMax": 6,
         "countMin": 2,
@@ -244,6 +284,8 @@
       "type": "CRAFT_ITEM",
       "countMax": 3,
       "countMin": 1,
+      "description": "Craft an iron sword",
+      "name": "Weaponsmith",
       "reward": {
         "countMax": 6,
         "countMin": 2,
@@ -256,6 +298,8 @@
       "type": "CRAFT_ITEM",
       "countMax": 64,
       "countMin": 16,
+      "description": "Light up the darkness with torches",
+      "name": "Torchbearer",
       "reward": {
         "countMax": 4,
         "countMin": 1,
@@ -268,6 +312,8 @@
       "type": "CRAFT_ITEM",
       "countMax": 20,
       "countMin": 5,
+      "description": "Bake bread from wheat",
+      "name": "Baker",
       "reward": {
         "countMax": 3,
         "countMin": 1,
@@ -280,6 +326,8 @@
       "type": "CRAFT_ITEM",
       "countMax": 32,
       "countMin": 8,
+      "description": "Shape sticks from planks",
+      "name": "Woodworker",
       "reward": {
         "countMax": 2,
         "countMin": 1,
@@ -292,6 +340,8 @@
       "type": "CRAFT_ITEM",
       "countMax": 3,
       "countMin": 1,
+      "description": "Forge an iron chestplate",
+      "name": "Armorer",
       "reward": {
         "countMax": 8,
         "countMin": 3,
@@ -304,6 +354,8 @@
       "type": "COLLECT_ITEM",
       "countMax": 32,
       "countMin": 5,
+      "description": "Gather coal from mining or loot",
+      "name": "Coal Collector",
       "reward": {
         "countMax": 5,
         "countMin": 1,
@@ -316,6 +368,8 @@
       "type": "COLLECT_ITEM",
       "countMax": 16,
       "countMin": 3,
+      "description": "Collect iron ingots from smelting",
+      "name": "Iron Hoarder",
       "reward": {
         "countMax": 5,
         "countMin": 1,
@@ -328,6 +382,8 @@
       "type": "COLLECT_ITEM",
       "countMax": 32,
       "countMin": 8,
+      "description": "Harvest wheat from your farm",
+      "name": "Wheat Farmer",
       "reward": {
         "countMax": 4,
         "countMin": 1,
@@ -340,6 +396,8 @@
       "type": "COLLECT_ITEM",
       "countMax": 12,
       "countMin": 3,
+      "description": "Collect apples from oak trees",
+      "name": "Apple Picker",
       "reward": {
         "countMax": 4,
         "countMin": 1,
@@ -352,6 +410,8 @@
       "type": "COLLECT_ITEM",
       "countMax": 20,
       "countMin": 5,
+      "description": "Gather rotten flesh from undead",
+      "name": "Flesh Collector",
       "reward": {
         "countMax": 3,
         "countMin": 1,
@@ -364,6 +424,8 @@
       "type": "COLLECT_ITEM",
       "countMax": 20,
       "countMin": 5,
+      "description": "Collect bones from skeletons",
+      "name": "Bone Collector",
       "reward": {
         "countMax": 3,
         "countMin": 1,
@@ -376,6 +438,8 @@
       "type": "COLLECT_ITEM",
       "countMax": 16,
       "countMin": 3,
+      "description": "Gather gunpowder from creepers",
+      "name": "Gunpowder Gatherer",
       "reward": {
         "countMax": 5,
         "countMin": 1,
@@ -388,6 +452,8 @@
       "type": "COLLECT_ITEM",
       "countMax": 5,
       "countMin": 1,
+      "description": "Collect ender pearls from endermen",
+      "name": "Pearl Seeker",
       "reward": {
         "countMax": 8,
         "countMin": 3,
@@ -400,6 +466,8 @@
       "type": "FIND_STRUCTURE",
       "countMax": 1,
       "countMin": 1,
+      "description": "Find a plains village",
+      "name": "Village Explorer",
       "reward": {
         "countMax": 10,
         "countMin": 5,
@@ -412,6 +480,8 @@
       "type": "FIND_STRUCTURE",
       "countMax": 1,
       "countMin": 1,
+      "description": "Discover a desert village",
+      "name": "Desert Explorer",
       "reward": {
         "countMax": 10,
         "countMin": 5,
@@ -424,6 +494,8 @@
       "type": "FIND_STRUCTURE",
       "countMax": 1,
       "countMin": 1,
+      "description": "Locate a savanna village",
+      "name": "Savanna Explorer",
       "reward": {
         "countMax": 10,
         "countMin": 5,
@@ -436,6 +508,8 @@
       "type": "FIND_STRUCTURE",
       "countMax": 1,
       "countMin": 1,
+      "description": "Find a taiga village",
+      "name": "Taiga Explorer",
       "reward": {
         "countMax": 10,
         "countMin": 5,
@@ -448,6 +522,8 @@
       "type": "FIND_STRUCTURE",
       "countMax": 1,
       "countMin": 1,
+      "description": "Brave the cold to find a snowy village",
+      "name": "Snowy Explorer",
       "reward": {
         "countMax": 10,
         "countMin": 5,
@@ -460,6 +536,8 @@
       "type": "FIND_STRUCTURE",
       "countMax": 1,
       "countMin": 1,
+      "description": "Discover a desert pyramid",
+      "name": "Pyramid Raider",
       "reward": {
         "countMax": 5,
         "countMin": 2,
@@ -472,6 +550,8 @@
       "type": "FIND_STRUCTURE",
       "countMax": 1,
       "countMin": 1,
+      "description": "Find a jungle pyramid hidden in the foliage",
+      "name": "Jungle Explorer",
       "reward": {
         "countMax": 5,
         "countMin": 2,
@@ -484,6 +564,8 @@
       "type": "FIND_STRUCTURE",
       "countMax": 1,
       "countMin": 1,
+      "description": "Scout a pillager outpost",
+      "name": "Outpost Scout",
       "reward": {
         "countMax": 15,
         "countMin": 8,
@@ -496,6 +578,8 @@
       "type": "FIND_STRUCTURE",
       "countMax": 1,
       "countMin": 1,
+      "description": "Discover an abandoned mineshaft",
+      "name": "Mineshaft Explorer",
       "reward": {
         "countMax": 10,
         "countMin": 5,
@@ -508,6 +592,8 @@
       "type": "FIND_STRUCTURE",
       "countMax": 1,
       "countMin": 1,
+      "description": "Find the hidden stronghold",
+      "name": "Stronghold Seeker",
       "reward": {
         "countMax": 10,
         "countMin": 5,
@@ -520,6 +606,8 @@
       "type": "FIND_STRUCTURE",
       "countMax": 1,
       "countMin": 1,
+      "description": "Locate a ruined nether portal",
+      "name": "Portal Finder",
       "reward": {
         "countMax": 8,
         "countMin": 3,
@@ -532,6 +620,8 @@
       "type": "FIND_STRUCTURE",
       "countMax": 1,
       "countMin": 1,
+      "description": "Explore a cold ocean ruin",
+      "name": "Ocean Explorer",
       "reward": {
         "countMax": 6,
         "countMin": 3,
@@ -544,6 +634,8 @@
       "type": "FIND_STRUCTURE",
       "countMax": 1,
       "countMin": 1,
+      "description": "Find a shipwreck on the ocean floor",
+      "name": "Shipwreck Salvager",
       "reward": {
         "countMax": 6,
         "countMin": 3,
@@ -556,6 +648,8 @@
       "type": "FIND_STRUCTURE",
       "countMax": 1,
       "countMin": 1,
+      "description": "Find buried treasure",
+      "name": "Treasure Hunter",
       "reward": {
         "countMax": 8,
         "countMin": 3,
@@ -568,6 +662,8 @@
       "type": "FIND_STRUCTURE",
       "countMax": 1,
       "countMin": 1,
+      "description": "Discover a swamp hut",
+      "name": "Swamp Explorer",
       "reward": {
         "countMax": 10,
         "countMin": 5,
@@ -580,6 +676,8 @@
       "type": "FIND_STRUCTURE",
       "countMax": 1,
       "countMin": 1,
+      "description": "Find an igloo in the icy tundra",
+      "name": "Igloo Adventurer",
       "reward": {
         "countMax": 6,
         "countMin": 3,
