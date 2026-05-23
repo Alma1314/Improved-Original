@@ -19,8 +19,26 @@ public class ModBlockLootTablesProvider extends BlockLootSubProvider {
 
     @Override
     protected void generate() {
+        // All gem blocks drop themselves
+        dropSelf(ModBlocks.RUBY_BLOCK.get());
+        dropSelf(ModBlocks.SAPPHIRE_BLOCK.get());
+        dropSelf(ModBlocks.TOPAZ_BLOCK.get());
         dropSelf(ModBlocks.AMETHYST_BLOCK.get());
+        dropSelf(ModBlocks.ONYX_BLOCK.get());
+
+        // All regular ores drop the corresponding gem
+        add(ModBlocks.RUBY_ORE.get(), block -> createOreDrop(ModBlocks.RUBY_ORE.get(), ModItems.RUBY.get()));
+        add(ModBlocks.SAPPHIRE_ORE.get(), block -> createOreDrop(ModBlocks.SAPPHIRE_ORE.get(), ModItems.SAPPHIRE.get()));
+        add(ModBlocks.TOPAZ_ORE.get(), block -> createOreDrop(ModBlocks.TOPAZ_ORE.get(), ModItems.TOPAZ.get()));
         add(ModBlocks.AMETHYST_ORE.get(), block -> createOreDrop(ModBlocks.AMETHYST_ORE.get(), ModItems.AMETHYST.get()));
+        add(ModBlocks.ONYX_ORE.get(), block -> createOreDrop(ModBlocks.ONYX_ORE.get(), ModItems.ONYX.get()));
+
+        // All deepslate ores drop the corresponding gem
+        add(ModBlocks.DEEPSLATE_RUBY_ORE.get(), block -> createOreDrop(ModBlocks.DEEPSLATE_RUBY_ORE.get(), ModItems.RUBY.get()));
+        add(ModBlocks.DEEPSLATE_SAPPHIRE_ORE.get(), block -> createOreDrop(ModBlocks.DEEPSLATE_SAPPHIRE_ORE.get(), ModItems.SAPPHIRE.get()));
+        add(ModBlocks.DEEPSLATE_TOPAZ_ORE.get(), block -> createOreDrop(ModBlocks.DEEPSLATE_TOPAZ_ORE.get(), ModItems.TOPAZ.get()));
+        add(ModBlocks.DEEPSLATE_AMETHYST_ORE.get(), block -> createOreDrop(ModBlocks.DEEPSLATE_AMETHYST_ORE.get(), ModItems.AMETHYST.get()));
+        add(ModBlocks.DEEPSLATE_ONYX_ORE.get(), block -> createOreDrop(ModBlocks.DEEPSLATE_ONYX_ORE.get(), ModItems.ONYX.get()));
     }
 
     @Override

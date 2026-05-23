@@ -16,13 +16,19 @@ public class QuestData {
 
     private final List<QuestSlotData> slots;
     private long lastRefreshTick;
+    private boolean active;
 
     public QuestData(List<QuestSlotData> slots, long lastRefreshTick) {
+        this(slots, lastRefreshTick, false);
+    }
+
+    public QuestData(List<QuestSlotData> slots, long lastRefreshTick, boolean active) {
         this.slots = new ArrayList<>(slots);
         while (this.slots.size() < SLOT_COUNT) {
             this.slots.add(QuestSlotData.empty());
         }
         this.lastRefreshTick = lastRefreshTick;
+        this.active = active;
     }
 
     private QuestData() {
@@ -31,6 +37,7 @@ public class QuestData {
             this.slots.add(QuestSlotData.empty());
         }
         this.lastRefreshTick = -1;
+        this.active = false;
     }
 
     public static QuestData createFresh() {
@@ -84,6 +91,14 @@ public class QuestData {
         this.lastRefreshTick = tick;
     }
 
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
     public boolean hasAnyQuest() {
         return slots.stream().anyMatch(s -> s.quest().isPresent());
     }
@@ -91,7 +106,8 @@ public class QuestData {
     public static final Codec<QuestData> CODEC = RecordCodecBuilder.create(instance ->
             instance.group(
                     Codec.list(QuestSlotData.CODEC).fieldOf("slots").forGetter(QuestData::getSlots),
-                    Codec.LONG.fieldOf("last_refresh").forGetter(QuestData::getLastRefreshTick)
+                    Codec.LONG.fieldOf("last_refresh").forGetter(QuestData::getLastRefreshTick),
+                    Codec.BOOL.optionalFieldOf("active", false).forGetter(QuestData::isActive)
             ).apply(instance, QuestData::new)
     );
 
@@ -99,6 +115,7 @@ public class QuestData {
             StreamCodec.composite(
                     QuestSlotData.STREAM_CODEC.apply(ByteBufCodecs.list()), QuestData::getSlots,
                     ByteBufCodecs.VAR_LONG, QuestData::getLastRefreshTick,
+                    ByteBufCodecs.BOOL, QuestData::isActive,
                     QuestData::new
             );
 }

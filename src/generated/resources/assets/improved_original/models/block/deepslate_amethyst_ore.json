@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "improved_original:block/deepslate_amethyst_ore"
+  }
+}

@@ -13,6 +13,10 @@ public class ModItemModelsProvider extends ItemModelProvider {
 
     @Override
     protected void registerModels() {
+        basicItem(ModItems.RUBY.get());
+        basicItem(ModItems.SAPPHIRE.get());
+        basicItem(ModItems.TOPAZ.get());
         basicItem(ModItems.AMETHYST.get());
+        basicItem(ModItems.ONYX.get());
     }
 }

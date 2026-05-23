@@ -4,13 +4,12 @@ import com.alma.improved_original.Config;
 import com.alma.improved_original.quest.QuestData;
 import com.alma.improved_original.quest.QuestDefinition;
 import com.alma.improved_original.quest.network.C2SQuestLockPayload;
+import com.alma.improved_original.quest.network.C2SQuestRefreshPayload;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.neoforged.neoforge.network.PacketDistributor;
-
-import java.util.Optional;
 
 public class QuestScreen extends Screen {
     private final QuestData questData;
@@ -56,10 +55,22 @@ public class QuestScreen extends Screen {
             this.addRenderableWidget(lockButton);
         }
 
+        // Manual refresh button
+        int refreshCost = Config.EMERALD_REFRESH_COST.getAsInt();
+        this.addRenderableWidget(
+                Button.builder(
+                        Component.translatable("quest.improved_original.refresh_button", refreshCost),
+                        btn -> {
+                            btn.active = false;
+                            PacketDistributor.sendToServer(new C2SQuestRefreshPayload());
+                        }
+                ).bounds(centerX + 60, startY + QuestData.SLOT_COUNT * 60 + 8, 80, 20).build()
+        );
+
         // Close button
         this.addRenderableWidget(
                 Button.builder(Component.translatable("quest.improved_original.done"), btn -> this.onClose())
-                        .bounds(centerX - 30, startY + QuestData.SLOT_COUNT * 60 + 10, 60, 20)
+                        .bounds(centerX - 40, startY + QuestData.SLOT_COUNT * 60 + 8, 40, 20)
                         .build()
         );
     }
@@ -74,6 +85,21 @@ public class QuestScreen extends Screen {
 
         // Title
         guiGraphics.drawCenteredString(this.font, this.title, centerX, 15, 0xFFFFFFFF);
+
+        // Countdown timer
+        if (this.minecraft != null && this.minecraft.level != null) {
+            long currentTick = this.minecraft.level.getGameTime();
+            long intervalTicks = 20L * 60 * Config.QUEST_REFRESH_INTERVAL_MINUTES.getAsInt();
+            if (intervalTicks <= 0) intervalTicks = 1;
+            long elapsed = currentTick % intervalTicks;
+            long remainingTicks = intervalTicks - elapsed;
+            long remainingSeconds = remainingTicks / 20;
+            long minutes = remainingSeconds / 60;
+            long seconds = remainingSeconds % 60;
+            Component countdown = Component.translatable("quest.improved_original.countdown",
+                    minutes, seconds);
+            guiGraphics.drawCenteredString(this.font, countdown, centerX + 80, 15, 0xFFAAAAAA);
+        }
 
         for (int i = 0; i < QuestData.SLOT_COUNT; i++) {
             int y = startY + i * 60;
@@ -94,7 +120,7 @@ public class QuestScreen extends Screen {
             int target = quest.targetCount();
             boolean complete = progress >= target;
 
-            // Description: "Break Stone x32"
+            // Description
             Component desc = Component.translatable(quest.getDescriptionKey(),
                     quest.getTargetDisplayName(), target);
             guiGraphics.drawString(this.font, desc, centerX - 100, y + 2, 0xFFFFFF);

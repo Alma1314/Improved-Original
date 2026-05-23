@@ -34,6 +34,10 @@ public class Config {
             .comment("Number of emeralds consumed when locking a quest")
             .defineInRange("emeraldLockCost", 5, 1, 64);
 
+    public static final ModConfigSpec.IntValue EMERALD_REFRESH_COST = BUILDER
+            .comment("Number of emeralds consumed when manually refreshing quests")
+            .defineInRange("emeraldRefreshCost", 10, 1, 64);
+
     public static final ModConfigSpec.IntValue QUEST_TARGET_COUNT_MIN = BUILDER
             .comment("Minimum target count for generated quests")
             .defineInRange("questTargetCountMin", 5, 1, 1024);

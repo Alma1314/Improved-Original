@@ -80,9 +80,11 @@ public class QuestManager {
     }
 
     private static void refreshAllPlayersQuests(MinecraftServer server) {
+        Component refreshMsg = Component.translatable("quest.improved_original.refresh_notify");
         for (ServerPlayer player : server.getPlayerList().getPlayers()) {
             QuestData data = player.getData(ModAttachments.QUEST_DATA.get());
             refreshPlayerQuests(player, data);
+            player.sendSystemMessage(refreshMsg);
         }
     }
 
@@ -104,16 +106,25 @@ public class QuestManager {
 
         data.setLastRefreshTick(player.serverLevel().getGameTime());
         player.setData(ModAttachments.QUEST_DATA.get(), data);
-        syncToPlayer(player, data);
+        syncToPlayerSilent(player, data);
     }
 
     public static void ensureQuestsInitialized(ServerPlayer player, QuestData data) {
+        boolean changed = false;
         if (!data.hasAnyQuest()) {
             for (int i = 0; i < QuestData.SLOT_COUNT; i++) {
                 data.setQuest(i, generateRandomQuest(player.getRandom(), data));
             }
+            changed = true;
+        }
+        // Mark active once player first views quests
+        if (!data.isActive()) {
+            data.setActive(true);
+            changed = true;
+        }
+        if (changed) {
             player.setData(ModAttachments.QUEST_DATA.get(), data);
-            syncToPlayer(player, data);
+            syncToPlayerSilent(player, data);
         }
     }
 
@@ -181,6 +192,7 @@ public class QuestManager {
 
     private static void updateProgress(ServerPlayer player, QuestType type, ResourceLocation targetId, int amount) {
         QuestData data = player.getData(ModAttachments.QUEST_DATA.get());
+        if (!data.isActive()) return; // Quests not activated until first viewed
         boolean changed = false;
 
         for (int i = 0; i < QuestData.SLOT_COUNT; i++) {
@@ -200,7 +212,7 @@ public class QuestManager {
 
         if (changed) {
             player.setData(ModAttachments.QUEST_DATA.get(), data);
-            syncToPlayer(player, data);
+            syncToPlayerSilent(player, data);
         }
     }
 
@@ -212,12 +224,38 @@ public class QuestManager {
         if (slot < 0 || slot >= QuestData.SLOT_COUNT) return;
 
         if (data.isSlotLocked(slot)) {
-            // Unlock
             unlockSlot(serverPlayer, data, slot);
         } else {
-            // Lock
             lockSlot(serverPlayer, data, slot);
         }
+    }
+
+    // Manual refresh
+    public static void handleRefreshPacket(Player player) {
+        if (!(player instanceof ServerPlayer serverPlayer)) return;
+
+        int refreshCost = Config.EMERALD_REFRESH_COST.getAsInt();
+        if (!consumeEmeralds(serverPlayer, refreshCost)) {
+            serverPlayer.sendSystemMessage(
+                    Component.translatable("quest.improved_original.refresh.no_emeralds", refreshCost));
+            return;
+        }
+
+        manualRefreshPlayer(serverPlayer);
+        serverPlayer.sendSystemMessage(
+                Component.translatable("quest.improved_original.refresh.success", refreshCost));
+    }
+
+    public static void manualRefreshPlayer(ServerPlayer player) {
+        QuestData data = player.getData(ModAttachments.QUEST_DATA.get());
+        for (int i = 0; i < QuestData.SLOT_COUNT; i++) {
+            if (!data.isSlotLocked(i)) {
+                data.setQuest(i, generateRandomQuest(player.getRandom(), data));
+            }
+        }
+        data.setLastRefreshTick(player.serverLevel().getGameTime());
+        player.setData(ModAttachments.QUEST_DATA.get(), data);
+        syncToPlayerSilent(player, data);
     }
 
     public static boolean lockSlot(ServerPlayer player, QuestData data, int slot) {
@@ -242,7 +280,7 @@ public class QuestManager {
 
         data.setSlotLocked(slot, true);
         player.setData(ModAttachments.QUEST_DATA.get(), data);
-        syncToPlayer(player, data);
+        syncToPlayerSilent(player, data);
         player.sendSystemMessage(Component.translatable("quest.improved_original.lock.success", slot + 1));
         return true;
     }
@@ -255,7 +293,7 @@ public class QuestManager {
 
         data.setSlotLocked(slot, false);
         player.setData(ModAttachments.QUEST_DATA.get(), data);
-        syncToPlayer(player, data);
+        syncToPlayerSilent(player, data);
         player.sendSystemMessage(Component.translatable("quest.improved_original.unlock.success", slot + 1));
         return true;
     }
@@ -271,10 +309,12 @@ public class QuestManager {
             player.drop(reward, false);
         }
 
+        String targetName = quest.getTargetDisplayName().getString();
+        int rewardCount = quest.rewardEmeralds();
         data.clearSlot(slot);
 
-        player.sendSystemMessage(Component.translatable("quest.improved_original.complete_success",
-                quest.getTargetDisplayName(), quest.rewardEmeralds()));
+        // Send completion toast with reward info
+        syncToPlayerWithCompletion(player, data, targetName, rewardCount);
     }
 
     private static boolean consumeEmeralds(ServerPlayer player, int amount) {
@@ -290,7 +330,17 @@ public class QuestManager {
         return false;
     }
 
+    public static void syncToPlayerSilent(ServerPlayer player, QuestData data) {
+        PacketDistributor.sendToPlayer(player, S2CQuestSyncPayload.syncOnly(data));
+    }
+
     public static void syncToPlayer(ServerPlayer player, QuestData data) {
-        PacketDistributor.sendToPlayer(player, new S2CQuestSyncPayload(data));
+        PacketDistributor.sendToPlayer(player, S2CQuestSyncPayload.openScreen(data));
+    }
+
+    public static void syncToPlayerWithCompletion(ServerPlayer player, QuestData data, String questDescription, int rewardEmeralds) {
+        PacketDistributor.sendToPlayer(player,
+                S2CQuestSyncPayload.withCompletion(data,
+                        new S2CQuestSyncPayload.QuestCompletion(questDescription, rewardEmeralds)));
     }
 }

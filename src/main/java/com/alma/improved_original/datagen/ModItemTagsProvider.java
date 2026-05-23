@@ -21,6 +21,6 @@ public class ModItemTagsProvider extends ItemTagsProvider {
     @Override
     protected void addTags(HolderLookup.Provider provider) {
         tag(ItemTags.MINING_ENCHANTABLE)
-                .add(ModItems.RUBY.get());
+                .add(ModItems.RUBY.get(), ModItems.AMETHYST.get(), ModItems.SAPPHIRE.get(), ModItems.TOPAZ.get(), ModItems.ONYX.get());
     }
 }

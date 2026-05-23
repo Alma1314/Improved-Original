@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:smelting",
+  "category": "misc",
+  "cookingtime": 200,
+  "experience": 0.25,
+  "group": "gemstone",
+  "ingredient": {
+    "item": "improved_original:deepslate_ruby_ore"
+  },
+  "result": {
+    "count": 1,
+    "id": "improved_original:ruby"
+  }
+}

@@ -16,7 +16,7 @@ public class ModPayloadHandlers {
         registrar.playToClient(
                 S2CQuestSyncPayload.TYPE,
                 S2CQuestSyncPayload.STREAM_CODEC,
-                (payload, context) -> QuestClientEvents.onQuestDataReceived(payload.data())
+                (payload, context) -> QuestClientEvents.onQuestSyncReceived(payload)
         );
 
         registrar.playToServer(
@@ -25,6 +25,16 @@ public class ModPayloadHandlers {
                 (payload, context) -> {
                     if (context.player() != null) {
                         QuestManager.handleLockPacket(context.player(), payload.slot());
+                    }
+                }
+        );
+
+        registrar.playToServer(
+                C2SQuestRefreshPayload.TYPE,
+                C2SQuestRefreshPayload.STREAM_CODEC,
+                (payload, context) -> {
+                    if (context.player() != null) {
+                        QuestManager.handleRefreshPacket(context.player());
                     }
                 }
         );

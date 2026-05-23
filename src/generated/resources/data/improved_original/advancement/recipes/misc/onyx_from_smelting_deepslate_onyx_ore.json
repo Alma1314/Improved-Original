@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_deepslate_onyx_ore": {
+      "conditions": {
+        "items": [
+          {
+            "items": "improved_original:deepslate_onyx_ore"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "improved_original:onyx_from_smelting_deepslate_onyx_ore"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_deepslate_onyx_ore"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "improved_original:onyx_from_smelting_deepslate_onyx_ore"
+    ]
+  }
+}
