@@ -22,7 +22,7 @@ public class QuestKeyMapping {
             "key." + ImprovedOriginal.MOD_ID + ".open_quest",
             KeyConflictContext.IN_GAME,
             InputConstants.Type.KEYSYM,
-            GLFW.GLFW_KEY_Q,
+            GLFW.GLFW_KEY_O,
             CATEGORY
     );
 

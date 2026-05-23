@@ -26,9 +26,11 @@ public class QuestScreen extends Screen {
         int centerX = this.width / 2;
         int startY = 40;
 
+        int slotSpacing = 70;
+
         for (int i = 0; i < QuestData.SLOT_COUNT; i++) {
             final int slot = i;
-            int y = startY + i * 60;
+            int y = startY + i * slotSpacing;
 
             var questOpt = questData.getQuest(i);
             boolean locked = questData.isSlotLocked(i);
@@ -47,7 +49,7 @@ public class QuestScreen extends Screen {
             Button lockButton = Button.builder(
                     Component.translatable(lockTextKey),
                     btn -> PacketDistributor.sendToServer(new C2SQuestLockPayload(slot))
-            ).bounds(centerX + 100, y + 10, 50, 20).build();
+            ).bounds(centerX + 100, y + 22, 50, 20).build();
 
             if (!hasQuest || complete) {
                 lockButton.active = false;
@@ -65,13 +67,13 @@ public class QuestScreen extends Screen {
                             btn.active = false;
                             PacketDistributor.sendToServer(new C2SQuestRefreshPayload());
                         }
-                ).bounds(centerX + 60, startY + QuestData.SLOT_COUNT * 60 + 8, 80, 20).build()
+                ).bounds(centerX + 60, startY + QuestData.SLOT_COUNT * slotSpacing + 8, 80, 20).build()
         );
 
         // Close button
         this.addRenderableWidget(
                 Button.builder(Component.translatable("quest.improved_original.done"), btn -> this.onClose())
-                        .bounds(centerX - 40, startY + QuestData.SLOT_COUNT * 60 + 8, 40, 20)
+                        .bounds(centerX - 40, startY + QuestData.SLOT_COUNT * slotSpacing + 8, 40, 20)
                         .build()
         );
     }
@@ -102,17 +104,19 @@ public class QuestScreen extends Screen {
             guiGraphics.drawCenteredString(this.font, countdown, centerX + 80, 15, 0xFFAAAAAA);
         }
 
+        int slotSpacing = 70;
+
         for (int i = 0; i < QuestData.SLOT_COUNT; i++) {
-            int y = startY + i * 60;
+            int y = startY + i * slotSpacing;
             var questOpt = questData.getQuest(i);
 
             // Slot background
-            guiGraphics.fill(centerX - 110, y - 2, centerX + 150, y + 50, 0x33000000);
+            guiGraphics.fill(centerX - 110, y - 2, centerX + 150, y + 60, 0x33000000);
 
             if (questOpt.isEmpty()) {
                 guiGraphics.drawString(this.font,
                         Component.translatable("quest.improved_original.empty_slot"),
-                        centerX - 100, y + 12, 0xFF888888);
+                        centerX - 100, y + 18, 0xFF888888);
                 continue;
             }
 
@@ -121,16 +125,38 @@ public class QuestScreen extends Screen {
             int target = quest.targetCount();
             boolean complete = progress >= target;
 
-            // Description
-            Component desc = Component.translatable(quest.getDescriptionKey(),
+            // Quest name (line 1)
+            String questName = quest.name();
+            if (questName == null || questName.isEmpty()) {
+                // Fallback: use the type-based description as name
+                questName = Component.translatable(quest.getDescriptionKey(),
+                        quest.getTargetDisplayName(), target).getString();
+            }
+            Component nameText = Component.literal(questName);
+            guiGraphics.drawString(this.font, nameText, centerX - 100, y + 2, 0xFFFFFF);
+
+            // Hover tooltip: show description when mouse is over the name area
+            if (this.font != null) {
+                int nameWidth = this.font.width(nameText);
+                if (mouseX >= centerX - 100 && mouseX <= centerX - 100 + nameWidth
+                        && mouseY >= y + 2 && mouseY <= y + 2 + this.font.lineHeight) {
+                    String desc = quest.description();
+                    if (desc != null && !desc.isEmpty()) {
+                        guiGraphics.renderTooltip(this.font, Component.literal(desc), mouseX, mouseY);
+                    }
+                }
+            }
+
+            // Task description (line 2) — "Break Stone x32" etc.
+            Component taskDesc = Component.translatable(quest.getDescriptionKey(),
                     quest.getTargetDisplayName(), target);
-            guiGraphics.drawString(this.font, desc, centerX - 100, y + 2, 0xFFFFFF);
+            guiGraphics.drawString(this.font, taskDesc, centerX - 100, y + 14, 0xFFCCCCCC);
 
             // Progress bar
             int barWidth = 100;
             int barHeight = 12;
             int barX = centerX - 100;
-            int barY = y + 16;
+            int barY = y + 28;
 
             guiGraphics.fill(barX, barY, barX + barWidth, barY + barHeight, 0xFF444444);
             int fillWidth = (int) ((float) progress / target * barWidth);
@@ -148,7 +174,7 @@ public class QuestScreen extends Screen {
             Component rewardText = Component.translatable("quest.improved_original.reward",
                     quest.rewardCount(), quest.getRewardDisplayName());
             int rewardColor = complete ? 0xFF55FF55 : 0xFFFFAA00;
-            guiGraphics.drawString(this.font, rewardText, centerX - 100, y + 34, rewardColor);
+            guiGraphics.drawString(this.font, rewardText, centerX - 100, y + 46, rewardColor);
 
             // Lock cost hint
             if (!questData.isSlotLocked(i) && !complete) {

@@ -121,7 +121,8 @@ public class QuestManager {
         int targetCount = chosen.countMin() + random.nextInt(chosen.countMax() - chosen.countMin() + 1);
         int rewardCount = chosen.rewardCountMin() + random.nextInt(chosen.rewardCountMax() - chosen.rewardCountMin() + 1);
 
-        return new QuestDefinition(chosen.type(), chosen.target(), targetCount, chosen.rewardItem(), rewardCount);
+        return new QuestDefinition(chosen.type(), chosen.target(), targetCount, chosen.rewardItem(), rewardCount,
+                chosen.name(), chosen.description());
     }
 
     // Progress updates

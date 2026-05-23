@@ -1,4 +1,4 @@
-// 任务定义（不可变记录）：类型、目标ID、目标数量、奖励物品+数量，含Codec/StreamCodec序列化
+// 任务定义（不可变记录）：类型、目标ID、目标数量、奖励物品+数量、描述文本，含Codec/StreamCodec序列化
 package com.alma.improved_original.quest;
 
 import com.alma.improved_original.ImprovedOriginal;
@@ -20,7 +20,9 @@ public record QuestDefinition(
         ResourceLocation targetId,
         int targetCount,
         ResourceLocation rewardItem,
-        int rewardCount
+        int rewardCount,
+        String name,
+        String description
 ) {
     public static final Codec<QuestDefinition> CODEC = RecordCodecBuilder.create(instance ->
             instance.group(
@@ -28,7 +30,9 @@ public record QuestDefinition(
                     ResourceLocation.CODEC.fieldOf("target").forGetter(QuestDefinition::targetId),
                     Codec.INT.fieldOf("count").forGetter(QuestDefinition::targetCount),
                     ResourceLocation.CODEC.fieldOf("rewardItem").forGetter(QuestDefinition::rewardItem),
-                    Codec.INT.fieldOf("rewardCount").forGetter(QuestDefinition::rewardCount)
+                    Codec.INT.fieldOf("rewardCount").forGetter(QuestDefinition::rewardCount),
+                    Codec.STRING.optionalFieldOf("name", "").forGetter(QuestDefinition::name),
+                    Codec.STRING.optionalFieldOf("description", "").forGetter(QuestDefinition::description)
             ).apply(instance, QuestDefinition::new)
     );
 
@@ -39,6 +43,8 @@ public record QuestDefinition(
                     ByteBufCodecs.VAR_INT, QuestDefinition::targetCount,
                     ResourceLocation.STREAM_CODEC, QuestDefinition::rewardItem,
                     ByteBufCodecs.VAR_INT, QuestDefinition::rewardCount,
+                    ByteBufCodecs.STRING_UTF8, QuestDefinition::name,
+                    ByteBufCodecs.STRING_UTF8, QuestDefinition::description,
                     QuestDefinition::new
             );
 
