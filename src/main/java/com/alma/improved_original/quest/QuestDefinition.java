@@ -24,6 +24,15 @@ public record QuestDefinition(
         String name,
         String description
 ) {
+    private record QuestInfo(String name, String description) {
+        static final StreamCodec<FriendlyByteBuf, QuestInfo> STREAM_CODEC =
+                StreamCodec.composite(
+                        ByteBufCodecs.STRING_UTF8, QuestInfo::name,
+                        ByteBufCodecs.STRING_UTF8, QuestInfo::description,
+                        QuestInfo::new
+                );
+    }
+
     public static final Codec<QuestDefinition> CODEC = RecordCodecBuilder.create(instance ->
             instance.group(
                     QuestType.CODEC.fieldOf("type").forGetter(QuestDefinition::type),
@@ -43,9 +52,9 @@ public record QuestDefinition(
                     ByteBufCodecs.VAR_INT, QuestDefinition::targetCount,
                     ResourceLocation.STREAM_CODEC, QuestDefinition::rewardItem,
                     ByteBufCodecs.VAR_INT, QuestDefinition::rewardCount,
-                    ByteBufCodecs.STRING_UTF8, QuestDefinition::name,
-                    ByteBufCodecs.STRING_UTF8, QuestDefinition::description,
-                    QuestDefinition::new
+                    QuestInfo.STREAM_CODEC, q -> new QuestInfo(q.name, q.description),
+                    (type, targetId, targetCount, rewardItem, rewardCount, info) ->
+                            new QuestDefinition(type, targetId, targetCount, rewardItem, rewardCount, info.name, info.description)
             );
 
     public ItemStack createReward() {

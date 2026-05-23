@@ -41,7 +41,8 @@
 
 ### 任务面板
 - 标题 + 刷新倒计时
-- 3个槽位：任务描述、进度条、奖励、锁定按钮
+- 3个槽位：任务名称、任务描述、进度条、奖励、锁定按钮
+- 鼠标悬停在任务名称上可查看简介
 - 手动刷新按钮（消耗绿宝石）
 - 关闭按钮
 - 任务完成时右上角弹出Toast通知
@@ -66,14 +67,18 @@
       "target": "minecraft:stone",
       "countMin": 10, "countMax": 64,
       "reward": {"item": "minecraft:emerald", "countMin": 1, "countMax": 10},
-      "weight": 20
+      "weight": 20,
+      "name": "Stone Miner",
+      "description": "Break stone blocks to earn emerald rewards"
     },
     {
       "type": "FIND_STRUCTURE",
       "target": "minecraft:village_plains",
       "countMin": 1, "countMax": 1,
       "reward": {"item": "minecraft:diamond", "countMin": 3, "countMax": 5},
-      "weight": 10
+      "weight": 10,
+      "name": "Village Explorer",
+      "description": "Find a plains village"
     }
   ]
 }
@@ -81,6 +86,7 @@
 
 - 字段 `countMin`/`countMax` 控制目标数量，`reward.countMin`/`reward.countMax` 控制奖励数量
 - 字段 `weight` 越大，被选中的概率越高
+- 字段 `name` 为任务名称，`description` 为可选简介（鼠标悬停时显示）
 - JSON 中 `target` 和 `reward.item` 使用 ResourceLocation 格式（`minecraft:xxx`）
 - 首次启动自动生成默认配置，修改后重启即可生效
 - 支持多个 JSON 文件，所有文件中的 entries 会被合并
