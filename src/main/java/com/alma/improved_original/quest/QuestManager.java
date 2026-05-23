@@ -2,6 +2,7 @@
 package com.alma.improved_original.quest;
 
 import com.alma.improved_original.Config;
+import com.alma.improved_original.datagen.QuestPoolConfig;
 import com.alma.improved_original.quest.network.S2CQuestSyncPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;

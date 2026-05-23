@@ -1,6 +1,7 @@
 // JSON任务池配置：加载/保存/生成默认任务定义文件
-package com.alma.improved_original.quest;
+package com.alma.improved_original.datagen;
 
+import com.alma.improved_original.quest.QuestType;
 import com.google.gson.*;
 import net.minecraft.resources.ResourceLocation;
 

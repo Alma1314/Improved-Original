@@ -103,7 +103,6 @@ src/main/java/com/alma/improved_original/
 │   ├── QuestData.java                 # 玩家完整任务数据
 │   ├── ModAttachments.java            # AttachmentType注册
 │   ├── QuestManager.java              # 核心逻辑
-│   ├── QuestPoolConfig.java           # JSON任务池配置
 │   ├── command/QuestCommand.java      # /quest命令
 │   ├── network/
 │   │   ├── S2CQuestSyncPayload.java   # 服务端→客户端同步
@@ -118,7 +117,17 @@ src/main/java/com/alma/improved_original/
 │       ├── ClientQuestCache.java      # 客户端数据缓存
 │       ├── QuestClientEvents.java     # 客户端网络处理
 │       └── QuestToast.java            # 完成通知Toast
-└── datagen/                           # 数据生成（8个Provider）
+└── datagen/                           # 数据生成（10个Provider）
+    ├── ModBlockLootTablesProvider.java # 战利品表
+    ├── ModBlockStatesProvider.java     # 方块状态/模型
+    ├── ModItemModelsProvider.java      # 物品模型
+    ├── ModItemTagsProvider.java        # 物品标签
+    ├── ModBlockTagsProvider.java       # 方块标签
+    ├── ModRecipesProvider.java         # 合成配方
+    ├── ModQuestPoolProvider.java       # 任务池JSON
+    ├── QuestPoolConfig.java            # 任务池加载/默认生成
+    ├── ModEnUsLangProvider.java        # 英文翻译
+    └── ModZhCnLangProvider.java        # 中文翻译
 ```
 
 ---
