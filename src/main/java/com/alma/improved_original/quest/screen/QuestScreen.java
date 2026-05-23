@@ -125,14 +125,16 @@ public class QuestScreen extends Screen {
             int target = quest.targetCount();
             boolean complete = progress >= target;
 
-            // Quest name (line 1)
-            String questName = quest.name();
-            if (questName == null || questName.isEmpty()) {
+            // Quest name (line 1) — uses translation key from JSON, with fallback
+            Component nameText;
+            String nameKey = quest.name();
+            if (nameKey != null && !nameKey.isEmpty()) {
+                nameText = Component.translatable(nameKey);
+            } else {
                 // Fallback: use the type-based description as name
-                questName = Component.translatable(quest.getDescriptionKey(),
-                        quest.getTargetDisplayName(), target).getString();
+                nameText = Component.translatable(quest.getDescriptionKey(),
+                        quest.getTargetDisplayName(), target);
             }
-            Component nameText = Component.literal(questName);
             guiGraphics.drawString(this.font, nameText, centerX - 100, y + 2, 0xFFFFFF);
 
             // Hover tooltip: show description when mouse is over the name area
@@ -140,9 +142,10 @@ public class QuestScreen extends Screen {
                 int nameWidth = this.font.width(nameText);
                 if (mouseX >= centerX - 100 && mouseX <= centerX - 100 + nameWidth
                         && mouseY >= y + 2 && mouseY <= y + 2 + this.font.lineHeight) {
-                    String desc = quest.description();
-                    if (desc != null && !desc.isEmpty()) {
-                        guiGraphics.renderTooltip(this.font, Component.literal(desc), mouseX, mouseY);
+                    String descKey = quest.description();
+                    if (descKey != null && !descKey.isEmpty()) {
+                        guiGraphics.renderTooltip(this.font,
+                                Component.translatable(descKey), mouseX, mouseY);
                     }
                 }
             }

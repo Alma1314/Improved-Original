@@ -68,8 +68,8 @@
       "countMin": 10, "countMax": 64,
       "reward": {"item": "minecraft:emerald", "countMin": 1, "countMax": 10},
       "weight": 20,
-      "name": "Stone Miner",
-      "description": "Break stone blocks to earn emerald rewards"
+      "name": "quest.improved_original.name.minecraft.stone",
+      "description": "quest.improved_original.desc_text.minecraft.stone"
     },
     {
       "type": "FIND_STRUCTURE",
@@ -77,8 +77,8 @@
       "countMin": 1, "countMax": 1,
       "reward": {"item": "minecraft:diamond", "countMin": 3, "countMax": 5},
       "weight": 10,
-      "name": "Village Explorer",
-      "description": "Find a plains village"
+      "name": "quest.improved_original.name.minecraft.village_plains",
+      "description": "quest.improved_original.desc_text.minecraft.village_plains"
     }
   ]
 }
@@ -86,10 +86,14 @@
 
 - 字段 `countMin`/`countMax` 控制目标数量，`reward.countMin`/`reward.countMax` 控制奖励数量
 - 字段 `weight` 越大，被选中的概率越高
-- 字段 `name` 为任务名称，`description` 为可选简介（鼠标悬停时显示）
+- 字段 `name` 为任务名称的翻译键，`description` 为简介的翻译键（鼠标悬停时显示）
+- 翻译键命名规则：`quest.improved_original.name.<namespace>.<path>` 和 `quest.improved_original.desc_text.<namespace>.<path>`
+- 若 `name` 为空则回退显示任务类型描述（如 "破坏 石头 x32"）
+- 支持 en_us / zh_cn，语言文件随数据生成（`runData`）自动更新
 - JSON 中 `target` 和 `reward.item` 使用 ResourceLocation 格式（`minecraft:xxx`）
 - 首次启动自动生成默认配置，修改后重启即可生效
 - 支持多个 JSON 文件，所有文件中的 entries 会被合并
+- 自定义任务条目可直接填写纯文本（不使用翻译键），但不会随游戏语言变化
 
 ---
 
