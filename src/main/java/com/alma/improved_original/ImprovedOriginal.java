@@ -3,6 +3,8 @@ package com.alma.improved_original;
 import com.alma.improved_original.block.ModBlocks;
 import com.alma.improved_original.item.ModCreativeModeTabs;
 import com.alma.improved_original.item.ModItems;
+import com.alma.improved_original.quest.ModAttachments;
+import com.alma.improved_original.quest.network.ModPayloadHandlers;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -29,6 +31,8 @@ public class ImprovedOriginal {
         ModItems.register(modEventBus);
         ModBlocks.register(modEventBus);
         ModCreativeModeTabs.register(modEventBus);
+        ModAttachments.register(modEventBus);
+        modEventBus.addListener(ModPayloadHandlers::register);
 
         NeoForge.EVENT_BUS.register(this);
 

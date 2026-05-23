@@ -25,6 +25,31 @@ public class Config {
             .comment("A list of items to log on common setup.")
             .defineListAllowEmpty("items", List.of("minecraft:iron_ingot"), () -> "", Config::validateItemName);
 
+    // Quest system configuration
+    public static final ModConfigSpec.IntValue QUEST_REFRESH_INTERVAL_MINUTES = BUILDER
+            .comment("How often (in minutes) quests refresh for all players")
+            .defineInRange("questRefreshIntervalMinutes", 60, 1, 1440);
+
+    public static final ModConfigSpec.IntValue EMERALD_LOCK_COST = BUILDER
+            .comment("Number of emeralds consumed when locking a quest")
+            .defineInRange("emeraldLockCost", 5, 1, 64);
+
+    public static final ModConfigSpec.IntValue QUEST_TARGET_COUNT_MIN = BUILDER
+            .comment("Minimum target count for generated quests")
+            .defineInRange("questTargetCountMin", 5, 1, 1024);
+
+    public static final ModConfigSpec.IntValue QUEST_TARGET_COUNT_MAX = BUILDER
+            .comment("Maximum target count for generated quests")
+            .defineInRange("questTargetCountMax", 32, 1, 1024);
+
+    public static final ModConfigSpec.IntValue QUEST_REWARD_MIN = BUILDER
+            .comment("Minimum emerald reward for generated quests")
+            .defineInRange("questRewardMin", 1, 1, 64);
+
+    public static final ModConfigSpec.IntValue QUEST_REWARD_MAX = BUILDER
+            .comment("Maximum emerald reward for generated quests")
+            .defineInRange("questRewardMax", 10, 1, 64);
+
     static final ModConfigSpec SPEC = BUILDER.build();
 
     private static boolean validateItemName(final Object obj) {
