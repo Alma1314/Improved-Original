@@ -40,19 +40,19 @@ public record S2CQuestSyncPayload(QuestData data, Optional<QuestCompletion> comp
         return new S2CQuestSyncPayload(data, Optional.empty(), true);
     }
 
-    public record QuestCompletion(String questDescription, int rewardEmeralds) {
+    public record QuestCompletion(String questDescription, String rewardText) {
         public static final StreamCodec<FriendlyByteBuf, Optional<QuestCompletion>> STREAM_CODEC =
                 StreamCodec.of(
                         (buf, opt) -> {
                             buf.writeBoolean(opt.isPresent());
                             opt.ifPresent(c -> {
                                 buf.writeUtf(c.questDescription);
-                                buf.writeVarInt(c.rewardEmeralds);
+                                buf.writeUtf(c.rewardText);
                             });
                         },
                         buf -> {
                             if (!buf.readBoolean()) return Optional.empty();
-                            return Optional.of(new QuestCompletion(buf.readUtf(), buf.readVarInt()));
+                            return Optional.of(new QuestCompletion(buf.readUtf(), buf.readUtf()));
                         }
                 );
     }

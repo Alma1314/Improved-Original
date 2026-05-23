@@ -28,7 +28,7 @@ public class QuestClientEvents {
                 var completion = payload.completion().get();
                 Component title = Component.translatable("quest.improved_original.toast.title");
                 Component desc = Component.translatable("quest.improved_original.toast.desc",
-                        completion.questDescription(), completion.rewardEmeralds());
+                        completion.questDescription(), completion.rewardText());
                 Minecraft.getInstance().getToasts().addToast(
                         new QuestToast(title, desc)
                 );

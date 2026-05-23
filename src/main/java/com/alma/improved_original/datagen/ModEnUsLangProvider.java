@@ -43,7 +43,7 @@ public class ModEnUsLangProvider extends LanguageProvider {
         // Quest system
         add("screen.improved_original.quest", "Daily Quests");
         add("quest.improved_original.empty_slot", "No quest assigned");
-        add("quest.improved_original.reward", "Reward: %d Emeralds");
+        add("quest.improved_original.reward", "Reward: %d %s");
         add("quest.improved_original.lock_button", "Lock");
         add("quest.improved_original.locked", "Locked");
         add("quest.improved_original.done", "Done");
@@ -53,6 +53,7 @@ public class ModEnUsLangProvider extends LanguageProvider {
         add("quest.improved_original.desc.craft", "Craft %s x%d");
         add("quest.improved_original.desc.kill", "Kill %s x%d");
         add("quest.improved_original.desc.collect", "Collect %s x%d");
+        add("quest.improved_original.desc.find", "Explore %s");
 
         add("quest.improved_original.lock.success", "Quest in slot %d has been locked!");
         add("quest.improved_original.lock.no_emeralds", "You need %d emeralds to lock a quest!");
@@ -63,7 +64,7 @@ public class ModEnUsLangProvider extends LanguageProvider {
         add("quest.improved_original.unlock.not_locked", "This quest is not locked.");
         add("quest.improved_original.complete_success", "Completed quest: %s! Received %d emeralds.");
         add("quest.improved_original.toast.title", "Quest Complete!");
-        add("quest.improved_original.toast.desc", "%s - +%d Emeralds");
+        add("quest.improved_original.toast.desc", "%s - %s");
         add("quest.improved_original.refresh_notify", "Daily quests have been refreshed!");
         add("quest.improved_original.refresh_button", "Refresh (%d E)");
         add("quest.improved_original.refresh.success", "Quests refreshed! Cost: %d emeralds.");

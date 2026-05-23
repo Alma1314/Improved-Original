@@ -43,7 +43,7 @@ public class ModZhCnLangProvider extends LanguageProvider {
         // Quest system
         add("screen.improved_original.quest", "每日任务");
         add("quest.improved_original.empty_slot", "暂无任务");
-        add("quest.improved_original.reward", "奖励: %d 绿宝石");
+        add("quest.improved_original.reward", "奖励: %d %s");
         add("quest.improved_original.lock_button", "锁定");
         add("quest.improved_original.locked", "已锁定");
         add("quest.improved_original.done", "关闭");
@@ -53,6 +53,7 @@ public class ModZhCnLangProvider extends LanguageProvider {
         add("quest.improved_original.desc.craft", "合成 %s x%d");
         add("quest.improved_original.desc.kill", "击杀 %s x%d");
         add("quest.improved_original.desc.collect", "收集 %s x%d");
+        add("quest.improved_original.desc.find", "探索 %s");
 
         add("quest.improved_original.lock.success", "槽位 %d 的任务已锁定!");
         add("quest.improved_original.lock.no_emeralds", "你需要 %d 个绿宝石来锁定任务!");
@@ -63,7 +64,7 @@ public class ModZhCnLangProvider extends LanguageProvider {
         add("quest.improved_original.unlock.not_locked", "该任务未锁定。");
         add("quest.improved_original.complete_success", "完成任务: %s! 获得 %d 绿宝石。");
         add("quest.improved_original.toast.title", "任务完成！");
-        add("quest.improved_original.toast.desc", "%s - +%d 绿宝石");
+        add("quest.improved_original.toast.desc", "%s - %s");
         add("quest.improved_original.refresh_notify", "每日任务已刷新！");
         add("quest.improved_original.refresh_button", "刷新 (%d 绿宝石)");
         add("quest.improved_original.refresh.success", "任务已刷新！花费: %d 绿宝石。");

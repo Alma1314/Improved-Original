@@ -145,7 +145,8 @@ public class QuestScreen extends Screen {
             guiGraphics.drawCenteredString(this.font, progressText, barX + barWidth / 2, barY + 2, 0xFFFFFF);
 
             // Reward
-            Component rewardText = Component.translatable("quest.improved_original.reward", quest.rewardEmeralds());
+            Component rewardText = Component.translatable("quest.improved_original.reward",
+                    quest.rewardCount(), quest.getRewardDisplayName());
             int rewardColor = complete ? 0xFF55FF55 : 0xFFFFAA00;
             guiGraphics.drawString(this.font, rewardText, centerX - 100, y + 34, rewardColor);
 

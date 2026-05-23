@@ -39,22 +39,6 @@ public class Config {
             .comment("Number of emeralds consumed when manually refreshing quests")
             .defineInRange("emeraldRefreshCost", 10, 1, 64);
 
-    public static final ModConfigSpec.IntValue QUEST_TARGET_COUNT_MIN = BUILDER
-            .comment("Minimum target count for generated quests")
-            .defineInRange("questTargetCountMin", 5, 1, 1024);
-
-    public static final ModConfigSpec.IntValue QUEST_TARGET_COUNT_MAX = BUILDER
-            .comment("Maximum target count for generated quests")
-            .defineInRange("questTargetCountMax", 32, 1, 1024);
-
-    public static final ModConfigSpec.IntValue QUEST_REWARD_MIN = BUILDER
-            .comment("Minimum emerald reward for generated quests")
-            .defineInRange("questRewardMin", 1, 1, 64);
-
-    public static final ModConfigSpec.IntValue QUEST_REWARD_MAX = BUILDER
-            .comment("Maximum emerald reward for generated quests")
-            .defineInRange("questRewardMax", 10, 1, 64);
-
     static final ModConfigSpec SPEC = BUILDER.build();
 
     private static boolean validateItemName(final Object obj) {

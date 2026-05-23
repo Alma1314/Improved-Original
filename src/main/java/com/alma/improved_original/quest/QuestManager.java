@@ -1,4 +1,4 @@
-// 任务核心逻辑：生成、刷新、进度追踪、锁定/解锁、完成奖励、手动刷新、网络同步
+// 任务核心逻辑：JSON池加载、生成、刷新、进度追踪、锁定/解锁、完成奖励、手动刷新、结构检测、网络同步
 package com.alma.improved_original.quest;
 
 import com.alma.improved_original.Config;
@@ -15,53 +15,23 @@ import net.minecraft.server.MinecraftServer;
 
 import net.minecraft.util.RandomSource;
 
+import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class QuestManager {
     private static long lastRefreshBucket = -1;
+    private static List<QuestPoolConfig.PoolEntry> questPool = null;
 
-    private static final List<PoolEntry> QUEST_POOL = buildQuestPool();
+    private static List<QuestPoolConfig.PoolEntry> getQuestPool() {
+        if (questPool == null) {
+            questPool = QuestPoolConfig.loadFromConfig(Path.of("config", "improved_original"));
+        }
+        return questPool;
+    }
 
-    private record PoolEntry(QuestType type, ResourceLocation targetId, int weight) {}
-
-    private static List<PoolEntry> buildQuestPool() {
-        List<PoolEntry> pool = new ArrayList<>();
-
-        // BREAK_BLOCK
-        pool.add(new PoolEntry(QuestType.BREAK_BLOCK, ResourceLocation.parse("minecraft:stone"), 20));
-        pool.add(new PoolEntry(QuestType.BREAK_BLOCK, ResourceLocation.parse("minecraft:oak_log"), 15));
-        pool.add(new PoolEntry(QuestType.BREAK_BLOCK, ResourceLocation.parse("minecraft:coal_ore"), 10));
-        pool.add(new PoolEntry(QuestType.BREAK_BLOCK, ResourceLocation.parse("minecraft:iron_ore"), 8));
-        pool.add(new PoolEntry(QuestType.BREAK_BLOCK, ResourceLocation.parse("minecraft:dirt"), 20));
-        pool.add(new PoolEntry(QuestType.BREAK_BLOCK, ResourceLocation.parse("minecraft:deepslate"), 18));
-        pool.add(new PoolEntry(QuestType.BREAK_BLOCK, ResourceLocation.parse("minecraft:sand"), 15));
-
-        // KILL_ENTITY
-        pool.add(new PoolEntry(QuestType.KILL_ENTITY, ResourceLocation.parse("minecraft:zombie"), 20));
-        pool.add(new PoolEntry(QuestType.KILL_ENTITY, ResourceLocation.parse("minecraft:skeleton"), 20));
-        pool.add(new PoolEntry(QuestType.KILL_ENTITY, ResourceLocation.parse("minecraft:spider"), 15));
-        pool.add(new PoolEntry(QuestType.KILL_ENTITY, ResourceLocation.parse("minecraft:creeper"), 15));
-        pool.add(new PoolEntry(QuestType.KILL_ENTITY, ResourceLocation.parse("minecraft:enderman"), 8));
-
-        // CRAFT_ITEM
-        pool.add(new PoolEntry(QuestType.CRAFT_ITEM, ResourceLocation.parse("minecraft:crafting_table"), 10));
-        pool.add(new PoolEntry(QuestType.CRAFT_ITEM, ResourceLocation.parse("minecraft:furnace"), 10));
-        pool.add(new PoolEntry(QuestType.CRAFT_ITEM, ResourceLocation.parse("minecraft:iron_pickaxe"), 12));
-        pool.add(new PoolEntry(QuestType.CRAFT_ITEM, ResourceLocation.parse("minecraft:iron_sword"), 10));
-        pool.add(new PoolEntry(QuestType.CRAFT_ITEM, ResourceLocation.parse("minecraft:torch"), 15));
-        pool.add(new PoolEntry(QuestType.CRAFT_ITEM, ResourceLocation.parse("minecraft:bread"), 12));
-        pool.add(new PoolEntry(QuestType.CRAFT_ITEM, ResourceLocation.parse("minecraft:stick"), 8));
-
-        // COLLECT_ITEM
-        pool.add(new PoolEntry(QuestType.COLLECT_ITEM, ResourceLocation.parse("minecraft:coal"), 15));
-        pool.add(new PoolEntry(QuestType.COLLECT_ITEM, ResourceLocation.parse("minecraft:iron_ingot"), 10));
-        pool.add(new PoolEntry(QuestType.COLLECT_ITEM, ResourceLocation.parse("minecraft:wheat"), 12));
-        pool.add(new PoolEntry(QuestType.COLLECT_ITEM, ResourceLocation.parse("minecraft:apple"), 8));
-        pool.add(new PoolEntry(QuestType.COLLECT_ITEM, ResourceLocation.parse("minecraft:rotten_flesh"), 10));
-        pool.add(new PoolEntry(QuestType.COLLECT_ITEM, ResourceLocation.parse("minecraft:bone"), 10));
-
-        return pool;
+    public static void reloadQuestPool() {
+        questPool = QuestPoolConfig.loadFromConfig(Path.of("config", "improved_original"));
     }
 
     public static void onServerTick(MinecraftServer server) {
@@ -90,21 +60,11 @@ public class QuestManager {
     }
 
     public static void refreshPlayerQuests(ServerPlayer player, QuestData data) {
-        // Ensure player has quests (first login case)
-        if (!data.hasAnyQuest()) {
-            for (int i = 0; i < QuestData.SLOT_COUNT; i++) {
-                if (!data.isSlotLocked(i)) {
-                    data.setQuest(i, generateRandomQuest(player.getRandom(), data));
-                }
-            }
-        } else {
-            for (int i = 0; i < QuestData.SLOT_COUNT; i++) {
-                if (!data.isSlotLocked(i)) {
-                    data.setQuest(i, generateRandomQuest(player.getRandom(), data));
-                }
+        for (int i = 0; i < QuestData.SLOT_COUNT; i++) {
+            if (!data.isSlotLocked(i)) {
+                data.setQuest(i, generateRandomQuest(player.getRandom(), data));
             }
         }
-
         data.setLastRefreshTick(player.serverLevel().getGameTime());
         player.setData(ModAttachments.QUEST_DATA.get(), data);
         syncToPlayerSilent(player, data);
@@ -118,7 +78,6 @@ public class QuestManager {
             }
             changed = true;
         }
-        // Mark active once player first views quests
         if (!data.isActive()) {
             data.setActive(true);
             changed = true;
@@ -130,24 +89,27 @@ public class QuestManager {
     }
 
     public static QuestDefinition generateRandomQuest(RandomSource random, QuestData existingData) {
+        List<QuestPoolConfig.PoolEntry> pool = getQuestPool();
+        if (pool.isEmpty()) return null;
+
         Set<ResourceLocation> existingTargets = new HashSet<>();
         for (int i = 0; i < QuestData.SLOT_COUNT; i++) {
             existingData.getQuest(i).ifPresent(q -> existingTargets.add(q.targetId()));
         }
 
-        List<PoolEntry> available = QUEST_POOL.stream()
-                .filter(e -> !existingTargets.contains(e.targetId()))
+        List<QuestPoolConfig.PoolEntry> available = pool.stream()
+                .filter(e -> !existingTargets.contains(e.target()))
                 .toList();
 
         if (available.isEmpty()) {
-            available = QUEST_POOL;
+            available = pool;
         }
 
-        int totalWeight = available.stream().mapToInt(PoolEntry::weight).sum();
+        int totalWeight = available.stream().mapToInt(QuestPoolConfig.PoolEntry::weight).sum();
         int roll = random.nextInt(totalWeight);
         int cumulative = 0;
-        PoolEntry chosen = available.get(0);
-        for (PoolEntry entry : available) {
+        QuestPoolConfig.PoolEntry chosen = available.get(0);
+        for (QuestPoolConfig.PoolEntry entry : available) {
             cumulative += entry.weight();
             if (roll < cumulative) {
                 chosen = entry;
@@ -155,15 +117,10 @@ public class QuestManager {
             }
         }
 
-        int minCount = Config.QUEST_TARGET_COUNT_MIN.getAsInt();
-        int maxCount = Config.QUEST_TARGET_COUNT_MAX.getAsInt();
-        int targetCount = minCount + random.nextInt(maxCount - minCount + 1);
+        int targetCount = chosen.countMin() + random.nextInt(chosen.countMax() - chosen.countMin() + 1);
+        int rewardCount = chosen.rewardCountMin() + random.nextInt(chosen.rewardCountMax() - chosen.rewardCountMin() + 1);
 
-        int minReward = Config.QUEST_REWARD_MIN.getAsInt();
-        int maxReward = Config.QUEST_REWARD_MAX.getAsInt();
-        int reward = minReward + random.nextInt(maxReward - minReward + 1);
-
-        return new QuestDefinition(chosen.type(), chosen.targetId(), targetCount, reward);
+        return new QuestDefinition(chosen.type(), chosen.target(), targetCount, chosen.rewardItem(), rewardCount);
     }
 
     // Progress updates
@@ -187,13 +144,17 @@ public class QuestManager {
         updateProgress(player, QuestType.COLLECT_ITEM, itemId, amount);
     }
 
+    public static void onStructureEntered(ServerPlayer player, ResourceLocation structureId) {
+        updateProgress(player, QuestType.FIND_STRUCTURE, structureId);
+    }
+
     private static void updateProgress(ServerPlayer player, QuestType type, ResourceLocation targetId) {
         updateProgress(player, type, targetId, 1);
     }
 
     private static void updateProgress(ServerPlayer player, QuestType type, ResourceLocation targetId, int amount) {
         QuestData data = player.getData(ModAttachments.QUEST_DATA.get());
-        if (!data.isActive()) return; // Quests not activated until first viewed
+        if (!data.isActive()) return;
         boolean changed = false;
 
         for (int i = 0; i < QuestData.SLOT_COUNT; i++) {
@@ -220,10 +181,8 @@ public class QuestManager {
     // Lock / unlock
     public static void handleLockPacket(Player player, int slot) {
         if (!(player instanceof ServerPlayer serverPlayer)) return;
-
         QuestData data = serverPlayer.getData(ModAttachments.QUEST_DATA.get());
         if (slot < 0 || slot >= QuestData.SLOT_COUNT) return;
-
         if (data.isSlotLocked(slot)) {
             unlockSlot(serverPlayer, data, slot);
         } else {
@@ -234,14 +193,12 @@ public class QuestManager {
     // Manual refresh
     public static void handleRefreshPacket(Player player) {
         if (!(player instanceof ServerPlayer serverPlayer)) return;
-
         int refreshCost = Config.EMERALD_REFRESH_COST.getAsInt();
         if (!consumeEmeralds(serverPlayer, refreshCost)) {
             serverPlayer.sendSystemMessage(
                     Component.translatable("quest.improved_original.refresh.no_emeralds", refreshCost));
             return;
         }
-
         manualRefreshPlayer(serverPlayer);
         serverPlayer.sendSystemMessage(
                 Component.translatable("quest.improved_original.refresh.success", refreshCost));
@@ -272,13 +229,11 @@ public class QuestManager {
             player.sendSystemMessage(Component.translatable("quest.improved_original.lock.completed"));
             return false;
         }
-
         int lockCost = Config.EMERALD_LOCK_COST.getAsInt();
         if (!consumeEmeralds(player, lockCost)) {
             player.sendSystemMessage(Component.translatable("quest.improved_original.lock.no_emeralds", lockCost));
             return false;
         }
-
         data.setSlotLocked(slot, true);
         player.setData(ModAttachments.QUEST_DATA.get(), data);
         syncToPlayerSilent(player, data);
@@ -291,7 +246,6 @@ public class QuestManager {
             player.sendSystemMessage(Component.translatable("quest.improved_original.unlock.not_locked"));
             return false;
         }
-
         data.setSlotLocked(slot, false);
         player.setData(ModAttachments.QUEST_DATA.get(), data);
         syncToPlayerSilent(player, data);
@@ -304,18 +258,16 @@ public class QuestManager {
         if (questOpt.isEmpty()) return;
         QuestDefinition quest = questOpt.get();
 
-        // Give reward
         ItemStack reward = quest.createReward();
         if (!player.getInventory().add(reward)) {
             player.drop(reward, false);
         }
 
         String targetName = quest.getTargetDisplayName().getString();
-        int rewardCount = quest.rewardEmeralds();
+        String rewardName = reward.getCount() + "x " + quest.getRewardDisplayName().getString();
         data.clearSlot(slot);
 
-        // Send completion toast with reward info
-        syncToPlayerWithCompletion(player, data, targetName, rewardCount);
+        syncToPlayerWithCompletion(player, data, targetName, rewardName);
     }
 
     private static boolean consumeEmeralds(ServerPlayer player, int amount) {
@@ -339,9 +291,9 @@ public class QuestManager {
         PacketDistributor.sendToPlayer(player, S2CQuestSyncPayload.openScreen(data));
     }
 
-    public static void syncToPlayerWithCompletion(ServerPlayer player, QuestData data, String questDescription, int rewardEmeralds) {
+    public static void syncToPlayerWithCompletion(ServerPlayer player, QuestData data, String questDescription, String rewardText) {
         PacketDistributor.sendToPlayer(player,
                 S2CQuestSyncPayload.withCompletion(data,
-                        new S2CQuestSyncPayload.QuestCompletion(questDescription, rewardEmeralds)));
+                        new S2CQuestSyncPayload.QuestCompletion(questDescription, rewardText)));
     }
 }
