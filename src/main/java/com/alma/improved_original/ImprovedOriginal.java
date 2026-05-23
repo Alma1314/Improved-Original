@@ -18,34 +18,24 @@ import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 
-// 这里的值应该与 META-INF/neoforge.mods.toml 文件中的条目相匹配
 @Mod(ImprovedOriginal.MOD_ID)
 public class ImprovedOriginal {
-    // 在一个通用的地方定义模组ID，方便所有内容引用
     public static final String MOD_ID = "improved_original";
-    // 直接引用slf4j日志机
     public static final Logger LOGGER = LogUtils.getLogger();
 
-    // mod类的构造子是加载mod时运行的第一个代码。
-    // FML 会识别一些参数类型，比如 IEventBus 或 ModContainer，并自动传递。
     public ImprovedOriginal(IEventBus modEventBus, ModContainer modContainer) {
-        // 注册 commonSetup 方法进行模组加载
         modEventBus.addListener(this::commonSetup);
 
         ModItems.register(modEventBus);
         ModBlocks.register(modEventBus);
         ModCreativeModeTabs.register(modEventBus);
 
-        // 注意，当且仅当我们希望*这个*职业（元素魔法）能直接响应事件时，这是必要的。
-        // 如果这个类（ElementalSorcery）没有被注解为 @SubscribeEvent，则不要添加此行。
         NeoForge.EVENT_BUS.register(this);
 
-        // 注册我们的模组的 ModConfigSpec 以便 FML 可以为我们创建并加载配置文件
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
-        // 一些常见的设置代码
         LOGGER.info("HELLO FROM COMMON SETUP");
 
         if (Config.LOG_DIRT_BLOCK.getAsBoolean()) {
@@ -57,10 +47,8 @@ public class ImprovedOriginal {
         Config.ITEM_STRINGS.get().forEach((item) -> LOGGER.info("ITEM >> {}", item));
     }
 
-    // 你可以使用 SubscribeEvent 并让事件总线发现要调用的方法
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event) {
-        // 当服务器启动时执行某些操作
         LOGGER.info("HELLO from server starting");
     }
 }
