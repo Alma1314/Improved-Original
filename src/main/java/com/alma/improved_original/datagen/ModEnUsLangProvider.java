@@ -41,6 +41,8 @@ public class ModEnUsLangProvider extends LanguageProvider {
         add("itemGroup.gemstones_tab", "Gemstones");
 
         // Quest system
+        add("key.categories.improved_original", "Improved Original");
+        add("key.improved_original.open_quest", "Open Quest Screen");
         add("screen.improved_original.quest", "Daily Quests");
         add("quest.improved_original.empty_slot", "No quest assigned");
         add("quest.improved_original.reward", "Reward: %d %s");

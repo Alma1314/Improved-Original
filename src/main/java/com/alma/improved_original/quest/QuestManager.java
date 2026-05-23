@@ -179,6 +179,14 @@ public class QuestManager {
         }
     }
 
+    // Open screen via keybind
+    public static void handleOpenScreenPacket(Player player) {
+        if (!(player instanceof ServerPlayer serverPlayer)) return;
+        QuestData data = serverPlayer.getData(ModAttachments.QUEST_DATA.get());
+        ensureQuestsInitialized(serverPlayer, data);
+        syncToPlayer(serverPlayer, data);
+    }
+
     // Lock / unlock
     public static void handleLockPacket(Player player, int slot) {
         if (!(player instanceof ServerPlayer serverPlayer)) return;

@@ -20,6 +20,8 @@
   "item.improved_original.sapphire": "蓝宝石",
   "item.improved_original.topaz": "黄宝石",
   "itemGroup.gemstones_tab": "宝石",
+  "key.categories.improved_original": "原版增强",
+  "key.improved_original.open_quest": "打开任务面板",
   "quest.improved_original.complete_success": "完成任务: %s! 获得 %d 绿宝石。",
   "quest.improved_original.countdown": "刷新倒计时: %02d:%02d",
   "quest.improved_original.desc.break": "破坏 %s x%d",

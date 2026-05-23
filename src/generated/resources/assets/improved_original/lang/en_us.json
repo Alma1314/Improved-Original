@@ -20,6 +20,8 @@
   "item.improved_original.sapphire": "Sapphire",
   "item.improved_original.topaz": "Topaz",
   "itemGroup.gemstones_tab": "Gemstones",
+  "key.categories.improved_original": "Improved Original",
+  "key.improved_original.open_quest": "Open Quest Screen",
   "quest.improved_original.complete_success": "Completed quest: %s! Received %d emeralds.",
   "quest.improved_original.countdown": "Refresh in: %02d:%02d",
   "quest.improved_original.desc.break": "Break %s x%d",

@@ -41,6 +41,8 @@ public class ModZhCnLangProvider extends LanguageProvider {
         add("itemGroup.gemstones_tab", "宝石");
 
         // Quest system
+        add("key.categories.improved_original", "原版增强");
+        add("key.improved_original.open_quest", "打开任务面板");
         add("screen.improved_original.quest", "每日任务");
         add("quest.improved_original.empty_slot", "暂无任务");
         add("quest.improved_original.reward", "奖励: %d %s");

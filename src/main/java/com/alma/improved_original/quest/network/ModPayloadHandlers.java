@@ -39,5 +39,15 @@ public class ModPayloadHandlers {
                     }
                 }
         );
+
+        registrar.playToServer(
+                C2SQuestOpenPayload.TYPE,
+                C2SQuestOpenPayload.STREAM_CODEC,
+                (payload, context) -> {
+                    if (context.player() != null) {
+                        QuestManager.handleOpenScreenPacket(context.player());
+                    }
+                }
+        );
     }
 }
