@@ -1,4 +1,5 @@
-// JEI recipe category: renders quest targets on left, rewards on right with name/description
+// JEI任务配方类别：左侧显示目标物品，右侧显示奖励物品，顶部任务名称，底部简介
+// 支持多目标/多奖励的垂直槽位布局，箭头用像素绘制而非字符
 package com.alma.improved_original.jei;
 
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -81,7 +82,7 @@ public class QuestRecipeCategory extends AbstractRecipeCategory<QuestRecipe> {
         int nameWidth = font.width(name);
         guiGraphics.drawString(font, name, (160 - nameWidth) / 2, 0, 0xFFFFFFFF);
 
-        // Draw arrow — horizontal line + triangle head, with gaps on both sides
+        // 绘制箭头：水平线 + 三角箭头，左右留有间隙
         int maxRows = Math.max(recipe.targets().size(), recipe.rewards().size());
         int inputSlotRight = 5 + 18;    // right edge of input slots
         int outputSlotLeft = 127;       // left edge of output slots (builder x=127, slot ~18px wide)
@@ -92,17 +93,17 @@ public class QuestRecipeCategory extends AbstractRecipeCategory<QuestRecipe> {
         int lineEndX = outputSlotLeft - gap;
         int lineY = arrowCenterY;
 
-        // Horizontal shaft (with left gap from input, right gap to output)
+        // 水平箭头杆（左侧离输入槽有间隙，右侧留空给箭头尖端）
         guiGraphics.fill(lineStartX, lineY, lineEndX, lineY + 2, 0xFF888888);
 
-        // Arrow head pointing right, near the reward (output) column
+        // 向右指向的三角箭头尖端（靠近奖励列）
         int headSize = 4;
         for (int dy = -headSize; dy <= headSize; dy++) {
             int dx = Math.abs(dy);
             guiGraphics.fill(lineEndX - dx, lineY + 1 + dy, lineEndX - dx + 3, lineY + 1 + dy + 1, 0xFF888888);
         }
 
-        // Description at the bottom
+        // 底部显示任务简介（自动换行）
         if (recipe.descKey() != null && !recipe.descKey().isEmpty()) {
             Component desc = Component.translatable(recipe.descKey()).withStyle(ChatFormatting.DARK_GRAY);
             int descY = 18 + maxRows * 20 + 4;

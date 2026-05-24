@@ -120,13 +120,13 @@ public class QuestManager {
             }
         }
 
-        // Resolve target ranges to concrete counts
+        // 将目标数量范围解析为具体数值
         List<QuestDefinition.ItemCount> resolvedTargets = chosen.targets().stream().map(t ->
             new QuestDefinition.ItemCount(t.item(),
                 t.countMin() + random.nextInt(t.countMax() - t.countMin() + 1))
         ).toList();
 
-        // Resolve reward ranges to concrete counts
+        // 将奖励数量范围解析为具体数值
         List<QuestDefinition.ItemCount> resolvedRewards = chosen.rewards().stream().map(r ->
             new QuestDefinition.ItemCount(r.item(),
                 r.countMin() + random.nextInt(r.countMax() - r.countMin() + 1))
@@ -136,7 +136,7 @@ public class QuestManager {
                 chosen.name(), chosen.description());
     }
 
-    // Progress updates
+    // ---- 进度更新入口 ----
     public static void onBlockBroken(ServerPlayer player, Block block) {
         ResourceLocation blockId = net.minecraft.core.registries.BuiltInRegistries.BLOCK.getKey(block);
         updateProgress(player, QuestType.BREAK_BLOCK, blockId);
@@ -176,7 +176,7 @@ public class QuestManager {
             QuestDefinition quest = questOpt.get();
             if (quest.type() != type) continue;
 
-            // Find matching target index
+            // 查找匹配的目标索引
             List<Integer> progress = new ArrayList<>(data.getSlot(i).perTargetProgress());
             for (int t = 0; t < quest.targets().size(); t++) {
                 QuestDefinition.ItemCount target = quest.targets().get(t);
@@ -200,7 +200,7 @@ public class QuestManager {
         }
     }
 
-    // Open screen via keybind
+    // 通过按键打开任务面板
     public static void handleOpenScreenPacket(Player player) {
         if (!(player instanceof ServerPlayer serverPlayer)) return;
         QuestData data = serverPlayer.getData(ModAttachments.QUEST_DATA.get());
@@ -208,7 +208,7 @@ public class QuestManager {
         syncToPlayer(serverPlayer, data);
     }
 
-    // Lock / unlock
+    // 锁定 / 解锁任务槽位
     public static void handleLockPacket(Player player, int slot) {
         if (!(player instanceof ServerPlayer serverPlayer)) return;
         QuestData data = serverPlayer.getData(ModAttachments.QUEST_DATA.get());
@@ -220,7 +220,7 @@ public class QuestManager {
         }
     }
 
-    // Manual refresh
+    // 手动刷新任务
     public static void handleRefreshPacket(Player player) {
         if (!(player instanceof ServerPlayer serverPlayer)) return;
         int refreshCost = Config.EMERALD_REFRESH_COST.getAsInt();

@@ -1,4 +1,4 @@
-// Quest recipe record for JEI: target items -> reward items
+// JEI任务配方记录：多目标物品列表 -> 多奖励物品列表
 package com.alma.improved_original.jei;
 
 import com.alma.improved_original.quest.QuestType;

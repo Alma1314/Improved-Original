@@ -50,7 +50,7 @@ public class ModQuestPoolProvider implements DataProvider {
     private static JsonArray buildDefaultEntries() {
         JsonArray entries = new JsonArray();
 
-        // BREAK_BLOCK
+        // 破坏方块
         addEntry(entries, "BREAK_BLOCK", "minecraft:stone", 10, 64, "minecraft:emerald", 1, 10, 20);
         addEntry(entries, "BREAK_BLOCK", "minecraft:oak_log", 10, 48, "minecraft:emerald", 1, 8, 15);
         addEntry(entries, "BREAK_BLOCK", "minecraft:coal_ore", 8, 32, "minecraft:emerald", 1, 5, 10);
@@ -62,7 +62,7 @@ public class ModQuestPoolProvider implements DataProvider {
         addEntry(entries, "BREAK_BLOCK", "minecraft:gravel", 10, 32, "minecraft:emerald", 1, 3, 12);
         addEntry(entries, "BREAK_BLOCK", "minecraft:netherrack", 20, 80, "minecraft:emerald", 1, 5, 15);
 
-        // KILL_ENTITY
+        // 击杀实体
         addEntry(entries, "KILL_ENTITY", "minecraft:zombie", 5, 20, "minecraft:emerald", 1, 5, 20);
         addEntry(entries, "KILL_ENTITY", "minecraft:skeleton", 5, 20, "minecraft:emerald", 1, 5, 20);
         addEntry(entries, "KILL_ENTITY", "minecraft:spider", 3, 15, "minecraft:emerald", 1, 5, 15);

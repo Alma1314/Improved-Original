@@ -1,4 +1,5 @@
-// JSON quest pool config: load/save/generate default quest entries
+// JSON任务池配置：加载/保存/生成默认任务条目
+// 支持多目标多奖励格式，名称和简介使用翻译键支持多语言
 package com.alma.improved_original.datagen;
 
 import com.alma.improved_original.quest.QuestType;
@@ -67,33 +68,20 @@ public class QuestPoolConfig {
                             String entryName = entry.has("name") ? entry.get("name").getAsString() : "(unnamed)";
                             QuestType type = QuestType.valueOf(entry.get("type").getAsString().toUpperCase());
 
-                            // Targets — support both new "targets" array and legacy "target" field
                             List<TargetEntry> targets;
                             if (entry.has("targets")) {
                                 targets = parseTargetEntries(entry.getAsJsonArray("targets"));
-                            } else if (entry.has("target")) {
-                                ResourceLocation legacyTarget = ResourceLocation.parse(entry.get("target").getAsString());
-                                int cMin = entry.has("countMin") ? entry.get("countMin").getAsInt() : 1;
-                                int cMax = entry.has("countMax") ? entry.get("countMax").getAsInt() : 1;
-                                targets = List.of(new TargetEntry(legacyTarget, cMin, cMax));
                             } else {
-                                LOGGER.warn("QuestConfig: Skipping entry '{}' — no targets or target field", entryName);
+                                LOGGER.warn("QuestConfig: Skipping entry '{}' — no targets field", entryName);
                                 totalSkipped++;
                                 continue;
                             }
 
-                            // Rewards — support both new "rewards" array and legacy "reward" object
                             List<RewardEntry> rewards;
                             if (entry.has("rewards")) {
                                 rewards = parseRewardEntries(entry.getAsJsonArray("rewards"));
-                            } else if (entry.has("reward")) {
-                                JsonObject reward = entry.getAsJsonObject("reward");
-                                ResourceLocation rItem = ResourceLocation.parse(reward.get("item").getAsString());
-                                int rMin = reward.has("countMin") ? reward.get("countMin").getAsInt() : 1;
-                                int rMax = reward.has("countMax") ? reward.get("countMax").getAsInt() : 1;
-                                rewards = List.of(new RewardEntry(rItem, rMin, rMax));
                             } else {
-                                LOGGER.warn("QuestConfig: Skipping entry '{}' — no rewards or reward field", entryName);
+                                LOGGER.warn("QuestConfig: Skipping entry '{}' — no rewards field", entryName);
                                 totalSkipped++;
                                 continue;
                             }
@@ -200,7 +188,7 @@ public class QuestPoolConfig {
         addEntry(entries, "FIND_STRUCTURE", "minecraft:swamp_hut", 1, 1, "minecraft:emerald", 5, 10, 6);
         addEntry(entries, "FIND_STRUCTURE", "minecraft:igloo", 1, 1, "minecraft:emerald", 3, 6, 5);
 
-        // Multi-target quest: exchange 6 gems for 1 diamond
+        // 多目标任务：6种宝石换1颗钻石
         addGemExchangeEntry(entries);
 
         int totalWeight = 0;

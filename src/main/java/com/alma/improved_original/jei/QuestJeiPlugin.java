@@ -1,4 +1,4 @@
-// JEI plugin: registers a quest recipe category showing possible quests and their rewards
+// JEI插件：注册每日任务配方类别，显示所有可能任务的目标物品与奖励关系
 package com.alma.improved_original.jei;
 
 import com.alma.improved_original.ImprovedOriginal;
@@ -49,14 +49,14 @@ public class QuestJeiPlugin implements IModPlugin {
 
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
-        // Only book as the single entry point — avoids cluttering the JEI sidebar
+        // 只用书作为分类入口，避免JEI侧边栏出现大量图标
         registration.addRecipeCatalyst(VanillaTypes.ITEM_STACK,
                 new ItemStack(Items.BOOK), QUEST_RECIPE_TYPE);
     }
 
     @Override
     public void registerRecipes(IRecipeRegistration registration) {
-        // Force-clear cache and reload to ensure latest config is read
+        // 清空缓存确保读取最新配置
         QuestPoolConfig.reloadCache();
         Path configDir = FMLPaths.CONFIGDIR.get();
         LOGGER.info("JEI: Loading quest recipes from {}", configDir);

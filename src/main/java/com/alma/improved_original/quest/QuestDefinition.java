@@ -1,4 +1,5 @@
-// Quest definition: type, target items, reward items, display name/description
+// 任务定义：类型、多目标物品列表、多奖励物品列表、名称、简介
+// 每个目标和奖励由 ItemCount 记录表示（物品ID + 数量），支持多目标/多奖励
 package com.alma.improved_original.quest;
 
 import com.alma.improved_original.ImprovedOriginal;
@@ -24,6 +25,7 @@ public record QuestDefinition(
         String name,
         String description
 ) {
+    // 物品+数量对：用于目标列表和奖励列表，含Codec/StreamCodec序列化
     public record ItemCount(ResourceLocation item, int count) {
         public static final Codec<ItemCount> CODEC = RecordCodecBuilder.create(instance ->
                 instance.group(
@@ -40,6 +42,7 @@ public record QuestDefinition(
                 );
     }
 
+    // 名称+简介辅助记录：合并为单个网络传输单元以适配StreamCodec字段数限制
     private record QuestInfo(String name, String description) {
         static final StreamCodec<FriendlyByteBuf, QuestInfo> STREAM_CODEC =
                 StreamCodec.composite(
@@ -69,6 +72,7 @@ public record QuestDefinition(
                             new QuestDefinition(type, targets, rewards, info.name, info.description)
             );
 
+    // 创建所有奖励物品的ItemStack列表
     public List<ItemStack> createRewards() {
         return rewards.stream().map(ic -> {
             Item item = BuiltInRegistries.ITEM.get(ic.item());
@@ -76,14 +80,17 @@ public record QuestDefinition(
         }).toList();
     }
 
+    // 所有目标的总数量（用于UI聚合显示）
     public int totalTargetCount() {
         return targets.stream().mapToInt(ItemCount::count).sum();
     }
 
+    // 获取任务类型描述键（如 "quest.improved_original.desc.break"）
     public String getDescriptionKey() {
         return "quest." + ImprovedOriginal.MOD_ID + ".desc." + type.getTranslationKeySuffix();
     }
 
+    // 根据任务类型查找单个目标的显示名称（支持方块、物品、实体、结构）
     public Component getTargetDisplayName(ResourceLocation targetId) {
         return switch (type) {
             case BREAK_BLOCK, CRAFT_ITEM, COLLECT_ITEM ->
@@ -102,16 +109,19 @@ public record QuestDefinition(
         };
     }
 
+    // 获取所有目标的显示名称列表
     public List<Component> getTargetDisplayNames() {
         return targets.stream().map(t -> getTargetDisplayName(t.item())).toList();
     }
 
+    // 查找单个奖励物品的显示名称
     public Component getRewardDisplayName(ResourceLocation rewardItem) {
         return BuiltInRegistries.ITEM.getOptional(rewardItem)
                 .map(Item::getDescription)
                 .orElse(Component.literal(rewardItem.toString()));
     }
 
+    // 获取所有奖励物品的显示名称列表
     public List<Component> getRewardDisplayNames() {
         return rewards.stream().map(r -> getRewardDisplayName(r.item())).toList();
     }

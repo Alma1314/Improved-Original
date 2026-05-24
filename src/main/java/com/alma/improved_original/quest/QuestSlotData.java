@@ -1,4 +1,4 @@
-// Single quest slot state: optional quest, per-target progress, lock status
+// 单个任务槽位状态：可选任务（空槽位）、每目标分别的进度列表、锁定标记
 package com.alma.improved_original.quest;
 
 import com.mojang.serialization.Codec;
@@ -37,13 +37,14 @@ public record QuestSlotData(
         return new QuestSlotData(Optional.empty(), List.of(), false);
     }
 
+    // 所有目标均达到要求数量才算完成
     public boolean isComplete() {
         return quest.isPresent() && perTargetProgress.size() == quest.get().targets().size()
                 && IntStream.range(0, perTargetProgress.size())
                 .allMatch(i -> perTargetProgress.get(i) >= quest.get().targets().get(i).count());
     }
 
-    /** Aggregate progress across all targets */
+    // 所有目标的聚合进度（用于UI概览）
     public int progress() {
         return perTargetProgress.stream().mapToInt(Integer::intValue).sum();
     }

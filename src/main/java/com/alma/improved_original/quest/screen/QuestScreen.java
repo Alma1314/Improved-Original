@@ -1,4 +1,4 @@
-// Quest screen: 3 quest slots with multi-target progress bars, rewards, lock/refresh buttons
+// 任务面板界面：3个任务槽位，每个显示名称、多目标进度条、多奖励列表、锁定/刷新按钮
 package com.alma.improved_original.quest.screen;
 
 import com.alma.improved_original.Config;
