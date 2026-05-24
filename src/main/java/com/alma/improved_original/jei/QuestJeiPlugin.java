@@ -9,15 +9,18 @@ import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
+import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
-import net.minecraft.client.Minecraft;
+import com.mojang.logging.LogUtils;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.neoforged.fml.loading.FMLPaths;
+import org.slf4j.Logger;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -32,6 +35,8 @@ public class QuestJeiPlugin implements IModPlugin {
     private static final ResourceLocation UID = ResourceLocation.fromNamespaceAndPath(
             ImprovedOriginal.MOD_ID, "jei_plugin");
 
+    private static final Logger LOGGER = LogUtils.getLogger();
+
     @Override
     public ResourceLocation getPluginUid() {
         return UID;
@@ -39,14 +44,25 @@ public class QuestJeiPlugin implements IModPlugin {
 
     @Override
     public void registerCategories(IRecipeCategoryRegistration registration) {
+        LOGGER.info("JEI: Registering quest recipe category");
         registration.addRecipeCategories(new QuestRecipeCategory(
                 registration.getJeiHelpers().getGuiHelper()));
     }
 
     @Override
+    public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
+        // Register the emerald as a catalyst so users can find quest recipes
+        // by looking at an emerald in JEI
+        registration.addRecipeCatalyst(VanillaTypes.ITEM_STACK,
+                new ItemStack(Items.EMERALD), QUEST_RECIPE_TYPE);
+    }
+
+    @Override
     public void registerRecipes(IRecipeRegistration registration) {
-        List<QuestPoolConfig.PoolEntry> pool = QuestPoolConfig.loadFromConfig(
-                Path.of("config", ImprovedOriginal.MOD_ID));
+        Path configDir = FMLPaths.CONFIGDIR.get();
+        LOGGER.info("JEI: Loading quest recipes from {}", configDir);
+        List<QuestPoolConfig.PoolEntry> pool = QuestPoolConfig.loadFromConfig(configDir);
+        LOGGER.info("JEI: Loaded {} quest pool entries", pool.size());
 
         List<QuestRecipe> recipes = new ArrayList<>();
         for (QuestPoolConfig.PoolEntry entry : pool) {
@@ -68,9 +84,9 @@ public class QuestJeiPlugin implements IModPlugin {
             ));
         }
 
+        LOGGER.info("JEI: Registering {} quest recipes", recipes.size());
         registration.addRecipes(QUEST_RECIPE_TYPE, recipes);
 
-        // Also add info ingredients so items show up in JEI with "used in quest" context
         for (QuestRecipe recipe : recipes) {
             registration.addIngredientInfo(recipe.target(), VanillaTypes.ITEM_STACK,
                     Component.translatable("quest.improved_original.jei.quest_target_info"));

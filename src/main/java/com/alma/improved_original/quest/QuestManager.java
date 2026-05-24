@@ -15,6 +15,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 
 import net.minecraft.util.RandomSource;
+import net.neoforged.fml.loading.FMLPaths;
 
 import java.nio.file.Path;
 import java.util.*;
@@ -26,13 +27,13 @@ public class QuestManager {
 
     private static List<QuestPoolConfig.PoolEntry> getQuestPool() {
         if (questPool == null) {
-            questPool = QuestPoolConfig.loadFromConfig(Path.of("config", "improved_original"));
+            questPool = QuestPoolConfig.loadFromConfig(FMLPaths.CONFIGDIR.get());
         }
         return questPool;
     }
 
     public static void reloadQuestPool() {
-        questPool = QuestPoolConfig.loadFromConfig(Path.of("config", "improved_original"));
+        questPool = QuestPoolConfig.loadFromConfig(FMLPaths.CONFIGDIR.get());
     }
 
     public static void onServerTick(MinecraftServer server) {
