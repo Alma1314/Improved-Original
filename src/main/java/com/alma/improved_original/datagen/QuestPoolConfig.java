@@ -54,14 +54,17 @@ public class QuestPoolConfig {
 
         if (files != null) {
             Gson gson = new Gson();
+            int totalParsed = 0;
+            int totalSkipped = 0;
             for (File file : files) {
                 try (Reader reader = new FileReader(file)) {
                     JsonObject obj = gson.fromJson(reader, JsonObject.class);
                     if (obj.has("entries")) {
                         JsonArray entriesArr = obj.getAsJsonArray("entries");
-                        LOGGER.info("QuestConfig: Loading {} entries from {}", entriesArr.size(), file.getName());
+                        LOGGER.info("QuestConfig: File {} has {} JSON entries", file.getName(), entriesArr.size());
                         for (JsonElement elem : entriesArr) {
                             JsonObject entry = elem.getAsJsonObject();
+                            String entryName = entry.has("name") ? entry.get("name").getAsString() : "(unnamed)";
                             QuestType type = QuestType.valueOf(entry.get("type").getAsString().toUpperCase());
 
                             // Targets — support both new "targets" array and legacy "target" field
@@ -74,7 +77,9 @@ public class QuestPoolConfig {
                                 int cMax = entry.has("countMax") ? entry.get("countMax").getAsInt() : 1;
                                 targets = List.of(new TargetEntry(legacyTarget, cMin, cMax));
                             } else {
-                                continue; // skip invalid entry
+                                LOGGER.warn("QuestConfig: Skipping entry '{}' — no targets or target field", entryName);
+                                totalSkipped++;
+                                continue;
                             }
 
                             // Rewards — support both new "rewards" array and legacy "reward" object
@@ -88,6 +93,8 @@ public class QuestPoolConfig {
                                 int rMax = reward.has("countMax") ? reward.get("countMax").getAsInt() : 1;
                                 rewards = List.of(new RewardEntry(rItem, rMin, rMax));
                             } else {
+                                LOGGER.warn("QuestConfig: Skipping entry '{}' — no rewards or reward field", entryName);
+                                totalSkipped++;
                                 continue;
                             }
 
@@ -95,12 +102,14 @@ public class QuestPoolConfig {
                             String name = entry.has("name") ? entry.get("name").getAsString() : "";
                             String description = entry.has("description") ? entry.get("description").getAsString() : "";
                             allEntries.add(new PoolEntry(type, targets, rewards, weight, name, description));
+                            totalParsed++;
                         }
                     }
                 } catch (Exception e) {
-                    LOGGER.error("QuestConfig: Failed to parse entry in {}", file.getName(), e);
+                    LOGGER.error("QuestConfig: Failed to parse entries in {}", file.getName(), e);
                 }
             }
+            LOGGER.info("QuestConfig: Parsed {} entries, skipped {}", totalParsed, totalSkipped);
         }
 
         return allEntries;

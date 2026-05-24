@@ -65,31 +65,35 @@ public class QuestJeiPlugin implements IModPlugin {
 
         List<QuestRecipe> recipes = new ArrayList<>();
         for (QuestPoolConfig.PoolEntry entry : pool) {
+            String entryName = entry.name() != null ? entry.name() : "(unnamed)";
             List<ItemStack> targetStacks = new ArrayList<>();
             for (var te : entry.targets()) {
                 Item targetItem = getTargetItem(entry.type(), te.item());
                 if (targetItem == null) {
-                    LOGGER.warn("JEI: Skipping target {} for entry {} — item not found", te.item(), entry.name());
+                    LOGGER.warn("JEI: [{}] target {} not found in registry (type={})", entryName, te.item(), entry.type());
                     continue;
                 }
                 targetStacks.add(new ItemStack(targetItem));
             }
             if (targetStacks.isEmpty()) {
-                LOGGER.warn("JEI: Skipping entry {} — all targets missing", entry.name());
+                LOGGER.warn("JEI: [{}] ALL {} targets missing — recipe skipped!", entryName, entry.targets().size());
                 continue;
+            }
+            if (targetStacks.size() < entry.targets().size()) {
+                LOGGER.warn("JEI: [{}] {}/{} targets resolved", entryName, targetStacks.size(), entry.targets().size());
             }
 
             List<ItemStack> rewardStacks = new ArrayList<>();
             for (var re : entry.rewards()) {
                 Item rewardItem = BuiltInRegistries.ITEM.get(re.item());
                 if (rewardItem == Items.AIR) {
-                    LOGGER.warn("JEI: Skipping reward {} for entry {} — item not found", re.item(), entry.name());
+                    LOGGER.warn("JEI: [{}] reward {} not found in registry", entryName, re.item());
                     continue;
                 }
                 rewardStacks.add(new ItemStack(rewardItem, re.countMax()));
             }
             if (rewardStacks.isEmpty()) {
-                LOGGER.warn("JEI: Skipping entry {} — all rewards missing", entry.name());
+                LOGGER.warn("JEI: [{}] ALL rewards missing — recipe skipped!", entryName);
                 continue;
             }
 
