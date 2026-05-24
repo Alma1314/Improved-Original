@@ -49,9 +49,9 @@ public class QuestJeiPlugin implements IModPlugin {
 
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
-        // Only emerald as the single entry point — avoids cluttering the JEI sidebar
+        // Only book as the single entry point — avoids cluttering the JEI sidebar
         registration.addRecipeCatalyst(VanillaTypes.ITEM_STACK,
-                new ItemStack(Items.EMERALD), QUEST_RECIPE_TYPE);
+                new ItemStack(Items.BOOK), QUEST_RECIPE_TYPE);
     }
 
     @Override

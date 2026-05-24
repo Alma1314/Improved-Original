@@ -23,8 +23,8 @@ public class QuestRecipeCategory extends AbstractRecipeCategory<QuestRecipe> {
     public QuestRecipeCategory(IGuiHelper guiHelper) {
         super(
                 QuestJeiPlugin.QUEST_RECIPE_TYPE,
-                Component.translatable("quest.improved_original.jei.category"),
-                guiHelper.createDrawableItemStack(new ItemStack(Items.EMERALD)),
+                Component.translatable("screen.improved_original.quest"),
+                guiHelper.createDrawableItemStack(new ItemStack(Items.BOOK)),
                 160,
                 80
         );
@@ -81,26 +81,25 @@ public class QuestRecipeCategory extends AbstractRecipeCategory<QuestRecipe> {
         int nameWidth = font.width(name);
         guiGraphics.drawString(font, name, (160 - nameWidth) / 2, 0, 0xFFFFFFFF);
 
-        // Draw arrow — horizontal line + triangle head, centered vertically between slot columns
+        // Draw arrow — horizontal line + triangle head, with gaps on both sides
         int maxRows = Math.max(recipe.targets().size(), recipe.rewards().size());
-        int leftSlotRight = 5 + 18;
-        int rightSlotLeft = 125;
-        int gapWidth = rightSlotLeft - leftSlotRight;
+        int inputSlotRight = 5 + 18;    // right edge of input slots
+        int outputSlotLeft = 127;       // left edge of output slots (builder x=127, slot ~18px wide)
+        int gap = 8;                    // gap on each side
         int arrowCenterY = 18 + maxRows * 10 - 1;
 
-        int lineStartX = leftSlotRight + 2;
-        int lineEndX = rightSlotLeft - 8;
+        int lineStartX = inputSlotRight + gap;
+        int lineEndX = outputSlotLeft - gap;
         int lineY = arrowCenterY;
 
-        // Horizontal shaft
+        // Horizontal shaft (with left gap from input, right gap to output)
         guiGraphics.fill(lineStartX, lineY, lineEndX, lineY + 2, 0xFF888888);
 
-        // Arrow head (right-pointing triangle)
-        int headSize = 5;
-        int headX = lineEndX;
+        // Arrow head pointing right, near the reward (output) column
+        int headSize = 4;
         for (int dy = -headSize; dy <= headSize; dy++) {
             int dx = Math.abs(dy);
-            guiGraphics.fill(headX + dx, lineY + 1 + dy, headX + dx + 2, lineY + 1 + dy + 1, 0xFF888888);
+            guiGraphics.fill(lineEndX - dx, lineY + 1 + dy, lineEndX - dx + 3, lineY + 1 + dy + 1, 0xFF888888);
         }
 
         // Description at the bottom
