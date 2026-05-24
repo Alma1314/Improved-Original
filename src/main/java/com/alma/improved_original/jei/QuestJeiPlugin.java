@@ -114,8 +114,13 @@ public class QuestJeiPlugin implements IModPlugin {
 
     private static Item getTargetItem(QuestType type, ResourceLocation targetId) {
         return switch (type) {
-            case BREAK_BLOCK, CRAFT_ITEM, COLLECT_ITEM ->
-                    BuiltInRegistries.ITEM.get(targetId);
+            case BREAK_BLOCK, CRAFT_ITEM, COLLECT_ITEM -> {
+                Item item = BuiltInRegistries.ITEM.get(targetId);
+                if (item == null) {
+                    LOGGER.warn("JEI: Item not found in registry: {}", targetId);
+                }
+                yield item;
+            }
             case KILL_ENTITY -> {
                 var entityType = BuiltInRegistries.ENTITY_TYPE.get(targetId);
                 yield entityType != null ? Items.PLAYER_HEAD : null;
