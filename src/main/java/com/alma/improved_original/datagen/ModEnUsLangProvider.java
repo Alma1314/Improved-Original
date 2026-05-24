@@ -177,5 +177,9 @@ public class ModEnUsLangProvider extends LanguageProvider {
         add("quest.improved_original.jei.category", "Daily Quests");
         add("quest.improved_original.jei.arrow", "→");
         add("quest.improved_original.jei.quest_target_info", "This item is a quest target - complete the quest to earn rewards!");
+
+        // Gem exchange quest
+        add("quest.improved_original.name.gem_exchange", "Gem Collector");
+        add("quest.improved_original.desc_text.gem_exchange", "Collect all 6 gem types to trade for a diamond");
     }
 }

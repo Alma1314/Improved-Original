@@ -8,13 +8,11 @@ import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.recipe.RecipeType;
-import mezz.jei.api.recipe.category.IRecipeCategory;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import com.mojang.logging.LogUtils;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -51,22 +49,9 @@ public class QuestJeiPlugin implements IModPlugin {
 
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
-        // Load quest pool to register catalysts for target/reward items
-        Path configDir = FMLPaths.CONFIGDIR.get();
-        List<QuestPoolConfig.PoolEntry> pool = QuestPoolConfig.loadFromConfig(configDir);
-
-        // Emerald as the main entry point
+        // Only emerald as the single entry point — avoids cluttering the JEI sidebar
         registration.addRecipeCatalyst(VanillaTypes.ITEM_STACK,
                 new ItemStack(Items.EMERALD), QUEST_RECIPE_TYPE);
-
-        // Register each target item as a catalyst
-        for (QuestPoolConfig.PoolEntry entry : pool) {
-            Item targetItem = getTargetItem(entry.type(), entry.target());
-            if (targetItem != null) {
-                registration.addRecipeCatalyst(VanillaTypes.ITEM_STACK,
-                        new ItemStack(targetItem), QUEST_RECIPE_TYPE);
-            }
-        }
     }
 
     @Override
@@ -78,20 +63,41 @@ public class QuestJeiPlugin implements IModPlugin {
 
         List<QuestRecipe> recipes = new ArrayList<>();
         for (QuestPoolConfig.PoolEntry entry : pool) {
-            Item targetItem = getTargetItem(entry.type(), entry.target());
-            Item rewardItem = BuiltInRegistries.ITEM.get(entry.rewardItem());
-            if (targetItem == null || rewardItem == Items.AIR) continue;
+            List<ItemStack> targetStacks = new ArrayList<>();
+            for (var te : entry.targets()) {
+                Item targetItem = getTargetItem(entry.type(), te.item());
+                if (targetItem == null) {
+                    LOGGER.warn("JEI: Skipping target {} for entry {} — item not found", te.item(), entry.name());
+                    continue;
+                }
+                targetStacks.add(new ItemStack(targetItem));
+            }
+            if (targetStacks.isEmpty()) {
+                LOGGER.warn("JEI: Skipping entry {} — all targets missing", entry.name());
+                continue;
+            }
+
+            List<ItemStack> rewardStacks = new ArrayList<>();
+            for (var re : entry.rewards()) {
+                Item rewardItem = BuiltInRegistries.ITEM.get(re.item());
+                if (rewardItem == Items.AIR) {
+                    LOGGER.warn("JEI: Skipping reward {} for entry {} — item not found", re.item(), entry.name());
+                    continue;
+                }
+                rewardStacks.add(new ItemStack(rewardItem, re.countMax()));
+            }
+            if (rewardStacks.isEmpty()) {
+                LOGGER.warn("JEI: Skipping entry {} — all rewards missing", entry.name());
+                continue;
+            }
 
             recipes.add(new QuestRecipe(
-                    new ItemStack(targetItem),
-                    new ItemStack(rewardItem, entry.rewardCountMax()),
-                    entry.type(),
-                    entry.name(),
-                    entry.description(),
-                    entry.countMin(),
-                    entry.countMax(),
-                    entry.rewardCountMin(),
-                    entry.rewardCountMax(),
+                    targetStacks, rewardStacks, entry.type(),
+                    entry.name(), entry.description(),
+                    entry.targets().stream().map(t -> t.countMin()).toList(),
+                    entry.targets().stream().map(t -> t.countMax()).toList(),
+                    entry.rewards().stream().map(r -> r.countMin()).toList(),
+                    entry.rewards().stream().map(r -> r.countMax()).toList(),
                     entry.weight()
             ));
         }

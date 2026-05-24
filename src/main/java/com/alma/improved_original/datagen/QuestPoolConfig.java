@@ -1,4 +1,4 @@
-// JSON任务池配置：加载/保存/生成默认任务定义文件
+// JSON quest pool config: load/save/generate default quest entries
 package com.alma.improved_original.datagen;
 
 import com.alma.improved_original.quest.QuestType;
@@ -11,11 +11,13 @@ import java.util.*;
 
 public class QuestPoolConfig {
 
+    public record TargetEntry(ResourceLocation item, int countMin, int countMax) {}
+    public record RewardEntry(ResourceLocation item, int countMin, int countMax) {}
+
     public record PoolEntry(
             QuestType type,
-            ResourceLocation target,
-            int countMin, int countMax,
-            ResourceLocation rewardItem, int rewardCountMin, int rewardCountMax,
+            List<TargetEntry> targets,
+            List<RewardEntry> rewards,
             int weight,
             String name,
             String description
@@ -32,7 +34,6 @@ public class QuestPoolConfig {
             return allEntries;
         }
 
-        // scan for JSON files
         File[] files = questsDir.toFile().listFiles(f -> f.getName().endsWith(".json"));
         if (files == null || files.length == 0) {
             generateDefaults(questsDir);
@@ -48,18 +49,38 @@ public class QuestPoolConfig {
                         for (JsonElement elem : obj.getAsJsonArray("entries")) {
                             JsonObject entry = elem.getAsJsonObject();
                             QuestType type = QuestType.valueOf(entry.get("type").getAsString().toUpperCase());
-                            ResourceLocation target = ResourceLocation.parse(entry.get("target").getAsString());
-                            int countMin = entry.has("countMin") ? entry.get("countMin").getAsInt() : 1;
-                            int countMax = entry.has("countMax") ? entry.get("countMax").getAsInt() : 1;
-                            JsonObject reward = entry.getAsJsonObject("reward");
-                            ResourceLocation rewardItem = ResourceLocation.parse(reward.get("item").getAsString());
-                            int rewardCountMin = reward.has("countMin") ? reward.get("countMin").getAsInt() : 1;
-                            int rewardCountMax = reward.has("countMax") ? reward.get("countMax").getAsInt() : 1;
+
+                            // Targets — support both new "targets" array and legacy "target" field
+                            List<TargetEntry> targets;
+                            if (entry.has("targets")) {
+                                targets = parseTargetEntries(entry.getAsJsonArray("targets"));
+                            } else if (entry.has("target")) {
+                                ResourceLocation legacyTarget = ResourceLocation.parse(entry.get("target").getAsString());
+                                int cMin = entry.has("countMin") ? entry.get("countMin").getAsInt() : 1;
+                                int cMax = entry.has("countMax") ? entry.get("countMax").getAsInt() : 1;
+                                targets = List.of(new TargetEntry(legacyTarget, cMin, cMax));
+                            } else {
+                                continue; // skip invalid entry
+                            }
+
+                            // Rewards — support both new "rewards" array and legacy "reward" object
+                            List<RewardEntry> rewards;
+                            if (entry.has("rewards")) {
+                                rewards = parseRewardEntries(entry.getAsJsonArray("rewards"));
+                            } else if (entry.has("reward")) {
+                                JsonObject reward = entry.getAsJsonObject("reward");
+                                ResourceLocation rItem = ResourceLocation.parse(reward.get("item").getAsString());
+                                int rMin = reward.has("countMin") ? reward.get("countMin").getAsInt() : 1;
+                                int rMax = reward.has("countMax") ? reward.get("countMax").getAsInt() : 1;
+                                rewards = List.of(new RewardEntry(rItem, rMin, rMax));
+                            } else {
+                                continue;
+                            }
+
                             int weight = entry.has("weight") ? entry.get("weight").getAsInt() : 10;
                             String name = entry.has("name") ? entry.get("name").getAsString() : "";
                             String description = entry.has("description") ? entry.get("description").getAsString() : "";
-                            allEntries.add(new PoolEntry(type, target, countMin, countMax,
-                                    rewardItem, rewardCountMin, rewardCountMax, weight, name, description));
+                            allEntries.add(new PoolEntry(type, targets, rewards, weight, name, description));
                         }
                     }
                 } catch (Exception e) {
@@ -69,6 +90,30 @@ public class QuestPoolConfig {
         }
 
         return allEntries;
+    }
+
+    private static List<TargetEntry> parseTargetEntries(JsonArray arr) {
+        List<TargetEntry> result = new ArrayList<>();
+        for (JsonElement e : arr) {
+            JsonObject o = e.getAsJsonObject();
+            ResourceLocation item = ResourceLocation.parse(o.get("item").getAsString());
+            int cMin = o.has("countMin") ? o.get("countMin").getAsInt() : 1;
+            int cMax = o.has("countMax") ? o.get("countMax").getAsInt() : 1;
+            result.add(new TargetEntry(item, cMin, cMax));
+        }
+        return result;
+    }
+
+    private static List<RewardEntry> parseRewardEntries(JsonArray arr) {
+        List<RewardEntry> result = new ArrayList<>();
+        for (JsonElement e : arr) {
+            JsonObject o = e.getAsJsonObject();
+            ResourceLocation item = ResourceLocation.parse(o.get("item").getAsString());
+            int cMin = o.has("countMin") ? o.get("countMin").getAsInt() : 1;
+            int cMax = o.has("countMax") ? o.get("countMax").getAsInt() : 1;
+            result.add(new RewardEntry(item, cMin, cMax));
+        }
+        return result;
     }
 
     private static void generateDefaults(Path questsDir) {
@@ -132,6 +177,9 @@ public class QuestPoolConfig {
         addEntry(entries, "FIND_STRUCTURE", "minecraft:swamp_hut", 1, 1, "minecraft:emerald", 5, 10, 6);
         addEntry(entries, "FIND_STRUCTURE", "minecraft:igloo", 1, 1, "minecraft:emerald", 3, 6, 5);
 
+        // Multi-target quest: exchange 6 gems for 1 diamond
+        addGemExchangeEntry(entries);
+
         int totalWeight = 0;
         for (JsonElement e : entries) {
             totalWeight += e.getAsJsonObject().get("weight").getAsInt();
@@ -144,6 +192,56 @@ public class QuestPoolConfig {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private static void addGemExchangeEntry(JsonArray entries) {
+        String type = "COLLECT_ITEM";
+        String[][] targets = {
+            {"improved_original:ruby", "1", "1"},
+            {"improved_original:sapphire", "1", "1"},
+            {"improved_original:topaz", "1", "1"},
+            {"improved_original:amethyst", "1", "1"},
+            {"improved_original:onyx", "1", "1"},
+            {"minecraft:emerald", "1", "1"}
+        };
+        String[][] rewards = {
+            {"minecraft:diamond", "1", "1"}
+        };
+        String name = "quest.improved_original.name.gem_exchange";
+        String desc = "quest.improved_original.desc_text.gem_exchange";
+        addMultiEntry(entries, type, targets, rewards, 8, name, desc);
+    }
+
+    private static void addMultiEntry(JsonArray entries, String type,
+                                       String[][] targets, String[][] rewards,
+                                       int weight, String name, String description) {
+        JsonObject entry = new JsonObject();
+        entry.addProperty("type", type);
+
+        JsonArray targetsArr = new JsonArray();
+        for (String[] t : targets) {
+            JsonObject tObj = new JsonObject();
+            tObj.addProperty("item", t[0]);
+            tObj.addProperty("countMin", Integer.parseInt(t[1]));
+            tObj.addProperty("countMax", Integer.parseInt(t[2]));
+            targetsArr.add(tObj);
+        }
+        entry.add("targets", targetsArr);
+
+        JsonArray rewardsArr = new JsonArray();
+        for (String[] r : rewards) {
+            JsonObject rObj = new JsonObject();
+            rObj.addProperty("item", r[0]);
+            rObj.addProperty("countMin", Integer.parseInt(r[1]));
+            rObj.addProperty("countMax", Integer.parseInt(r[2]));
+            rewardsArr.add(rObj);
+        }
+        entry.add("rewards", rewardsArr);
+
+        entry.addProperty("weight", weight);
+        entry.addProperty("name", name);
+        entry.addProperty("description", description);
+        entries.add(entry);
     }
 
     private static String nameKey(String type, String target) {
@@ -167,19 +265,26 @@ public class QuestPoolConfig {
                                   String name, String description) {
         JsonObject entry = new JsonObject();
         entry.addProperty("type", type);
-        entry.addProperty("target", target);
-        entry.addProperty("countMin", countMin);
-        entry.addProperty("countMax", countMax);
-        JsonObject reward = new JsonObject();
-        reward.addProperty("item", rewardItem);
-        reward.addProperty("countMin", rewardCountMin);
-        reward.addProperty("countMax", rewardCountMax);
-        entry.add("reward", reward);
+
+        JsonArray targetsArr = new JsonArray();
+        JsonObject tObj = new JsonObject();
+        tObj.addProperty("item", target);
+        tObj.addProperty("countMin", countMin);
+        tObj.addProperty("countMax", countMax);
+        targetsArr.add(tObj);
+        entry.add("targets", targetsArr);
+
+        JsonArray rewardsArr = new JsonArray();
+        JsonObject rObj = new JsonObject();
+        rObj.addProperty("item", rewardItem);
+        rObj.addProperty("countMin", rewardCountMin);
+        rObj.addProperty("countMax", rewardCountMax);
+        rewardsArr.add(rObj);
+        entry.add("rewards", rewardsArr);
+
         entry.addProperty("weight", weight);
         entry.addProperty("name", name);
-        if (!description.isEmpty()) {
-            entry.addProperty("description", description);
-        }
+        entry.addProperty("description", description);
         entries.add(entry);
     }
 }

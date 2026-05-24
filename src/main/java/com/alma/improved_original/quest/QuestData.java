@@ -71,17 +71,19 @@ public class QuestData {
 
     public void setQuest(int index, QuestDefinition quest) {
         QuestSlotData old = slots.get(index);
-        slots.set(index, new QuestSlotData(Optional.of(quest), 0, old.locked()));
+        List<Integer> initProgress = new ArrayList<>();
+        for (int i = 0; i < quest.targets().size(); i++) initProgress.add(0);
+        slots.set(index, new QuestSlotData(Optional.of(quest), initProgress, old.locked()));
     }
 
-    public void setProgress(int index, int progress) {
+    public void setProgress(int index, List<Integer> progress) {
         QuestSlotData old = slots.get(index);
-        slots.set(index, new QuestSlotData(old.quest(), progress, old.locked()));
+        slots.set(index, new QuestSlotData(old.quest(), List.copyOf(progress), old.locked()));
     }
 
     public void setSlotLocked(int index, boolean locked) {
         QuestSlotData old = slots.get(index);
-        slots.set(index, new QuestSlotData(old.quest(), old.progress(), locked));
+        slots.set(index, new QuestSlotData(old.quest(), old.perTargetProgress(), locked));
     }
 
     public void clearSlot(int index) {

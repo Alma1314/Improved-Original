@@ -2,704 +2,1049 @@
   "entries": [
     {
       "type": "BREAK_BLOCK",
-      "countMax": 64,
-      "countMin": 10,
       "description": "quest.improved_original.desc_text.minecraft.stone",
       "name": "quest.improved_original.name.minecraft.stone",
-      "reward": {
-        "countMax": 10,
-        "countMin": 1,
-        "item": "minecraft:emerald"
-      },
-      "target": "minecraft:stone",
+      "rewards": [
+        {
+          "countMax": 10,
+          "countMin": 1,
+          "item": "minecraft:emerald"
+        }
+      ],
+      "targets": [
+        {
+          "countMax": 64,
+          "countMin": 10,
+          "item": "minecraft:stone"
+        }
+      ],
       "weight": 20
     },
     {
       "type": "BREAK_BLOCK",
-      "countMax": 48,
-      "countMin": 10,
       "description": "quest.improved_original.desc_text.minecraft.oak_log",
       "name": "quest.improved_original.name.minecraft.oak_log",
-      "reward": {
-        "countMax": 8,
-        "countMin": 1,
-        "item": "minecraft:emerald"
-      },
-      "target": "minecraft:oak_log",
+      "rewards": [
+        {
+          "countMax": 8,
+          "countMin": 1,
+          "item": "minecraft:emerald"
+        }
+      ],
+      "targets": [
+        {
+          "countMax": 48,
+          "countMin": 10,
+          "item": "minecraft:oak_log"
+        }
+      ],
       "weight": 15
     },
     {
       "type": "BREAK_BLOCK",
-      "countMax": 32,
-      "countMin": 8,
       "description": "quest.improved_original.desc_text.minecraft.coal_ore",
       "name": "quest.improved_original.name.minecraft.coal_ore",
-      "reward": {
-        "countMax": 5,
-        "countMin": 1,
-        "item": "minecraft:emerald"
-      },
-      "target": "minecraft:coal_ore",
+      "rewards": [
+        {
+          "countMax": 5,
+          "countMin": 1,
+          "item": "minecraft:emerald"
+        }
+      ],
+      "targets": [
+        {
+          "countMax": 32,
+          "countMin": 8,
+          "item": "minecraft:coal_ore"
+        }
+      ],
       "weight": 10
     },
     {
       "type": "BREAK_BLOCK",
-      "countMax": 24,
-      "countMin": 5,
       "description": "quest.improved_original.desc_text.minecraft.iron_ore",
       "name": "quest.improved_original.name.minecraft.iron_ore",
-      "reward": {
-        "countMax": 7,
-        "countMin": 1,
-        "item": "minecraft:emerald"
-      },
-      "target": "minecraft:iron_ore",
+      "rewards": [
+        {
+          "countMax": 7,
+          "countMin": 1,
+          "item": "minecraft:emerald"
+        }
+      ],
+      "targets": [
+        {
+          "countMax": 24,
+          "countMin": 5,
+          "item": "minecraft:iron_ore"
+        }
+      ],
       "weight": 8
     },
     {
       "type": "BREAK_BLOCK",
-      "countMax": 80,
-      "countMin": 20,
       "description": "quest.improved_original.desc_text.minecraft.dirt",
       "name": "quest.improved_original.name.minecraft.dirt",
-      "reward": {
-        "countMax": 8,
-        "countMin": 1,
-        "item": "minecraft:emerald"
-      },
-      "target": "minecraft:dirt",
+      "rewards": [
+        {
+          "countMax": 8,
+          "countMin": 1,
+          "item": "minecraft:emerald"
+        }
+      ],
+      "targets": [
+        {
+          "countMax": 80,
+          "countMin": 20,
+          "item": "minecraft:dirt"
+        }
+      ],
       "weight": 20
     },
     {
       "type": "COLLECT_ITEM",
-      "countMax": 1,
-      "countMin": 1,
       "description": "quest.improved_original.desc_text.minecraft.dirt",
       "name": "quest.improved_original.name.minecraft.dirt",
-      "reward": {
-        "countMax": 1,
-        "countMin": 1,
-        "item": "minecraft:grass_block"
-      },
-      "target": "minecraft:dirt",
+      "rewards": [
+        {
+          "countMax": 1,
+          "countMin": 1,
+          "item": "minecraft:grass_block"
+        }
+      ],
+      "targets": [
+        {
+          "countMax": 1,
+          "countMin": 1,
+          "item": "minecraft:dirt"
+        }
+      ],
       "weight": 5
     },
     {
       "type": "BREAK_BLOCK",
-      "countMax": 64,
-      "countMin": 16,
       "description": "quest.improved_original.desc_text.minecraft.deepslate",
       "name": "quest.improved_original.name.minecraft.deepslate",
-      "reward": {
-        "countMax": 8,
-        "countMin": 1,
-        "item": "minecraft:emerald"
-      },
-      "target": "minecraft:deepslate",
+      "rewards": [
+        {
+          "countMax": 8,
+          "countMin": 1,
+          "item": "minecraft:emerald"
+        }
+      ],
+      "targets": [
+        {
+          "countMax": 64,
+          "countMin": 16,
+          "item": "minecraft:deepslate"
+        }
+      ],
       "weight": 18
     },
     {
       "type": "BREAK_BLOCK",
-      "countMax": 48,
-      "countMin": 12,
       "description": "quest.improved_original.desc_text.minecraft.sand",
       "name": "quest.improved_original.name.minecraft.sand",
-      "reward": {
-        "countMax": 6,
-        "countMin": 1,
-        "item": "minecraft:emerald"
-      },
-      "target": "minecraft:sand",
+      "rewards": [
+        {
+          "countMax": 6,
+          "countMin": 1,
+          "item": "minecraft:emerald"
+        }
+      ],
+      "targets": [
+        {
+          "countMax": 48,
+          "countMin": 12,
+          "item": "minecraft:sand"
+        }
+      ],
       "weight": 15
     },
     {
       "type": "BREAK_BLOCK",
-      "countMax": 32,
-      "countMin": 10,
       "description": "quest.improved_original.desc_text.minecraft.gravel",
       "name": "quest.improved_original.name.minecraft.gravel",
-      "reward": {
-        "countMax": 3,
-        "countMin": 1,
-        "item": "minecraft:emerald"
-      },
-      "target": "minecraft:gravel",
+      "rewards": [
+        {
+          "countMax": 3,
+          "countMin": 1,
+          "item": "minecraft:emerald"
+        }
+      ],
+      "targets": [
+        {
+          "countMax": 32,
+          "countMin": 10,
+          "item": "minecraft:gravel"
+        }
+      ],
       "weight": 12
     },
     {
       "type": "BREAK_BLOCK",
-      "countMax": 80,
-      "countMin": 20,
       "description": "quest.improved_original.desc_text.minecraft.netherrack",
       "name": "quest.improved_original.name.minecraft.netherrack",
-      "reward": {
-        "countMax": 5,
-        "countMin": 1,
-        "item": "minecraft:emerald"
-      },
-      "target": "minecraft:netherrack",
+      "rewards": [
+        {
+          "countMax": 5,
+          "countMin": 1,
+          "item": "minecraft:emerald"
+        }
+      ],
+      "targets": [
+        {
+          "countMax": 80,
+          "countMin": 20,
+          "item": "minecraft:netherrack"
+        }
+      ],
       "weight": 15
     },
     {
       "type": "KILL_ENTITY",
-      "countMax": 20,
-      "countMin": 5,
       "description": "quest.improved_original.desc_text.minecraft.zombie",
       "name": "quest.improved_original.name.minecraft.zombie",
-      "reward": {
-        "countMax": 5,
-        "countMin": 1,
-        "item": "minecraft:emerald"
-      },
-      "target": "minecraft:zombie",
+      "rewards": [
+        {
+          "countMax": 5,
+          "countMin": 1,
+          "item": "minecraft:emerald"
+        }
+      ],
+      "targets": [
+        {
+          "countMax": 20,
+          "countMin": 5,
+          "item": "minecraft:zombie"
+        }
+      ],
       "weight": 20
     },
     {
       "type": "KILL_ENTITY",
-      "countMax": 20,
-      "countMin": 5,
       "description": "quest.improved_original.desc_text.minecraft.skeleton",
       "name": "quest.improved_original.name.minecraft.skeleton",
-      "reward": {
-        "countMax": 5,
-        "countMin": 1,
-        "item": "minecraft:emerald"
-      },
-      "target": "minecraft:skeleton",
+      "rewards": [
+        {
+          "countMax": 5,
+          "countMin": 1,
+          "item": "minecraft:emerald"
+        }
+      ],
+      "targets": [
+        {
+          "countMax": 20,
+          "countMin": 5,
+          "item": "minecraft:skeleton"
+        }
+      ],
       "weight": 20
     },
     {
       "type": "KILL_ENTITY",
-      "countMax": 15,
-      "countMin": 3,
       "description": "quest.improved_original.desc_text.minecraft.spider",
       "name": "quest.improved_original.name.minecraft.spider",
-      "reward": {
-        "countMax": 5,
-        "countMin": 1,
-        "item": "minecraft:emerald"
-      },
-      "target": "minecraft:spider",
+      "rewards": [
+        {
+          "countMax": 5,
+          "countMin": 1,
+          "item": "minecraft:emerald"
+        }
+      ],
+      "targets": [
+        {
+          "countMax": 15,
+          "countMin": 3,
+          "item": "minecraft:spider"
+        }
+      ],
       "weight": 15
     },
     {
       "type": "KILL_ENTITY",
-      "countMax": 15,
-      "countMin": 3,
       "description": "quest.improved_original.desc_text.minecraft.creeper",
       "name": "quest.improved_original.name.minecraft.creeper",
-      "reward": {
-        "countMax": 6,
-        "countMin": 1,
-        "item": "minecraft:emerald"
-      },
-      "target": "minecraft:creeper",
+      "rewards": [
+        {
+          "countMax": 6,
+          "countMin": 1,
+          "item": "minecraft:emerald"
+        }
+      ],
+      "targets": [
+        {
+          "countMax": 15,
+          "countMin": 3,
+          "item": "minecraft:creeper"
+        }
+      ],
       "weight": 15
     },
     {
       "type": "KILL_ENTITY",
-      "countMax": 10,
-      "countMin": 3,
       "description": "quest.improved_original.desc_text.minecraft.enderman",
       "name": "quest.improved_original.name.minecraft.enderman",
-      "reward": {
-        "countMax": 8,
-        "countMin": 2,
-        "item": "minecraft:emerald"
-      },
-      "target": "minecraft:enderman",
+      "rewards": [
+        {
+          "countMax": 8,
+          "countMin": 2,
+          "item": "minecraft:emerald"
+        }
+      ],
+      "targets": [
+        {
+          "countMax": 10,
+          "countMin": 3,
+          "item": "minecraft:enderman"
+        }
+      ],
       "weight": 8
     },
     {
       "type": "KILL_ENTITY",
-      "countMax": 10,
-      "countMin": 3,
       "description": "quest.improved_original.desc_text.minecraft.witch",
       "name": "quest.improved_original.name.minecraft.witch",
-      "reward": {
-        "countMax": 8,
-        "countMin": 2,
-        "item": "minecraft:emerald"
-      },
-      "target": "minecraft:witch",
+      "rewards": [
+        {
+          "countMax": 8,
+          "countMin": 2,
+          "item": "minecraft:emerald"
+        }
+      ],
+      "targets": [
+        {
+          "countMax": 10,
+          "countMin": 3,
+          "item": "minecraft:witch"
+        }
+      ],
       "weight": 8
     },
     {
       "type": "KILL_ENTITY",
-      "countMax": 15,
-      "countMin": 3,
       "description": "quest.improved_original.desc_text.minecraft.drowned",
       "name": "quest.improved_original.name.minecraft.drowned",
-      "reward": {
-        "countMax": 4,
-        "countMin": 1,
-        "item": "minecraft:emerald"
-      },
-      "target": "minecraft:drowned",
+      "rewards": [
+        {
+          "countMax": 4,
+          "countMin": 1,
+          "item": "minecraft:emerald"
+        }
+      ],
+      "targets": [
+        {
+          "countMax": 15,
+          "countMin": 3,
+          "item": "minecraft:drowned"
+        }
+      ],
       "weight": 12
     },
     {
       "type": "KILL_ENTITY",
-      "countMax": 15,
-      "countMin": 3,
       "description": "quest.improved_original.desc_text.minecraft.husk",
       "name": "quest.improved_original.name.minecraft.husk",
-      "reward": {
-        "countMax": 4,
-        "countMin": 1,
-        "item": "minecraft:emerald"
-      },
-      "target": "minecraft:husk",
+      "rewards": [
+        {
+          "countMax": 4,
+          "countMin": 1,
+          "item": "minecraft:emerald"
+        }
+      ],
+      "targets": [
+        {
+          "countMax": 15,
+          "countMin": 3,
+          "item": "minecraft:husk"
+        }
+      ],
       "weight": 12
     },
     {
       "type": "CRAFT_ITEM",
-      "countMax": 10,
-      "countMin": 3,
       "description": "quest.improved_original.desc_text.minecraft.crafting_table",
       "name": "quest.improved_original.name.minecraft.crafting_table",
-      "reward": {
-        "countMax": 3,
-        "countMin": 1,
-        "item": "minecraft:emerald"
-      },
-      "target": "minecraft:crafting_table",
+      "rewards": [
+        {
+          "countMax": 3,
+          "countMin": 1,
+          "item": "minecraft:emerald"
+        }
+      ],
+      "targets": [
+        {
+          "countMax": 10,
+          "countMin": 3,
+          "item": "minecraft:crafting_table"
+        }
+      ],
       "weight": 10
     },
     {
       "type": "CRAFT_ITEM",
-      "countMax": 8,
-      "countMin": 3,
       "description": "quest.improved_original.desc_text.minecraft.furnace",
       "name": "quest.improved_original.name.minecraft.furnace",
-      "reward": {
-        "countMax": 3,
-        "countMin": 1,
-        "item": "minecraft:emerald"
-      },
-      "target": "minecraft:furnace",
+      "rewards": [
+        {
+          "countMax": 3,
+          "countMin": 1,
+          "item": "minecraft:emerald"
+        }
+      ],
+      "targets": [
+        {
+          "countMax": 8,
+          "countMin": 3,
+          "item": "minecraft:furnace"
+        }
+      ],
       "weight": 10
     },
     {
       "type": "CRAFT_ITEM",
-      "countMax": 5,
-      "countMin": 1,
       "description": "quest.improved_original.desc_text.minecraft.iron_pickaxe",
       "name": "quest.improved_original.name.minecraft.iron_pickaxe",
-      "reward": {
-        "countMax": 6,
-        "countMin": 2,
-        "item": "minecraft:emerald"
-      },
-      "target": "minecraft:iron_pickaxe",
+      "rewards": [
+        {
+          "countMax": 6,
+          "countMin": 2,
+          "item": "minecraft:emerald"
+        }
+      ],
+      "targets": [
+        {
+          "countMax": 5,
+          "countMin": 1,
+          "item": "minecraft:iron_pickaxe"
+        }
+      ],
       "weight": 12
     },
     {
       "type": "CRAFT_ITEM",
-      "countMax": 3,
-      "countMin": 1,
       "description": "quest.improved_original.desc_text.minecraft.iron_sword",
       "name": "quest.improved_original.name.minecraft.iron_sword",
-      "reward": {
-        "countMax": 6,
-        "countMin": 2,
-        "item": "minecraft:emerald"
-      },
-      "target": "minecraft:iron_sword",
+      "rewards": [
+        {
+          "countMax": 6,
+          "countMin": 2,
+          "item": "minecraft:emerald"
+        }
+      ],
+      "targets": [
+        {
+          "countMax": 3,
+          "countMin": 1,
+          "item": "minecraft:iron_sword"
+        }
+      ],
       "weight": 10
     },
     {
       "type": "CRAFT_ITEM",
-      "countMax": 64,
-      "countMin": 16,
       "description": "quest.improved_original.desc_text.minecraft.torch",
       "name": "quest.improved_original.name.minecraft.torch",
-      "reward": {
-        "countMax": 4,
-        "countMin": 1,
-        "item": "minecraft:emerald"
-      },
-      "target": "minecraft:torch",
+      "rewards": [
+        {
+          "countMax": 4,
+          "countMin": 1,
+          "item": "minecraft:emerald"
+        }
+      ],
+      "targets": [
+        {
+          "countMax": 64,
+          "countMin": 16,
+          "item": "minecraft:torch"
+        }
+      ],
       "weight": 15
     },
     {
       "type": "CRAFT_ITEM",
-      "countMax": 20,
-      "countMin": 5,
       "description": "quest.improved_original.desc_text.minecraft.bread",
       "name": "quest.improved_original.name.minecraft.bread",
-      "reward": {
-        "countMax": 3,
-        "countMin": 1,
-        "item": "minecraft:emerald"
-      },
-      "target": "minecraft:bread",
+      "rewards": [
+        {
+          "countMax": 3,
+          "countMin": 1,
+          "item": "minecraft:emerald"
+        }
+      ],
+      "targets": [
+        {
+          "countMax": 20,
+          "countMin": 5,
+          "item": "minecraft:bread"
+        }
+      ],
       "weight": 12
     },
     {
       "type": "CRAFT_ITEM",
-      "countMax": 32,
-      "countMin": 8,
       "description": "quest.improved_original.desc_text.minecraft.stick",
       "name": "quest.improved_original.name.minecraft.stick",
-      "reward": {
-        "countMax": 2,
-        "countMin": 1,
-        "item": "minecraft:emerald"
-      },
-      "target": "minecraft:stick",
+      "rewards": [
+        {
+          "countMax": 2,
+          "countMin": 1,
+          "item": "minecraft:emerald"
+        }
+      ],
+      "targets": [
+        {
+          "countMax": 32,
+          "countMin": 8,
+          "item": "minecraft:stick"
+        }
+      ],
       "weight": 8
     },
     {
       "type": "CRAFT_ITEM",
-      "countMax": 3,
-      "countMin": 1,
       "description": "quest.improved_original.desc_text.minecraft.iron_chestplate",
       "name": "quest.improved_original.name.minecraft.iron_chestplate",
-      "reward": {
-        "countMax": 8,
-        "countMin": 3,
-        "item": "minecraft:emerald"
-      },
-      "target": "minecraft:iron_chestplate",
+      "rewards": [
+        {
+          "countMax": 8,
+          "countMin": 3,
+          "item": "minecraft:emerald"
+        }
+      ],
+      "targets": [
+        {
+          "countMax": 3,
+          "countMin": 1,
+          "item": "minecraft:iron_chestplate"
+        }
+      ],
       "weight": 8
     },
     {
       "type": "COLLECT_ITEM",
-      "countMax": 32,
-      "countMin": 5,
       "description": "quest.improved_original.desc_text.minecraft.coal",
       "name": "quest.improved_original.name.minecraft.coal",
-      "reward": {
-        "countMax": 5,
-        "countMin": 1,
-        "item": "minecraft:emerald"
-      },
-      "target": "minecraft:coal",
+      "rewards": [
+        {
+          "countMax": 5,
+          "countMin": 1,
+          "item": "minecraft:emerald"
+        }
+      ],
+      "targets": [
+        {
+          "countMax": 32,
+          "countMin": 5,
+          "item": "minecraft:coal"
+        }
+      ],
       "weight": 15
     },
     {
       "type": "COLLECT_ITEM",
-      "countMax": 16,
-      "countMin": 3,
       "description": "quest.improved_original.desc_text.minecraft.iron_ingot",
       "name": "quest.improved_original.name.minecraft.iron_ingot",
-      "reward": {
-        "countMax": 5,
-        "countMin": 1,
-        "item": "minecraft:emerald"
-      },
-      "target": "minecraft:iron_ingot",
+      "rewards": [
+        {
+          "countMax": 5,
+          "countMin": 1,
+          "item": "minecraft:emerald"
+        }
+      ],
+      "targets": [
+        {
+          "countMax": 16,
+          "countMin": 3,
+          "item": "minecraft:iron_ingot"
+        }
+      ],
       "weight": 10
     },
     {
       "type": "COLLECT_ITEM",
-      "countMax": 32,
-      "countMin": 8,
       "description": "quest.improved_original.desc_text.minecraft.wheat",
       "name": "quest.improved_original.name.minecraft.wheat",
-      "reward": {
-        "countMax": 4,
-        "countMin": 1,
-        "item": "minecraft:emerald"
-      },
-      "target": "minecraft:wheat",
+      "rewards": [
+        {
+          "countMax": 4,
+          "countMin": 1,
+          "item": "minecraft:emerald"
+        }
+      ],
+      "targets": [
+        {
+          "countMax": 32,
+          "countMin": 8,
+          "item": "minecraft:wheat"
+        }
+      ],
       "weight": 12
     },
     {
       "type": "COLLECT_ITEM",
-      "countMax": 12,
-      "countMin": 3,
       "description": "quest.improved_original.desc_text.minecraft.apple",
       "name": "quest.improved_original.name.minecraft.apple",
-      "reward": {
-        "countMax": 4,
-        "countMin": 1,
-        "item": "minecraft:emerald"
-      },
-      "target": "minecraft:apple",
+      "rewards": [
+        {
+          "countMax": 4,
+          "countMin": 1,
+          "item": "minecraft:emerald"
+        }
+      ],
+      "targets": [
+        {
+          "countMax": 12,
+          "countMin": 3,
+          "item": "minecraft:apple"
+        }
+      ],
       "weight": 8
     },
     {
       "type": "COLLECT_ITEM",
-      "countMax": 20,
-      "countMin": 5,
       "description": "quest.improved_original.desc_text.minecraft.rotten_flesh",
       "name": "quest.improved_original.name.minecraft.rotten_flesh",
-      "reward": {
-        "countMax": 3,
-        "countMin": 1,
-        "item": "minecraft:emerald"
-      },
-      "target": "minecraft:rotten_flesh",
+      "rewards": [
+        {
+          "countMax": 3,
+          "countMin": 1,
+          "item": "minecraft:emerald"
+        }
+      ],
+      "targets": [
+        {
+          "countMax": 20,
+          "countMin": 5,
+          "item": "minecraft:rotten_flesh"
+        }
+      ],
       "weight": 10
     },
     {
       "type": "COLLECT_ITEM",
-      "countMax": 20,
-      "countMin": 5,
       "description": "quest.improved_original.desc_text.minecraft.bone",
       "name": "quest.improved_original.name.minecraft.bone",
-      "reward": {
-        "countMax": 3,
-        "countMin": 1,
-        "item": "minecraft:emerald"
-      },
-      "target": "minecraft:bone",
+      "rewards": [
+        {
+          "countMax": 3,
+          "countMin": 1,
+          "item": "minecraft:emerald"
+        }
+      ],
+      "targets": [
+        {
+          "countMax": 20,
+          "countMin": 5,
+          "item": "minecraft:bone"
+        }
+      ],
       "weight": 10
     },
     {
       "type": "COLLECT_ITEM",
-      "countMax": 16,
-      "countMin": 3,
       "description": "quest.improved_original.desc_text.minecraft.gunpowder",
       "name": "quest.improved_original.name.minecraft.gunpowder",
-      "reward": {
-        "countMax": 5,
-        "countMin": 1,
-        "item": "minecraft:emerald"
-      },
-      "target": "minecraft:gunpowder",
+      "rewards": [
+        {
+          "countMax": 5,
+          "countMin": 1,
+          "item": "minecraft:emerald"
+        }
+      ],
+      "targets": [
+        {
+          "countMax": 16,
+          "countMin": 3,
+          "item": "minecraft:gunpowder"
+        }
+      ],
       "weight": 10
     },
     {
       "type": "COLLECT_ITEM",
-      "countMax": 5,
-      "countMin": 1,
       "description": "quest.improved_original.desc_text.minecraft.ender_pearl",
       "name": "quest.improved_original.name.minecraft.ender_pearl",
-      "reward": {
-        "countMax": 8,
-        "countMin": 3,
-        "item": "minecraft:emerald"
-      },
-      "target": "minecraft:ender_pearl",
+      "rewards": [
+        {
+          "countMax": 8,
+          "countMin": 3,
+          "item": "minecraft:emerald"
+        }
+      ],
+      "targets": [
+        {
+          "countMax": 5,
+          "countMin": 1,
+          "item": "minecraft:ender_pearl"
+        }
+      ],
       "weight": 8
     },
     {
       "type": "FIND_STRUCTURE",
-      "countMax": 1,
-      "countMin": 1,
       "description": "quest.improved_original.desc_text.minecraft.village_plains",
       "name": "quest.improved_original.name.minecraft.village_plains",
-      "reward": {
-        "countMax": 10,
-        "countMin": 5,
-        "item": "minecraft:emerald"
-      },
-      "target": "minecraft:village_plains",
+      "rewards": [
+        {
+          "countMax": 10,
+          "countMin": 5,
+          "item": "minecraft:emerald"
+        }
+      ],
+      "targets": [
+        {
+          "countMax": 1,
+          "countMin": 1,
+          "item": "minecraft:village_plains"
+        }
+      ],
       "weight": 10
     },
     {
       "type": "FIND_STRUCTURE",
-      "countMax": 1,
-      "countMin": 1,
       "description": "quest.improved_original.desc_text.minecraft.village_desert",
       "name": "quest.improved_original.name.minecraft.village_desert",
-      "reward": {
-        "countMax": 10,
-        "countMin": 5,
-        "item": "minecraft:emerald"
-      },
-      "target": "minecraft:village_desert",
+      "rewards": [
+        {
+          "countMax": 10,
+          "countMin": 5,
+          "item": "minecraft:emerald"
+        }
+      ],
+      "targets": [
+        {
+          "countMax": 1,
+          "countMin": 1,
+          "item": "minecraft:village_desert"
+        }
+      ],
       "weight": 8
     },
     {
       "type": "FIND_STRUCTURE",
-      "countMax": 1,
-      "countMin": 1,
       "description": "quest.improved_original.desc_text.minecraft.village_savanna",
       "name": "quest.improved_original.name.minecraft.village_savanna",
-      "reward": {
-        "countMax": 10,
-        "countMin": 5,
-        "item": "minecraft:emerald"
-      },
-      "target": "minecraft:village_savanna",
+      "rewards": [
+        {
+          "countMax": 10,
+          "countMin": 5,
+          "item": "minecraft:emerald"
+        }
+      ],
+      "targets": [
+        {
+          "countMax": 1,
+          "countMin": 1,
+          "item": "minecraft:village_savanna"
+        }
+      ],
       "weight": 8
     },
     {
       "type": "FIND_STRUCTURE",
-      "countMax": 1,
-      "countMin": 1,
       "description": "quest.improved_original.desc_text.minecraft.village_taiga",
       "name": "quest.improved_original.name.minecraft.village_taiga",
-      "reward": {
-        "countMax": 10,
-        "countMin": 5,
-        "item": "minecraft:emerald"
-      },
-      "target": "minecraft:village_taiga",
+      "rewards": [
+        {
+          "countMax": 10,
+          "countMin": 5,
+          "item": "minecraft:emerald"
+        }
+      ],
+      "targets": [
+        {
+          "countMax": 1,
+          "countMin": 1,
+          "item": "minecraft:village_taiga"
+        }
+      ],
       "weight": 8
     },
     {
       "type": "FIND_STRUCTURE",
-      "countMax": 1,
-      "countMin": 1,
       "description": "quest.improved_original.desc_text.minecraft.village_snowy",
       "name": "quest.improved_original.name.minecraft.village_snowy",
-      "reward": {
-        "countMax": 10,
-        "countMin": 5,
-        "item": "minecraft:emerald"
-      },
-      "target": "minecraft:village_snowy",
+      "rewards": [
+        {
+          "countMax": 10,
+          "countMin": 5,
+          "item": "minecraft:emerald"
+        }
+      ],
+      "targets": [
+        {
+          "countMax": 1,
+          "countMin": 1,
+          "item": "minecraft:village_snowy"
+        }
+      ],
       "weight": 8
     },
     {
       "type": "FIND_STRUCTURE",
-      "countMax": 1,
-      "countMin": 1,
       "description": "quest.improved_original.desc_text.minecraft.desert_pyramid",
       "name": "quest.improved_original.name.minecraft.desert_pyramid",
-      "reward": {
-        "countMax": 5,
-        "countMin": 2,
-        "item": "minecraft:diamond"
-      },
-      "target": "minecraft:desert_pyramid",
+      "rewards": [
+        {
+          "countMax": 5,
+          "countMin": 2,
+          "item": "minecraft:diamond"
+        }
+      ],
+      "targets": [
+        {
+          "countMax": 1,
+          "countMin": 1,
+          "item": "minecraft:desert_pyramid"
+        }
+      ],
       "weight": 8
     },
     {
       "type": "FIND_STRUCTURE",
-      "countMax": 1,
-      "countMin": 1,
       "description": "quest.improved_original.desc_text.minecraft.jungle_pyramid",
       "name": "quest.improved_original.name.minecraft.jungle_pyramid",
-      "reward": {
-        "countMax": 5,
-        "countMin": 2,
-        "item": "minecraft:diamond"
-      },
-      "target": "minecraft:jungle_pyramid",
+      "rewards": [
+        {
+          "countMax": 5,
+          "countMin": 2,
+          "item": "minecraft:diamond"
+        }
+      ],
+      "targets": [
+        {
+          "countMax": 1,
+          "countMin": 1,
+          "item": "minecraft:jungle_pyramid"
+        }
+      ],
       "weight": 8
     },
     {
       "type": "FIND_STRUCTURE",
-      "countMax": 1,
-      "countMin": 1,
       "description": "quest.improved_original.desc_text.minecraft.pillager_outpost",
       "name": "quest.improved_original.name.minecraft.pillager_outpost",
-      "reward": {
-        "countMax": 15,
-        "countMin": 8,
-        "item": "minecraft:emerald"
-      },
-      "target": "minecraft:pillager_outpost",
+      "rewards": [
+        {
+          "countMax": 15,
+          "countMin": 8,
+          "item": "minecraft:emerald"
+        }
+      ],
+      "targets": [
+        {
+          "countMax": 1,
+          "countMin": 1,
+          "item": "minecraft:pillager_outpost"
+        }
+      ],
       "weight": 8
     },
     {
       "type": "FIND_STRUCTURE",
-      "countMax": 1,
-      "countMin": 1,
       "description": "quest.improved_original.desc_text.minecraft.mineshaft",
       "name": "quest.improved_original.name.minecraft.mineshaft",
-      "reward": {
-        "countMax": 10,
-        "countMin": 5,
-        "item": "minecraft:iron_ingot"
-      },
-      "target": "minecraft:mineshaft",
+      "rewards": [
+        {
+          "countMax": 10,
+          "countMin": 5,
+          "item": "minecraft:iron_ingot"
+        }
+      ],
+      "targets": [
+        {
+          "countMax": 1,
+          "countMin": 1,
+          "item": "minecraft:mineshaft"
+        }
+      ],
       "weight": 8
     },
     {
       "type": "FIND_STRUCTURE",
-      "countMax": 1,
-      "countMin": 1,
       "description": "quest.improved_original.desc_text.minecraft.stronghold",
       "name": "quest.improved_original.name.minecraft.stronghold",
-      "reward": {
-        "countMax": 10,
-        "countMin": 5,
-        "item": "minecraft:diamond"
-      },
-      "target": "minecraft:stronghold",
+      "rewards": [
+        {
+          "countMax": 10,
+          "countMin": 5,
+          "item": "minecraft:diamond"
+        }
+      ],
+      "targets": [
+        {
+          "countMax": 1,
+          "countMin": 1,
+          "item": "minecraft:stronghold"
+        }
+      ],
       "weight": 5
     },
     {
       "type": "FIND_STRUCTURE",
-      "countMax": 1,
-      "countMin": 1,
       "description": "quest.improved_original.desc_text.minecraft.ruined_portal",
       "name": "quest.improved_original.name.minecraft.ruined_portal",
-      "reward": {
-        "countMax": 8,
-        "countMin": 3,
-        "item": "minecraft:gold_ingot"
-      },
-      "target": "minecraft:ruined_portal",
+      "rewards": [
+        {
+          "countMax": 8,
+          "countMin": 3,
+          "item": "minecraft:gold_ingot"
+        }
+      ],
+      "targets": [
+        {
+          "countMax": 1,
+          "countMin": 1,
+          "item": "minecraft:ruined_portal"
+        }
+      ],
       "weight": 8
     },
     {
       "type": "FIND_STRUCTURE",
-      "countMax": 1,
-      "countMin": 1,
       "description": "quest.improved_original.desc_text.minecraft.ocean_ruin_cold",
       "name": "quest.improved_original.name.minecraft.ocean_ruin_cold",
-      "reward": {
-        "countMax": 6,
-        "countMin": 3,
-        "item": "minecraft:iron_ingot"
-      },
-      "target": "minecraft:ocean_ruin_cold",
+      "rewards": [
+        {
+          "countMax": 6,
+          "countMin": 3,
+          "item": "minecraft:iron_ingot"
+        }
+      ],
+      "targets": [
+        {
+          "countMax": 1,
+          "countMin": 1,
+          "item": "minecraft:ocean_ruin_cold"
+        }
+      ],
       "weight": 6
     },
     {
       "type": "FIND_STRUCTURE",
-      "countMax": 1,
-      "countMin": 1,
       "description": "quest.improved_original.desc_text.minecraft.shipwreck",
       "name": "quest.improved_original.name.minecraft.shipwreck",
-      "reward": {
-        "countMax": 6,
-        "countMin": 3,
-        "item": "minecraft:iron_ingot"
-      },
-      "target": "minecraft:shipwreck",
+      "rewards": [
+        {
+          "countMax": 6,
+          "countMin": 3,
+          "item": "minecraft:iron_ingot"
+        }
+      ],
+      "targets": [
+        {
+          "countMax": 1,
+          "countMin": 1,
+          "item": "minecraft:shipwreck"
+        }
+      ],
       "weight": 6
     },
     {
       "type": "FIND_STRUCTURE",
-      "countMax": 1,
-      "countMin": 1,
       "description": "quest.improved_original.desc_text.minecraft.buried_treasure",
       "name": "quest.improved_original.name.minecraft.buried_treasure",
-      "reward": {
-        "countMax": 8,
-        "countMin": 3,
-        "item": "minecraft:diamond"
-      },
-      "target": "minecraft:buried_treasure",
+      "rewards": [
+        {
+          "countMax": 8,
+          "countMin": 3,
+          "item": "minecraft:diamond"
+        }
+      ],
+      "targets": [
+        {
+          "countMax": 1,
+          "countMin": 1,
+          "item": "minecraft:buried_treasure"
+        }
+      ],
       "weight": 6
     },
     {
       "type": "FIND_STRUCTURE",
-      "countMax": 1,
-      "countMin": 1,
       "description": "quest.improved_original.desc_text.minecraft.swamp_hut",
       "name": "quest.improved_original.name.minecraft.swamp_hut",
-      "reward": {
-        "countMax": 10,
-        "countMin": 5,
-        "item": "minecraft:emerald"
-      },
-      "target": "minecraft:swamp_hut",
+      "rewards": [
+        {
+          "countMax": 10,
+          "countMin": 5,
+          "item": "minecraft:emerald"
+        }
+      ],
+      "targets": [
+        {
+          "countMax": 1,
+          "countMin": 1,
+          "item": "minecraft:swamp_hut"
+        }
+      ],
       "weight": 6
     },
     {
       "type": "FIND_STRUCTURE",
-      "countMax": 1,
-      "countMin": 1,
       "description": "quest.improved_original.desc_text.minecraft.igloo",
       "name": "quest.improved_original.name.minecraft.igloo",
-      "reward": {
-        "countMax": 6,
-        "countMin": 3,
-        "item": "minecraft:emerald"
-      },
-      "target": "minecraft:igloo",
+      "rewards": [
+        {
+          "countMax": 6,
+          "countMin": 3,
+          "item": "minecraft:emerald"
+        }
+      ],
+      "targets": [
+        {
+          "countMax": 1,
+          "countMin": 1,
+          "item": "minecraft:igloo"
+        }
+      ],
       "weight": 5
+    },
+    {
+      "type": "COLLECT_ITEM",
+      "description": "quest.improved_original.desc_text.gem_exchange",
+      "name": "quest.improved_original.name.gem_exchange",
+      "rewards": [
+        {
+          "countMax": 1,
+          "countMin": 1,
+          "item": "minecraft:diamond"
+        }
+      ],
+      "targets": [
+        {
+          "countMax": 1,
+          "countMin": 1,
+          "item": "improved_original:ruby"
+        },
+        {
+          "countMax": 1,
+          "countMin": 1,
+          "item": "improved_original:sapphire"
+        },
+        {
+          "countMax": 1,
+          "countMin": 1,
+          "item": "improved_original:topaz"
+        },
+        {
+          "countMax": 1,
+          "countMin": 1,
+          "item": "improved_original:amethyst"
+        },
+        {
+          "countMax": 1,
+          "countMin": 1,
+          "item": "improved_original:onyx"
+        },
+        {
+          "countMax": 1,
+          "countMin": 1,
+          "item": "minecraft:emerald"
+        }
+      ],
+      "weight": 8
     }
   ],
-  "totalWeight": 532
+  "totalWeight": 540
 }

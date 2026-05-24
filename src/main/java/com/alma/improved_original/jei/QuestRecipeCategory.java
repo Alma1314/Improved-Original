@@ -1,4 +1,4 @@
-// JEI recipe category: renders quest target on left, reward on right with quest name/description
+// JEI recipe category: renders quest targets on left, rewards on right with name/description
 package com.alma.improved_original.jei;
 
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -12,7 +12,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
@@ -26,10 +25,10 @@ public class QuestRecipeCategory extends AbstractRecipeCategory<QuestRecipe> {
                 QuestJeiPlugin.QUEST_RECIPE_TYPE,
                 Component.translatable("quest.improved_original.jei.category"),
                 guiHelper.createDrawableItemStack(new ItemStack(Items.EMERALD)),
-                150,
-                68
+                160,
+                80
         );
-        this.background = guiHelper.createBlankDrawable(150, 68);
+        this.background = guiHelper.createBlankDrawable(160, 80);
         this.slotDrawable = guiHelper.getSlotDrawable();
     }
 
@@ -40,15 +39,21 @@ public class QuestRecipeCategory extends AbstractRecipeCategory<QuestRecipe> {
 
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, QuestRecipe recipe, IFocusGroup focuses) {
-        builder.addSlot(RecipeIngredientRole.INPUT, 5, 18)
-                .addItemStack(recipe.target())
-                .setBackground(slotDrawable, -1, -1)
-                .addRichTooltipCallback((slotView, tooltip) -> addQuestTooltip(recipe, tooltip));
+        int columnGap = 130;
+        int slotSize = 20;
 
-        builder.addSlot(RecipeIngredientRole.OUTPUT, 127, 18)
-                .addItemStack(recipe.reward())
-                .setBackground(slotDrawable, -1, -1)
-                .addRichTooltipCallback((slotView, tooltip) -> addQuestTooltip(recipe, tooltip));
+        for (int i = 0; i < recipe.targets().size(); i++) {
+            builder.addSlot(RecipeIngredientRole.INPUT, 5, 18 + i * slotSize)
+                    .addItemStack(recipe.targets().get(i))
+                    .setBackground(slotDrawable, -1, -1)
+                    .addRichTooltipCallback((slotView, tooltip) -> addQuestTooltip(recipe, tooltip));
+        }
+        for (int i = 0; i < recipe.rewards().size(); i++) {
+            builder.addSlot(RecipeIngredientRole.OUTPUT, columnGap - 5, 18 + i * slotSize)
+                    .addItemStack(recipe.rewards().get(i))
+                    .setBackground(slotDrawable, -1, -1)
+                    .addRichTooltipCallback((slotView, tooltip) -> addQuestTooltip(recipe, tooltip));
+        }
     }
 
     private static void addQuestTooltip(QuestRecipe recipe, mezz.jei.api.gui.builder.ITooltipBuilder tooltip) {
@@ -60,11 +65,6 @@ public class QuestRecipeCategory extends AbstractRecipeCategory<QuestRecipe> {
             tooltip.add(Component.translatable(recipe.descKey())
                     .withStyle(ChatFormatting.GRAY));
         }
-        String rewardStr = recipe.rewardCountMin() == recipe.rewardCountMax()
-                ? String.valueOf(recipe.rewardCountMin())
-                : recipe.rewardCountMin() + "-" + recipe.rewardCountMax();
-        tooltip.add(Component.translatable("quest.improved_original.reward",
-                rewardStr, recipe.reward().getHoverName()).withStyle(ChatFormatting.GREEN));
     }
 
     @Override
@@ -72,7 +72,6 @@ public class QuestRecipeCategory extends AbstractRecipeCategory<QuestRecipe> {
                      double mouseX, double mouseY) {
         var font = Minecraft.getInstance().font;
 
-        // Quest name — centered at top
         Component name;
         if (recipe.nameKey() != null && !recipe.nameKey().isEmpty()) {
             name = Component.translatable(recipe.nameKey()).withStyle(ChatFormatting.BOLD, ChatFormatting.GOLD);
@@ -80,28 +79,35 @@ public class QuestRecipeCategory extends AbstractRecipeCategory<QuestRecipe> {
             name = Component.literal(recipe.type().name());
         }
         int nameWidth = font.width(name);
-        guiGraphics.drawString(font, name, (150 - nameWidth) / 2, 0, 0xFFFFFFFF);
+        guiGraphics.drawString(font, name, (160 - nameWidth) / 2, 0, 0xFFFFFFFF);
 
-        // Target count below left slot
-        String countStr = recipe.countMin() == recipe.countMax()
-                ? "x" + recipe.countMin()
-                : "x" + recipe.countMin() + "-" + recipe.countMax();
-        guiGraphics.drawString(font, countStr, 5, 38, ChatFormatting.GRAY.getColor());
+        // Draw arrow — horizontal line + triangle head, centered vertically between slot columns
+        int maxRows = Math.max(recipe.targets().size(), recipe.rewards().size());
+        int leftSlotRight = 5 + 18;
+        int rightSlotLeft = 125;
+        int gapWidth = rightSlotLeft - leftSlotRight;
+        int arrowCenterY = 18 + maxRows * 10 - 1;
 
-        // Reward count below right slot
-        String rewardStr = recipe.rewardCountMin() == recipe.rewardCountMax()
-                ? "x" + recipe.rewardCountMin()
-                : "x" + recipe.rewardCountMin() + "-" + recipe.rewardCountMax();
-        guiGraphics.drawString(font, rewardStr, 127, 38, ChatFormatting.GRAY.getColor());
+        int lineStartX = leftSlotRight + 2;
+        int lineEndX = rightSlotLeft - 8;
+        int lineY = arrowCenterY;
 
-        // Arrow between slots
-        guiGraphics.drawString(font, Component.translatable("quest.improved_original.jei.arrow"),
-                60, 24, ChatFormatting.GRAY.getColor());
+        // Horizontal shaft
+        guiGraphics.fill(lineStartX, lineY, lineEndX, lineY + 2, 0xFF888888);
 
-        // Description below the number line (wrapped if needed, max ~140px wide)
+        // Arrow head (right-pointing triangle)
+        int headSize = 5;
+        int headX = lineEndX;
+        for (int dy = -headSize; dy <= headSize; dy++) {
+            int dx = Math.abs(dy);
+            guiGraphics.fill(headX + dx, lineY + 1 + dy, headX + dx + 2, lineY + 1 + dy + 1, 0xFF888888);
+        }
+
+        // Description at the bottom
         if (recipe.descKey() != null && !recipe.descKey().isEmpty()) {
             Component desc = Component.translatable(recipe.descKey()).withStyle(ChatFormatting.DARK_GRAY);
-            guiGraphics.drawWordWrap(font, desc, 5, 52, 140, ChatFormatting.DARK_GRAY.getColor());
+            int descY = 18 + maxRows * 20 + 4;
+            guiGraphics.drawWordWrap(font, desc, 5, descY, 150, ChatFormatting.DARK_GRAY.getColor());
         }
     }
 }

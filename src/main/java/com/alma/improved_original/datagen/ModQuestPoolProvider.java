@@ -110,7 +110,60 @@ public class ModQuestPoolProvider implements DataProvider {
         addEntry(entries, "FIND_STRUCTURE", "minecraft:swamp_hut", 1, 1, "minecraft:emerald", 5, 10, 6);
         addEntry(entries, "FIND_STRUCTURE", "minecraft:igloo", 1, 1, "minecraft:emerald", 3, 6, 5);
 
+        // Gem exchange: 6 gems for 1 diamond
+        addGemExchangeEntry(entries);
+
         return entries;
+    }
+
+    private static void addGemExchangeEntry(JsonArray entries) {
+        String type = "COLLECT_ITEM";
+        String[][] targets = {
+            {"improved_original:ruby", "1", "1"},
+            {"improved_original:sapphire", "1", "1"},
+            {"improved_original:topaz", "1", "1"},
+            {"improved_original:amethyst", "1", "1"},
+            {"improved_original:onyx", "1", "1"},
+            {"minecraft:emerald", "1", "1"}
+        };
+        String[][] rewards = {
+            {"minecraft:diamond", "1", "1"}
+        };
+        addMultiEntry(entries, type, targets, rewards, 8,
+                "quest.improved_original.name.gem_exchange",
+                "quest.improved_original.desc_text.gem_exchange");
+    }
+
+    private static void addMultiEntry(JsonArray entries, String type,
+                                       String[][] targets, String[][] rewards,
+                                       int weight, String name, String description) {
+        JsonObject entry = new JsonObject();
+        entry.addProperty("type", type);
+
+        JsonArray targetsArr = new JsonArray();
+        for (String[] t : targets) {
+            JsonObject tObj = new JsonObject();
+            tObj.addProperty("item", t[0]);
+            tObj.addProperty("countMin", Integer.parseInt(t[1]));
+            tObj.addProperty("countMax", Integer.parseInt(t[2]));
+            targetsArr.add(tObj);
+        }
+        entry.add("targets", targetsArr);
+
+        JsonArray rewardsArr = new JsonArray();
+        for (String[] r : rewards) {
+            JsonObject rObj = new JsonObject();
+            rObj.addProperty("item", r[0]);
+            rObj.addProperty("countMin", Integer.parseInt(r[1]));
+            rObj.addProperty("countMax", Integer.parseInt(r[2]));
+            rewardsArr.add(rObj);
+        }
+        entry.add("rewards", rewardsArr);
+
+        entry.addProperty("weight", weight);
+        entry.addProperty("name", name);
+        entry.addProperty("description", description);
+        entries.add(entry);
     }
 
     private static String nameKey(String target) {
@@ -126,14 +179,23 @@ public class ModQuestPoolProvider implements DataProvider {
                                   int rewardCountMin, int rewardCountMax, int weight) {
         JsonObject entry = new JsonObject();
         entry.addProperty("type", type);
-        entry.addProperty("target", target);
-        entry.addProperty("countMin", countMin);
-        entry.addProperty("countMax", countMax);
-        JsonObject reward = new JsonObject();
-        reward.addProperty("item", rewardItem);
-        reward.addProperty("countMin", rewardCountMin);
-        reward.addProperty("countMax", rewardCountMax);
-        entry.add("reward", reward);
+
+        JsonArray targetsArr = new JsonArray();
+        JsonObject tObj = new JsonObject();
+        tObj.addProperty("item", target);
+        tObj.addProperty("countMin", countMin);
+        tObj.addProperty("countMax", countMax);
+        targetsArr.add(tObj);
+        entry.add("targets", targetsArr);
+
+        JsonArray rewardsArr = new JsonArray();
+        JsonObject rObj = new JsonObject();
+        rObj.addProperty("item", rewardItem);
+        rObj.addProperty("countMin", rewardCountMin);
+        rObj.addProperty("countMax", rewardCountMax);
+        rewardsArr.add(rObj);
+        entry.add("rewards", rewardsArr);
+
         entry.addProperty("weight", weight);
         entry.addProperty("name", nameKey(target));
         entry.addProperty("description", descKey(target));

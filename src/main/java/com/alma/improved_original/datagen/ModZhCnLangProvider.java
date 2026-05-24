@@ -181,5 +181,9 @@ public class ModZhCnLangProvider extends LanguageProvider {
         add("quest.improved_original.jei.category", "每日任务");
         add("quest.improved_original.jei.arrow", "→");
         add("quest.improved_original.jei.quest_target_info", "该物品是任务目标 - 完成任务可获得奖励！");
+
+        // Gem exchange quest
+        add("quest.improved_original.name.gem_exchange", "宝石收藏家");
+        add("quest.improved_original.desc_text.gem_exchange", "收集全部6种宝石换取一颗钻石");
     }
 }

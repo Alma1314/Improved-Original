@@ -96,11 +96,12 @@ public class QuestManager {
 
         Set<ResourceLocation> existingTargets = new HashSet<>();
         for (int i = 0; i < QuestData.SLOT_COUNT; i++) {
-            existingData.getQuest(i).ifPresent(q -> existingTargets.add(q.targetId()));
+            existingData.getQuest(i).ifPresent(q ->
+                q.targets().forEach(t -> existingTargets.add(t.item())));
         }
 
         List<QuestPoolConfig.PoolEntry> available = pool.stream()
-                .filter(e -> !existingTargets.contains(e.target()))
+                .filter(e -> e.targets().stream().noneMatch(t -> existingTargets.contains(t.item())))
                 .toList();
 
         if (available.isEmpty()) {
@@ -119,10 +120,19 @@ public class QuestManager {
             }
         }
 
-        int targetCount = chosen.countMin() + random.nextInt(chosen.countMax() - chosen.countMin() + 1);
-        int rewardCount = chosen.rewardCountMin() + random.nextInt(chosen.rewardCountMax() - chosen.rewardCountMin() + 1);
+        // Resolve target ranges to concrete counts
+        List<QuestDefinition.ItemCount> resolvedTargets = chosen.targets().stream().map(t ->
+            new QuestDefinition.ItemCount(t.item(),
+                t.countMin() + random.nextInt(t.countMax() - t.countMin() + 1))
+        ).toList();
 
-        return new QuestDefinition(chosen.type(), chosen.target(), targetCount, chosen.rewardItem(), rewardCount,
+        // Resolve reward ranges to concrete counts
+        List<QuestDefinition.ItemCount> resolvedRewards = chosen.rewards().stream().map(r ->
+            new QuestDefinition.ItemCount(r.item(),
+                r.countMin() + random.nextInt(r.countMax() - r.countMin() + 1))
+        ).toList();
+
+        return new QuestDefinition(chosen.type(), resolvedTargets, resolvedRewards,
                 chosen.name(), chosen.description());
     }
 
@@ -164,14 +174,23 @@ public class QuestManager {
             var questOpt = data.getQuest(i);
             if (questOpt.isEmpty()) continue;
             QuestDefinition quest = questOpt.get();
-            if (quest.type() == type && quest.targetId().equals(targetId)) {
-                int newProgress = Math.min(data.getProgress(i) + amount, quest.targetCount());
-                data.setProgress(i, newProgress);
-                changed = true;
+            if (quest.type() != type) continue;
 
-                if (newProgress >= quest.targetCount()) {
-                    completeQuest(player, data, i);
+            // Find matching target index
+            List<Integer> progress = new ArrayList<>(data.getSlot(i).perTargetProgress());
+            for (int t = 0; t < quest.targets().size(); t++) {
+                QuestDefinition.ItemCount target = quest.targets().get(t);
+                if (target.item().equals(targetId)) {
+                    int current = t < progress.size() ? progress.get(t) : 0;
+                    int newProg = Math.min(current + amount, target.count());
+                    progress.set(t, newProg);
+                    data.setProgress(i, progress);
+                    changed = true;
                 }
+            }
+
+            if (data.getSlot(i).isComplete()) {
+                completeQuest(player, data, i);
             }
         }
 
@@ -269,16 +288,20 @@ public class QuestManager {
         if (questOpt.isEmpty()) return;
         QuestDefinition quest = questOpt.get();
 
-        ItemStack reward = quest.createReward();
-        if (!player.getInventory().add(reward)) {
-            player.drop(reward, false);
+        List<ItemStack> rewards = quest.createRewards();
+        for (ItemStack reward : rewards) {
+            if (!player.getInventory().add(reward)) {
+                player.drop(reward, false);
+            }
         }
 
-        String targetName = quest.getTargetDisplayName().getString();
-        String rewardName = reward.getCount() + "x " + quest.getRewardDisplayName().getString();
+        String targetNames = quest.getTargetDisplayNames().stream()
+                .map(Component::getString).collect(Collectors.joining(", "));
+        String rewardNames = quest.getRewardDisplayNames().stream()
+                .map(Component::getString).collect(Collectors.joining(", "));
         data.clearSlot(slot);
 
-        syncToPlayerWithCompletion(player, data, targetName, rewardName);
+        syncToPlayerWithCompletion(player, data, targetNames, rewardNames);
     }
 
     private static boolean consumeEmeralds(ServerPlayer player, int amount) {
