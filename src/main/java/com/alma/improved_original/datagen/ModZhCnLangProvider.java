@@ -176,5 +176,10 @@ public class ModZhCnLangProvider extends LanguageProvider {
         add("quest.improved_original.desc_text.minecraft.swamp_hut", "发现沼泽小屋");
         add("quest.improved_original.name.minecraft.igloo", "雪屋探索者");
         add("quest.improved_original.desc_text.minecraft.igloo", "在冰原找到雪屋");
+
+        // JEI integration
+        add("quest.improved_original.jei.category", "每日任务");
+        add("quest.improved_original.jei.weight", "权重: %d");
+        add("quest.improved_original.jei.quest_target_info", "该物品是任务目标 - 完成任务可获得奖励！");
     }
 }

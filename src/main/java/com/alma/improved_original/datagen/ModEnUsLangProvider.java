@@ -172,5 +172,10 @@ public class ModEnUsLangProvider extends LanguageProvider {
         add("quest.improved_original.desc_text.minecraft.swamp_hut", "Discover a swamp hut");
         add("quest.improved_original.name.minecraft.igloo", "Igloo Adventurer");
         add("quest.improved_original.desc_text.minecraft.igloo", "Find an igloo in the icy tundra");
+
+        // JEI integration
+        add("quest.improved_original.jei.category", "Daily Quests");
+        add("quest.improved_original.jei.weight", "Weight: %d");
+        add("quest.improved_original.jei.quest_target_info", "This item is a quest target - complete the quest to earn rewards!");
     }
 }
