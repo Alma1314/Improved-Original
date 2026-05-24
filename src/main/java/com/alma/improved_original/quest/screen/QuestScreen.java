@@ -1,4 +1,5 @@
-// 任务面板界面：320x380设计画布，按屏幕高度缩放，init()时从缓存刷新数据
+// 每日任务主面板 — 完全重写
+// 固定像素布局，256宽，垂直居中，高度自适应槽位内容
 package com.alma.improved_original.quest.screen;
 
 import com.alma.improved_original.Config;
@@ -17,91 +18,113 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import java.util.List;
 
 public class QuestScreen extends Screen {
-    private static final int DW = 320;
-    private static final int DH = 400;
-    private static final int CX = DW / 2;
+
+    private static final int PANEL_W = 256;
+    private static final int HEADER_H = 26;
+    private static final int FOOTER_H = 24;
+    private static final int SLOT_MIN_H = 64;
+    private static final int SEP_H = 1;
+    private static final int LEFT_W = 20;
 
     private QuestData questData;
-    private float uiScale = 1.0f;
-    private int offX, offY, panelW, panelH;
-
-    private int s(int v) { return Math.round(v * uiScale); }
 
     public QuestScreen(QuestData questData) {
         super(Component.translatable("screen.improved_original.quest"));
         this.questData = questData;
     }
 
+    // ---- 布局计算 ----
+
+    private int panelX() { return (this.width - PANEL_W) / 2; }
+    private int panelY() { return (this.height - panelH()) / 2; }
+
+    private int panelH() {
+        int h = HEADER_H + FOOTER_H + SEP_H * (QuestData.SLOT_COUNT + 1);
+        for (int i = 0; i < QuestData.SLOT_COUNT; i++) h += slotH(i);
+        return h;
+    }
+
+    private int slotH(int i) {
+        var q = questData.getQuest(i);
+        if (q.isEmpty()) return SLOT_MIN_H;
+        QuestDefinition d = q.get();
+        return Math.max(SLOT_MIN_H, 22 + d.targets().size() * 16 + d.rewards().size() * 12 + 12);
+    }
+
+    private int slotY(int i) {
+        int y = panelY() + HEADER_H + SEP_H;
+        for (int j = 0; j < i; j++) y += slotH(j) + SEP_H;
+        return y;
+    }
+
+    // ---- init ----
+
     @Override
     protected void init() {
-        // 从缓存取最新数据，解决刷新后UI不更新的问题
         QuestData latest = ClientQuestCache.get();
         if (latest != null) this.questData = latest;
 
-        uiScale = Math.min(1.0f, (float) this.height / DH);
-        panelW = s(DW);
-        panelH = s(DH);
-        offX = (this.width - panelW) / 2;
-        offY = (this.height - panelH) / 2;
+        int px = panelX();
+        int lockCost = Config.EMERALD_LOCK_COST.getAsInt();
 
-        // 标题区
-        int startY = offY + s(38);
-
+        // 每个槽位的锁定/解锁按钮
         for (int i = 0; i < QuestData.SLOT_COUNT; i++) {
             final int slot = i;
-            int y = startY;
-            for (int j = 0; j < i; j++) y += s(slotHeight(j));
-
             var qo = questData.getQuest(i);
-            boolean locked = questData.isSlotLocked(i);
             boolean hasQuest = qo.isPresent();
-            boolean complete = hasQuest && questData.getSlot(i).isComplete();
+            boolean done = hasQuest && questData.getSlot(i).isComplete();
 
-            String key;
-            if (!hasQuest || complete) key = "quest.improved_original.lock_button";
-            else if (locked) key = "quest.improved_original.locked";
-            else key = "quest.improved_original.lock_button";
+            if (!hasQuest || done) continue; // 空槽位或已完成不显示锁按钮
 
-            Button lb = Button.builder(Component.translatable(key),
-                    btn -> PacketDistributor.sendToServer(new C2SQuestLockPayload(slot))
-            ).bounds(offX + s(CX + 95), y + s(18), s(50), s(16)).build();
+            String label = questData.isSlotLocked(i)
+                    ? Component.translatable("quest.improved_original.locked").getString()
+                    : Component.translatable("quest.improved_original.lock_button").getString() + " " + lockCost + "绿宝石";
+            int btnW = questData.isSlotLocked(i) ? 40 : 66;
 
-            if (!hasQuest || complete) lb.active = false;
-            this.addRenderableWidget(lb);
+            this.addRenderableWidget(Button.builder(Component.literal(label),
+                    b -> PacketDistributor.sendToServer(new C2SQuestLockPayload(slot))
+            ).bounds(px + PANEL_W - btnW - 8, slotY(i) + slotH(i) - 20, btnW, 18).build());
         }
 
-        int btnY = startY;
-        for (int i = 0; i < QuestData.SLOT_COUNT; i++) btnY += s(slotHeight(i));
-        btnY += s(8);
+        // 底部按钮
+        int fy = panelY() + HEADER_H + SEP_H;
+        for (int i = 0; i < QuestData.SLOT_COUNT; i++) fy += slotH(i) + SEP_H;
+        int btnY = fy + 4;
 
-        int cost = Config.EMERALD_REFRESH_COST.getAsInt();
+        int refreshCost = Config.EMERALD_REFRESH_COST.getAsInt();
         this.addRenderableWidget(Button.builder(
-                Component.translatable("quest.improved_original.refresh_button", cost),
-                btn -> { btn.active = false; PacketDistributor.sendToServer(new C2SQuestRefreshPayload()); }
-        ).bounds(offX + s(CX + 50), btnY, s(80), s(18)).build());
+                Component.translatable("quest.improved_original.refresh_button", refreshCost),
+                b -> { b.active = false; PacketDistributor.sendToServer(new C2SQuestRefreshPayload()); }
+        ).bounds(px + PANEL_W / 2 - 62, btnY, 80, 16).build());
 
         this.addRenderableWidget(Button.builder(
-                Component.translatable("quest.improved_original.done"), btn -> this.onClose()
-        ).bounds(offX + s(CX - 50), btnY, s(40), s(18)).build());
+                Component.translatable("quest.improved_original.done"), b -> onClose()
+        ).bounds(px + PANEL_W / 2 + 22, btnY, 40, 16).build());
     }
 
-    private int slotHeight(int i) {
-        var q = questData.getQuest(i);
-        if (q.isEmpty()) return 80;
-        QuestDefinition d = q.get();
-        return Math.max(80, 22 + d.targets().size() * 15 + d.rewards().size() * 11 + 10);
-    }
+    // ---- render ----
 
     @Override
     public void render(GuiGraphics g, int mx, int my, float pt) {
         this.renderBackground(g, mx, my, pt);
-        g.fill(offX, offY, offX + panelW, offY + panelH, 0xC0101010);
+
+        int px = panelX(), py = panelY();
+        int ph = panelH();
+
+        // 面板背景 (z=0)
+        g.fill(px, py, px + PANEL_W, py + ph, 0xCC000000);
+
+        // 按钮 widgets 先渲染 (z=0, 但在背景之上)
         super.render(g, mx, my, pt);
 
-        // 标题行1：标题居中
-        g.drawCenteredString(this.font, this.title, offX + CX, offY + s(8), 0xFFFFFFFF);
+        // 标题/内容用高z-index覆盖在按钮之上
+        var pose = g.pose();
+        pose.pushPose();
+        pose.translate(0, 0, 100);
 
-        // 标题行2：倒计时居中
+        g.fill(px, py, px + PANEL_W, py + HEADER_H, 0x88000000);
+
+        g.drawCenteredString(this.font, this.title, px + PANEL_W / 2, py + 5, 0xFFFFAA00);
         if (this.minecraft != null && this.minecraft.level != null) {
             long tick = this.minecraft.level.getGameTime();
             long iv = 20L * 60 * Config.QUEST_REFRESH_INTERVAL_MINUTES.getAsInt();
@@ -109,25 +132,40 @@ public class QuestScreen extends Screen {
             long sec = (iv - tick % iv) / 20;
             g.drawCenteredString(this.font,
                     Component.translatable("quest.improved_original.countdown", sec / 60, sec % 60),
-                    offX + CX, offY + s(22), 0xFFAAAAAA);
+                    px + PANEL_W / 2, py + 16, 0xFFAAAAAA);
         }
 
-        int y = offY + s(38);
-        for (int i = 0; i < QuestData.SLOT_COUNT; i++)
-            y = renderSlot(g, i, y, mx, my);
+        for (int i = 0; i < QuestData.SLOT_COUNT; i++) {
+            int sy = slotY(i);
+            g.fill(px, sy - SEP_H, px + PANEL_W, sy, 0xFF444444);
+            renderSlot(g, i, px, sy);
+        }
+
+        int bottomSepY = slotY(QuestData.SLOT_COUNT - 1) + slotH(QuestData.SLOT_COUNT - 1);
+        g.fill(px, bottomSepY, px + PANEL_W, bottomSepY + SEP_H, 0xFF444444);
+
+        pose.popPose();
     }
 
-    private int renderSlot(GuiGraphics g, int i, int y, int mx, int my) {
+    private void renderSlot(GuiGraphics g, int i, int px, int sy) {
         var qo = questData.getQuest(i);
-        int h = s(slotHeight(i));
+        int h = slotH(i);
+        int lx = px + 4;
+        int rx = px + LEFT_W;
 
-        // 槽位磨砂背景
-        g.fill(offX + s(4), y - 1, offX + s(DW - 4), y + h - 3, 0x33000000);
+        // 槽位编号
+        g.drawCenteredString(this.font, Component.literal(String.valueOf(i + 1)), lx + LEFT_W / 2, sy + h / 2 - 5, 0xFF555555);
+
+        // 左侧分隔竖线
+        g.fill(rx, sy + 2, rx + 1, sy + h - 2, 0xFF333333);
+
+        int cx = px + LEFT_W + 6; // 内容起始X
+        int cw = PANEL_W - LEFT_W - 12; // 内容可用宽度
 
         if (qo.isEmpty()) {
             g.drawString(this.font, Component.translatable("quest.improved_original.empty_slot"),
-                    offX + s(14), y + h / 2 - 5, 0xFF888888);
-            return y + h;
+                    cx, sy + h / 2 - 5, 0xFF666666);
+            return;
         }
 
         QuestDefinition q = qo.get();
@@ -135,69 +173,55 @@ public class QuestScreen extends Screen {
         List<Integer> pt = sl.perTargetProgress();
         boolean done = sl.isComplete();
 
-        // 任务名称
+        // 任务名
         Component name = buildName(q);
-        g.drawString(this.font, name, offX + s(14), y + s(4), 0xFFFFFF);
+        g.drawString(this.font, name, cx, sy + 3, done ? 0xFF55FF55 : 0xFFFFFFFF);
 
-        // tooltip
-        if (this.font != null) {
+        // 锁定状态
+        if (questData.isSlotLocked(i)) {
             int nw = this.font.width(name);
-            int nx = offX + s(14), ny = y + s(4);
-            if (mx >= nx && mx <= nx + nw && my >= ny && my <= ny + this.font.lineHeight) {
-                String dk = q.description();
-                if (dk != null && !dk.isEmpty())
-                    g.renderTooltip(this.font, Component.translatable(dk), mx, my);
-            }
+            g.drawString(this.font, Component.translatable("quest.improved_original.locked"),
+                    cx + nw + 6, sy + 3, 0xFFFF5555);
         }
 
-        int lineY = y + s(18);
-        int bx = offX + s(14), bw = s(130);
-
         // 进度条
+        int lineY = sy + 16;
+        int barW = Math.min(cw - 4, 150);
         for (int t = 0; t < q.targets().size(); t++) {
             QuestDefinition.QuestTarget tg = q.targets().get(t);
             int prog = t < pt.size() ? pt.get(t) : 0;
             int max = tg.count();
             boolean tc = prog >= max;
 
-            g.drawString(this.font, q.getTargetDisplayName(tg.type(), tg.item()), bx, lineY, 0xFFCCCCCC);
+            g.drawString(this.font, q.getTargetDisplayName(tg.type(), tg.item()), cx, lineY, 0xFFCCCCCC);
 
-            int bh = Math.max(s(8), 6);
-            int by = lineY + this.font.lineHeight;
-            g.fill(bx, by, bx + bw, by + bh, 0xFF444444);
+            int bh = 8;
+            int by = lineY + this.font.lineHeight + 1;
+            g.fill(cx, by, cx + barW, by + bh, 0xFF333333);
             if (max > 0) {
-                int fw = (int) ((float) prog / max * bw);
-                g.fill(bx, by, bx + fw, by + bh, tc ? 0xFF00AA00 : 0xFF4488FF);
+                int fw = (int) ((float) prog / max * barW);
+                g.fill(cx, by, cx + fw, by + bh, tc ? 0xFF55FF55 : 0xFF4488FF);
             }
-            g.renderOutline(bx, by, bw, bh, 0xFF888888);
 
             var p = g.pose();
             p.pushPose();
-            p.scale(0.7f, 0.7f, 1);
-            g.drawCenteredString(this.font, Component.literal(prog + "/" + max),
-                    (int) ((bx + bw / 2) / 0.7f), (int) ((by + 1) / 0.7f), 0xFFFFFF);
+            p.scale(0.65f, 0.65f, 1);
+            g.drawString(this.font, prog + "/" + max,
+                    (int) ((cx + barW + 4) / 0.65f), (int) ((by + 1) / 0.65f), 0xFFAAAAAA);
             p.popPose();
 
-            lineY = by + bh + s(2);
+            lineY = by + bh + 3;
         }
 
         // 奖励
-        lineY = Math.max(lineY + s(1), y + s(18) + q.targets().size() * s(15) + s(2));
+        lineY = Math.max(lineY + 1, sy + 16 + q.targets().size() * 16 + 1);
         var rn = q.getRewardDisplayNames();
         for (int r = 0; r < q.rewards().size(); r++) {
             QuestDefinition.ItemCount rw = q.rewards().get(r);
             g.drawString(this.font, Component.translatable("quest.improved_original.reward", rw.count(), rn.get(r)),
-                    bx, lineY, done ? 0xFF55FF55 : 0xFFFFAA00);
-            lineY += this.font.lineHeight + s(1);
+                    cx, lineY, done ? 0xFF55FF55 : 0xFFFFAA00);
+            lineY += this.font.lineHeight + 2;
         }
-
-        // 锁定消耗提示
-        if (!questData.isSlotLocked(i) && !done) {
-            g.drawString(this.font, Component.translatable("quest.improved_original.lock_cost_hint",
-                    Config.EMERALD_LOCK_COST.getAsInt()), offX + s(130), y + s(4), 0xFFAAAAAA);
-        }
-
-        return y + h;
     }
 
     private Component buildName(QuestDefinition q) {

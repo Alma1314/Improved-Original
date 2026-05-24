@@ -1,6 +1,4 @@
-// 任务完成Toast通知：模仿原版成就弹出效果，显示标题+奖励描述，5秒自动消失
-// 渲染方式：顶部固定"任务完成"黄色标题，下方白色奖励详情，左侧绿宝石图标
-// 使用原版 toast/advancement 底图纹理，保持视觉一致性
+// 任务完成Toast通知：原版风格，右上角弹出，5秒自动消失
 package com.alma.improved_original.quest.client;
 
 import net.minecraft.client.gui.Font;
@@ -8,35 +6,33 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.toasts.Toast;
 import net.minecraft.client.gui.components.toasts.ToastComponent;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 
 public class QuestToast implements Toast {
-    private static final ResourceLocation BACKGROUND_SPRITE =
-            ResourceLocation.withDefaultNamespace("toast/advancement");
-    private static final int DISPLAY_TIME = 5000; // 5 seconds
+    private static final int DURATION = 5000;
     private final Component title;
-    private final Component description;
+    private final Component desc;
 
-    public QuestToast(Component title, Component description) {
+    public QuestToast(Component title, Component desc) {
         this.title = title;
-        this.description = description;
+        this.desc = desc;
     }
 
     @Override
-    public Visibility render(GuiGraphics guiGraphics, ToastComponent toastComponent, long timeSinceLastVisible) {
-        guiGraphics.blitSprite(BACKGROUND_SPRITE, 0, 0, this.width(), this.height());
+    public Visibility render(GuiGraphics g, ToastComponent tc, long time) {
+        // 深色背景
+        g.fill(0, 0, width(), height(), 0xCC000000);
+        g.renderOutline(0, 0, width(), height(), 0xFF555555);
 
-        Font font = toastComponent.getMinecraft().font;
-        // Title
-        guiGraphics.drawString(font, title, 30, 7, 0xFFFF00);
-        // Description
-        guiGraphics.drawString(font, description, 30, 18, 0xFFFFFF);
+        Font f = tc.getMinecraft().font;
+        g.drawString(f, title, 8, 7, 0xFFFFAA00);
+        g.drawString(f, desc, 8, 20, 0xFFFFFFFF);
 
-        // Render emerald icon
-        guiGraphics.renderFakeItem(new ItemStack(Items.EMERALD), 8, 8);
-
-        return timeSinceLastVisible < DISPLAY_TIME ? Visibility.SHOW : Visibility.HIDE;
+        return time < DURATION ? Visibility.SHOW : Visibility.HIDE;
     }
+
+    @Override
+    public int width() { return 160; }
+
+    @Override
+    public int height() { return 36; }
 }
