@@ -11,6 +11,12 @@ import java.util.*;
 
 public class QuestPoolConfig {
 
+    private static List<PoolEntry> cachedPool = null;
+
+    public static void reloadCache() {
+        cachedPool = null;
+    }
+
     public record TargetEntry(ResourceLocation item, int countMin, int countMax) {}
     public record RewardEntry(ResourceLocation item, int countMin, int countMax) {}
 
