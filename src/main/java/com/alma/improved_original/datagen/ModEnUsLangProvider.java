@@ -175,7 +175,7 @@ public class ModEnUsLangProvider extends LanguageProvider {
 
         // JEI integration
         add("quest.improved_original.jei.category", "Daily Quests");
-        add("quest.improved_original.jei.weight", "Weight: %d");
+        add("quest.improved_original.jei.arrow", "→");
         add("quest.improved_original.jei.quest_target_info", "This item is a quest target - complete the quest to earn rewards!");
     }
 }

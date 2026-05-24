@@ -179,7 +179,7 @@ public class ModZhCnLangProvider extends LanguageProvider {
 
         // JEI integration
         add("quest.improved_original.jei.category", "每日任务");
-        add("quest.improved_original.jei.weight", "权重: %d");
+        add("quest.improved_original.jei.arrow", "→");
         add("quest.improved_original.jei.quest_target_info", "该物品是任务目标 - 完成任务可获得奖励！");
     }
 }

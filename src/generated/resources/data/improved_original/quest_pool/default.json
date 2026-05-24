@@ -71,6 +71,20 @@
       "weight": 20
     },
     {
+      "type": "COLLECT_ITEM",
+      "countMax": 1,
+      "countMin": 1,
+      "description": "quest.improved_original.desc_text.minecraft.dirt",
+      "name": "quest.improved_original.name.minecraft.dirt",
+      "reward": {
+        "countMax": 1,
+        "countMin": 1,
+        "item": "minecraft:grass_block"
+      },
+      "target": "minecraft:dirt",
+      "weight": 5
+    },
+    {
       "type": "BREAK_BLOCK",
       "countMax": 64,
       "countMin": 16,
@@ -687,5 +701,5 @@
       "weight": 5
     }
   ],
-  "totalWeight": 527
+  "totalWeight": 532
 }
