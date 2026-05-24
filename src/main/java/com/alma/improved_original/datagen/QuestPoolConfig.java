@@ -3,7 +3,9 @@ package com.alma.improved_original.datagen;
 
 import com.alma.improved_original.quest.QuestType;
 import com.google.gson.*;
+import com.mojang.logging.LogUtils;
 import net.minecraft.resources.ResourceLocation;
+import org.slf4j.Logger;
 
 import java.io.*;
 import java.nio.file.*;
@@ -11,6 +13,7 @@ import java.util.*;
 
 public class QuestPoolConfig {
 
+    private static final Logger LOGGER = LogUtils.getLogger();
     private static List<PoolEntry> cachedPool = null;
 
     public static void reloadCache() {
@@ -30,6 +33,7 @@ public class QuestPoolConfig {
     ) {}
 
     public static List<PoolEntry> loadFromConfig(Path configDir) {
+        LOGGER.info("QuestConfig: loadFromConfig called with {}", configDir);
         Path questsDir = configDir.resolve("quests");
         List<PoolEntry> allEntries = new ArrayList<>();
 
@@ -41,7 +45,9 @@ public class QuestPoolConfig {
         }
 
         File[] files = questsDir.toFile().listFiles(f -> f.getName().endsWith(".json"));
+        LOGGER.info("QuestConfig: Found {} json files in {}", files != null ? files.length : 0, questsDir);
         if (files == null || files.length == 0) {
+            LOGGER.info("QuestConfig: No files found, generating defaults");
             generateDefaults(questsDir);
             files = questsDir.toFile().listFiles(f -> f.getName().endsWith(".json"));
         }
@@ -52,7 +58,9 @@ public class QuestPoolConfig {
                 try (Reader reader = new FileReader(file)) {
                     JsonObject obj = gson.fromJson(reader, JsonObject.class);
                     if (obj.has("entries")) {
-                        for (JsonElement elem : obj.getAsJsonArray("entries")) {
+                        JsonArray entriesArr = obj.getAsJsonArray("entries");
+                        LOGGER.info("QuestConfig: Loading {} entries from {}", entriesArr.size(), file.getName());
+                        for (JsonElement elem : entriesArr) {
                             JsonObject entry = elem.getAsJsonObject();
                             QuestType type = QuestType.valueOf(entry.get("type").getAsString().toUpperCase());
 
@@ -90,7 +98,7 @@ public class QuestPoolConfig {
                         }
                     }
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    LOGGER.error("QuestConfig: Failed to parse entry in {}", file.getName(), e);
                 }
             }
         }
