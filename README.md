@@ -24,7 +24,7 @@
 - 面板显示刷新倒计时
 - 首次打开面板前任务不激活（不追踪进度）
 - 自然刷新时聊天栏提示
-- **JEI 集成**：在 JEI 中点击书图标查看所有任务（左侧提交物品区 → 右侧奖励物品区，物品过多可滚动）
+- **JEI 集成**：在 JEI 中点击书图标查看所有任务（三行两列提交物品 → 实心箭头 → 三行两列奖励物品，不足时自动居中）
 
 ---
 
@@ -93,15 +93,13 @@
 }
 ```
 
-- `targets` 数组：每个元素含 `item`（ResourceLocation）、`countMin`/`countMax`（数量范围）
-- `rewards` 数组：每个元素含 `item`（ResourceLocation）、`countMin`/`countMax`（奖励数量范围）
-- 字段 `weight` 越大，被选中的概率越高
-- 字段 `name` 为任务名称的翻译键，`description` 为简介的翻译键（鼠标悬停时显示）
-- 翻译键命名规则：`quest.improved_original.name.<namespace>.<path>` 和 `quest.improved_original.desc_text.<namespace>.<path>`
-- 若 `name` 为空则回退显示任务类型描述（如 "破坏 石头 x32"）
-- 支持 en_us / zh_cn，语言文件随数据生成（`runData`）自动更新
-- 首次启动自动生成默认配置，修改后重启即可生效
-- 支持多个 JSON 文件，所有文件中的 entries 会被合并
+- `targets` / `rewards` 数组：每个元素含 `item`（ResourceLocation）、`countMin`/`countMax`（数量范围）
+- `weight`：权重越大被选中的概率越高
+- `name` / `description`：任务名称和简介的翻译键，鼠标悬停显示简介
+- 翻译键命名规则：`quest.improved_original.name.<ns>.<path>` 和 `quest.improved_original.desc_text.<ns>.<path>`
+- 首次启动自动生成默认配置，修改后重启生效
+- 支持多个 JSON 文件，所有 entries 自动合并
+- JEI 中最多显示 6 个提交物品和 6 个奖励物品（三行两列）
 
 ---
 

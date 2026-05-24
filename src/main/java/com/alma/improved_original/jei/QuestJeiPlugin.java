@@ -63,48 +63,43 @@ public class QuestJeiPlugin implements IModPlugin {
         List<QuestPoolConfig.PoolEntry> pool = QuestPoolConfig.loadFromConfig(configDir);
         LOGGER.info("JEI: Loaded {} quest pool entries", pool.size());
 
+        int MAX_ITEMS = 6; // 三行两列最多6个
         List<QuestRecipe> recipes = new ArrayList<>();
         for (QuestPoolConfig.PoolEntry entry : pool) {
-            String entryName = entry.name() != null ? entry.name() : "(unnamed)";
             List<ItemStack> targetStacks = new ArrayList<>();
+            List<Integer> tMin = new ArrayList<>();
+            List<Integer> tMax = new ArrayList<>();
+            int ti = 0;
             for (var te : entry.targets()) {
-                Item targetItem = getTargetItem(entry.type(), te.item());
-                if (targetItem == null) {
-                    LOGGER.warn("JEI: [{}] target {} not found in registry (type={})", entryName, te.item(), entry.type());
-                    continue;
-                }
-                targetStacks.add(new ItemStack(targetItem));
+                if (ti >= MAX_ITEMS) break;
+                Item item = getTargetItem(entry.type(), te.item());
+                if (item == null) continue;
+                targetStacks.add(new ItemStack(item));
+                tMin.add(te.countMin());
+                tMax.add(te.countMax());
+                ti++;
             }
-            if (targetStacks.isEmpty()) {
-                LOGGER.warn("JEI: [{}] ALL {} targets missing — recipe skipped!", entryName, entry.targets().size());
-                continue;
-            }
-            if (targetStacks.size() < entry.targets().size()) {
-                LOGGER.warn("JEI: [{}] {}/{} targets resolved", entryName, targetStacks.size(), entry.targets().size());
-            }
+            if (targetStacks.isEmpty()) continue;
 
             List<ItemStack> rewardStacks = new ArrayList<>();
+            List<Integer> rMin = new ArrayList<>();
+            List<Integer> rMax = new ArrayList<>();
+            int ri = 0;
             for (var re : entry.rewards()) {
-                Item rewardItem = BuiltInRegistries.ITEM.get(re.item());
-                if (rewardItem == Items.AIR) {
-                    LOGGER.warn("JEI: [{}] reward {} not found in registry", entryName, re.item());
-                    continue;
-                }
-                rewardStacks.add(new ItemStack(rewardItem, re.countMax()));
+                if (ri >= MAX_ITEMS) break;
+                Item item = BuiltInRegistries.ITEM.get(re.item());
+                if (item == Items.AIR) continue;
+                rewardStacks.add(new ItemStack(item, re.countMax()));
+                rMin.add(re.countMin());
+                rMax.add(re.countMax());
+                ri++;
             }
-            if (rewardStacks.isEmpty()) {
-                LOGGER.warn("JEI: [{}] ALL rewards missing — recipe skipped!", entryName);
-                continue;
-            }
+            if (rewardStacks.isEmpty()) continue;
 
             recipes.add(new QuestRecipe(
                     targetStacks, rewardStacks, entry.type(),
                     entry.name(), entry.description(),
-                    entry.targets().stream().map(t -> t.countMin()).toList(),
-                    entry.targets().stream().map(t -> t.countMax()).toList(),
-                    entry.rewards().stream().map(r -> r.countMin()).toList(),
-                    entry.rewards().stream().map(r -> r.countMax()).toList(),
-                    entry.weight()
+                    tMin, tMax, rMin, rMax, entry.weight()
             ));
         }
 
