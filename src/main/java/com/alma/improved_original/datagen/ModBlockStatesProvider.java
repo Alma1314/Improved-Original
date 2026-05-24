@@ -1,4 +1,6 @@
 // 数据生成-方块状态：为15种方块生成blockstate JSON和cube_all模型
+// simpleBlockWithItem(cubeAll()) 同时生成 blockstates/*.json 和 models/block/*.json
+// 所有方块使用全六面相同纹理（cube_all），贴图路径自动推断
 package com.alma.improved_original.datagen;
 
 import com.alma.improved_original.ImprovedOriginal;

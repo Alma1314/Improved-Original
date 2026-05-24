@@ -1,4 +1,6 @@
 // 客户端类：注册模组配置界面，监听客户端设置事件
+// @Mod(dist=Dist.CLIENT) 使此类仅在物理客户端加载
+// IConfigScreenFactory 扩展点让模组列表中出现配置按钮
 package com.alma.improved_original;
 
 import net.minecraft.client.Minecraft;

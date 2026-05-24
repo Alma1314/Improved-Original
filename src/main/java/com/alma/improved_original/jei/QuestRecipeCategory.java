@@ -1,4 +1,7 @@
 // JEI任务配方类别：目标三行两列 → 奖励三行两列，实心箭头，顶部名称，底部简介
+// 布局：左侧目标区（T_C1/T_C2两列）→ 中间实心箭头 → 右侧奖励区（R_C1/R_C2两列）
+// 物品不足3个时单列居中，超过3个双列显示
+// 底部简介区支持自动换行，无简介时显示斜体"暂无简介"
 package com.alma.improved_original.jei;
 
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -91,12 +94,14 @@ public class QuestRecipeCategory extends AbstractRecipeCategory<QuestRecipe> {
     public void draw(QuestRecipe recipe, IRecipeSlotsView slots, GuiGraphics g, double mx, double my) {
         var f = Minecraft.getInstance().font;
 
-        // 名称
+        // 名称：优先翻译键，否则用第一个target的类型名作为fallback
         Component name;
         if (recipe.nameKey() != null && !recipe.nameKey().isEmpty())
             name = Component.translatable(recipe.nameKey()).withStyle(ChatFormatting.BOLD, ChatFormatting.GOLD);
+        else if (!recipe.targetTypes().isEmpty())
+            name = Component.literal(recipe.targetTypes().get(0).name());
         else
-            name = Component.literal(recipe.type().name());
+            name = Component.literal("Quest");
         g.pose().pushPose();
         g.pose().translate(0, 0, 0);
         g.drawString(f, name, (W - f.width(name)) / 2, 0, 0xFFFFFFFF, false);

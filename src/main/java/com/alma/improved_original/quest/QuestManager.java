@@ -64,7 +64,10 @@ public class QuestManager {
     public static void refreshPlayerQuests(ServerPlayer player, QuestData data) {
         for (int i = 0; i < QuestData.SLOT_COUNT; i++) {
             if (!data.isSlotLocked(i)) {
-                data.setQuest(i, generateRandomQuest(player.getRandom(), data));
+                QuestDefinition quest = generateRandomQuest(player.getRandom(), data);
+                if (quest != null) {
+                    data.setQuest(i, quest);
+                }
             }
         }
         data.setLastRefreshTick(player.serverLevel().getGameTime());
@@ -76,7 +79,10 @@ public class QuestManager {
         boolean changed = false;
         if (!data.hasAnyQuest()) {
             for (int i = 0; i < QuestData.SLOT_COUNT; i++) {
-                data.setQuest(i, generateRandomQuest(player.getRandom(), data));
+                QuestDefinition quest = generateRandomQuest(player.getRandom(), data);
+                if (quest != null) {
+                    data.setQuest(i, quest);
+                }
             }
             changed = true;
         }
@@ -119,10 +125,9 @@ public class QuestManager {
                 break;
             }
         }
-
-        // 将目标数量范围解析为具体数值
-        List<QuestDefinition.ItemCount> resolvedTargets = chosen.targets().stream().map(t ->
-            new QuestDefinition.ItemCount(t.item(),
+        // 将目标数量范围解析为具体数值（每个target自带类型）
+        List<QuestDefinition.QuestTarget> resolvedTargets = chosen.targets().stream().map(t ->
+            new QuestDefinition.QuestTarget(t.type(), t.item(),
                 t.countMin() + random.nextInt(t.countMax() - t.countMin() + 1))
         ).toList();
 
@@ -132,7 +137,7 @@ public class QuestManager {
                 r.countMin() + random.nextInt(r.countMax() - r.countMin() + 1))
         ).toList();
 
-        return new QuestDefinition(chosen.type(), resolvedTargets, resolvedRewards,
+        return new QuestDefinition(resolvedTargets, resolvedRewards,
                 chosen.name(), chosen.description());
     }
 
@@ -174,12 +179,12 @@ public class QuestManager {
             var questOpt = data.getQuest(i);
             if (questOpt.isEmpty()) continue;
             QuestDefinition quest = questOpt.get();
-            if (quest.type() != type) continue;
 
-            // 查找匹配的目标索引
+            // 遍历每个target，只匹配类型和物品ID都符合的target
             List<Integer> progress = new ArrayList<>(data.getSlot(i).perTargetProgress());
             for (int t = 0; t < quest.targets().size(); t++) {
-                QuestDefinition.ItemCount target = quest.targets().get(t);
+                QuestDefinition.QuestTarget target = quest.targets().get(t);
+                if (target.type() != type) continue; // 每target独立类型匹配
                 if (target.item().equals(targetId)) {
                     int current = t < progress.size() ? progress.get(t) : 0;
                     int newProg = Math.min(current + amount, target.count());
@@ -238,7 +243,10 @@ public class QuestManager {
         QuestData data = player.getData(ModAttachments.QUEST_DATA.get());
         for (int i = 0; i < QuestData.SLOT_COUNT; i++) {
             if (!data.isSlotLocked(i)) {
-                data.setQuest(i, generateRandomQuest(player.getRandom(), data));
+                QuestDefinition quest = generateRandomQuest(player.getRandom(), data);
+                if (quest != null) {
+                    data.setQuest(i, quest);
+                }
             }
         }
         data.setLastRefreshTick(player.serverLevel().getGameTime());

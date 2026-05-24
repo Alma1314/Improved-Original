@@ -1,4 +1,7 @@
-// 网络包注册器：注册S2C同步包和C2S锁定包、刷新包的处理函数
+// 网络包注册器：注册S2C同步包和C2S锁定包、刷新包、打开面板包的处理函数
+// playToClient — 服务端→客户端方向
+// playToServer — 客户端→服务端方向
+// .optional() 标记为可选通道，JEI未安装时不影响连接
 package com.alma.improved_original.quest.network;
 
 import com.alma.improved_original.ImprovedOriginal;

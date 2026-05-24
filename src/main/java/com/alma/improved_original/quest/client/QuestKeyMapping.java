@@ -1,4 +1,7 @@
-// 任务面板按键绑定：默认Q键打开任务界面，可在游戏设置中修改
+// 任务面板按键绑定：默认O键打开任务界面，可在游戏设置中修改
+// 注册到 RegisterKeyMappingsEvent 使其出现在"控制"设置界面
+// KeyConflictContext.IN_GAME 限定仅在游戏中生效，GUI界面不触发
+// consumeClick() 防止长按重复发送网络包
 package com.alma.improved_original.quest.client;
 
 import com.alma.improved_original.ImprovedOriginal;

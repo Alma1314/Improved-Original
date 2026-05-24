@@ -46,7 +46,8 @@ authors="alma"
 
 # The description text for the mod (multi line!) (#mandatory)
 description='''
-nothing
+Improved Original — A NeoForge mod that adds a gemstone system (5 gems, 15 blocks) \
+and a daily quest system (5 quest types, JSON-driven quest pool, JEI integration).
 '''
 
 # The [[mixins]] block allows you to declare your mixin config to FML so that it gets loaded.

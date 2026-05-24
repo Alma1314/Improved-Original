@@ -1,4 +1,7 @@
 // JEI插件：注册每日任务配方类别，显示所有可能任务的目标物品与奖励关系
+// 实现 IModPlugin，使用 @JeiPlugin 自动注册
+// 用书作为分类入口图标，避免JEI侧边栏出现大量杂项图标
+// 读取 config/improved_original/quests/ 目录下所有JSON作为任务数据源
 package com.alma.improved_original.jei;
 
 import com.alma.improved_original.ImprovedOriginal;
@@ -67,14 +70,18 @@ public class QuestJeiPlugin implements IModPlugin {
         List<QuestRecipe> recipes = new ArrayList<>();
         for (QuestPoolConfig.PoolEntry entry : pool) {
             List<ItemStack> targetStacks = new ArrayList<>();
+            List<QuestType> targetTypes = new ArrayList<>();
             List<Integer> tMin = new ArrayList<>();
             List<Integer> tMax = new ArrayList<>();
             int ti = 0;
             for (var te : entry.targets()) {
                 if (ti >= MAX_ITEMS) break;
-                Item item = getTargetItem(entry.type(), te.item());
+                // 每target自带独立类型
+                QuestType tType = te.type();
+                Item item = getTargetItem(tType, te.item());
                 if (item == null) continue;
                 targetStacks.add(new ItemStack(item));
+                targetTypes.add(tType);
                 tMin.add(te.countMin());
                 tMax.add(te.countMax());
                 ti++;
@@ -97,7 +104,7 @@ public class QuestJeiPlugin implements IModPlugin {
             if (rewardStacks.isEmpty()) continue;
 
             recipes.add(new QuestRecipe(
-                    targetStacks, rewardStacks, entry.type(),
+                    targetStacks, rewardStacks, targetTypes,
                     entry.name(), entry.description(),
                     tMin, tMax, rMin, rMax, entry.weight()
             ));

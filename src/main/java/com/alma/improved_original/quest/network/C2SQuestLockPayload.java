@@ -1,4 +1,6 @@
 // 客户端→服务端：切换锁定/解锁指定槽位的任务
+// CustomPacketPayload 使用 ResourceLocation 作为类型标识
+// StreamCodec.composite 使用 VAR_INT 编码槽位号（1-3）
 package com.alma.improved_original.quest.network;
 
 import com.alma.improved_original.ImprovedOriginal;

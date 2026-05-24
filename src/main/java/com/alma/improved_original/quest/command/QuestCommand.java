@@ -1,4 +1,6 @@
 // /quest命令：无参数打开面板、lock/unlock锁定/解锁槽位
+// 使用 Brigadier API 注册命令，注册到 RegisterCommandsEvent
+// lock/unlock 子命令接受 IntegerArgumentType(1,3) 指定槽位
 package com.alma.improved_original.quest.command;
 
 import com.alma.improved_original.ImprovedOriginal;

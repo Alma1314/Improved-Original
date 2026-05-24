@@ -1,4 +1,7 @@
 // 数据生成-配方：5种宝石的烧炼/高炉配方、3x3合成块配方、分解配方
+// oreSmelting/oreBlasting 为每种矿石+深层矿石变体生成对应的烧炼和高炉配方
+// ShapedRecipeBuilder 生成 3x3 合成宝石块配方
+// ShapelessRecipeBuilder 生成 9:1 宝石块分解配方（反向合成）
 package com.alma.improved_original.datagen;
 
 import com.alma.improved_original.ImprovedOriginal;

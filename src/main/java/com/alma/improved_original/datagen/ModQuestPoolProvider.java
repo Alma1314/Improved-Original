@@ -1,4 +1,6 @@
 // 数据生成-任务池：生成默认任务池JSON到 generated/resources/data/improved_original/quest_pool/
+// buildDefaultEntries 包含五种任务类型的预设任务和宝石兑换钻石的特殊任务
+// 输出为 data/improved_original/quest_pool/default.json，运行时由 QuestPoolConfig 加载
 package com.alma.improved_original.datagen;
 
 import com.alma.improved_original.ImprovedOriginal;
@@ -113,39 +115,88 @@ public class ModQuestPoolProvider implements DataProvider {
         // Gem exchange: 6 gems for 1 diamond
         addGemExchangeEntry(entries);
 
+        // 混合类型示例：破坏石头 AND 击杀僵尸（演示多类型target）
+        addMixedExampleEntry(entries);
+
         return entries;
     }
 
-    private static void addGemExchangeEntry(JsonArray entries) {
-        String type = "COLLECT_ITEM";
+    // 混合类型示例：破坏石头 + 击杀僵尸（每target带独立type）
+    private static void addMixedExampleEntry(JsonArray entries) {
         String[][] targets = {
-            {"improved_original:ruby", "1", "1"},
-            {"improved_original:sapphire", "1", "1"},
-            {"improved_original:topaz", "1", "1"},
-            {"improved_original:amethyst", "1", "1"},
-            {"improved_original:onyx", "1", "1"},
-            {"minecraft:emerald", "1", "1"}
+            {"BREAK_BLOCK", "minecraft:stone", "10", "64"},
+            {"KILL_ENTITY", "minecraft:zombie", "3", "10"}
         };
         String[][] rewards = {
-            {"minecraft:diamond", "1", "1"}
+            {"minecraft:diamond", "1", "3"}
         };
-        addMultiEntry(entries, type, targets, rewards, 8,
-                "quest.improved_original.name.gem_exchange",
-                "quest.improved_original.desc_text.gem_exchange");
+        addMixedEntry(entries, targets, rewards, 5,
+                "quest.improved_original.name.mixed_example",
+                "quest.improved_original.desc_text.mixed_example");
     }
 
-    private static void addMultiEntry(JsonArray entries, String type,
-                                       String[][] targets, String[][] rewards,
-                                       int weight, String name, String description) {
+    // 多类型target的助手方法：每个target在JSON中写入独立"type"字段
+    private static void addMixedEntry(JsonArray entries,
+                                      String[][] targets, String[][] rewards,
+                                      int weight, String name, String description) {
         JsonObject entry = new JsonObject();
-        entry.addProperty("type", type);
 
         JsonArray targetsArr = new JsonArray();
         for (String[] t : targets) {
             JsonObject tObj = new JsonObject();
-            tObj.addProperty("item", t[0]);
-            tObj.addProperty("countMin", Integer.parseInt(t[1]));
-            tObj.addProperty("countMax", Integer.parseInt(t[2]));
+            tObj.addProperty("type", t[0]); // 每target独立type
+            tObj.addProperty("item", t[1]);
+            tObj.addProperty("countMin", Integer.parseInt(t[2]));
+            tObj.addProperty("countMax", Integer.parseInt(t[3]));
+            targetsArr.add(tObj);
+        }
+        entry.add("targets", targetsArr);
+
+        JsonArray rewardsArr = new JsonArray();
+        for (String[] r : rewards) {
+            JsonObject rObj = new JsonObject();
+            rObj.addProperty("item", r[0]);
+            rObj.addProperty("countMin", Integer.parseInt(r[1]));
+            rObj.addProperty("countMax", Integer.parseInt(r[2]));
+            rewardsArr.add(rObj);
+        }
+        entry.add("rewards", rewardsArr);
+
+        entry.addProperty("weight", weight);
+        entry.addProperty("name", name);
+        entry.addProperty("description", description);
+        entries.add(entry);
+    }
+
+    private static void addGemExchangeEntry(JsonArray entries) {
+        String[][] targets = {
+            {"COLLECT_ITEM", "improved_original:ruby", "1", "1"},
+            {"COLLECT_ITEM", "improved_original:sapphire", "1", "1"},
+            {"COLLECT_ITEM", "improved_original:topaz", "1", "1"},
+            {"COLLECT_ITEM", "improved_original:amethyst", "1", "1"},
+            {"COLLECT_ITEM", "improved_original:onyx", "1", "1"},
+            {"COLLECT_ITEM", "minecraft:emerald", "1", "1"}
+        };
+        String[][] rewards = {
+            {"minecraft:diamond", "1", "1"}
+        };
+        addMultiEntry(entries, targets, rewards, 8,
+                "quest.improved_original.name.gem_exchange",
+                "quest.improved_original.desc_text.gem_exchange");
+    }
+
+    private static void addMultiEntry(JsonArray entries,
+                                       String[][] targets, String[][] rewards,
+                                       int weight, String name, String description) {
+        JsonObject entry = new JsonObject();
+
+        JsonArray targetsArr = new JsonArray();
+        for (String[] t : targets) {
+            JsonObject tObj = new JsonObject();
+            tObj.addProperty("type", t[0]); // 每target独立type
+            tObj.addProperty("item", t[1]);
+            tObj.addProperty("countMin", Integer.parseInt(t[2]));
+            tObj.addProperty("countMax", Integer.parseInt(t[3]));
             targetsArr.add(tObj);
         }
         entry.add("targets", targetsArr);
@@ -174,14 +225,14 @@ public class ModQuestPoolProvider implements DataProvider {
         return "quest.improved_original.desc_text." + target.replace(':', '.');
     }
 
-    private static void addEntry(JsonArray entries, String type, String target,
+    private static void addEntry(JsonArray entries, String targetType, String target,
                                   int countMin, int countMax, String rewardItem,
                                   int rewardCountMin, int rewardCountMax, int weight) {
         JsonObject entry = new JsonObject();
-        entry.addProperty("type", type);
 
         JsonArray targetsArr = new JsonArray();
         JsonObject tObj = new JsonObject();
+        tObj.addProperty("type", targetType); // type写在target内部
         tObj.addProperty("item", target);
         tObj.addProperty("countMin", countMin);
         tObj.addProperty("countMax", countMax);

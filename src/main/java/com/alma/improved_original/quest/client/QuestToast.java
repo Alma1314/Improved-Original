@@ -1,4 +1,6 @@
-// 任务完成Toast通知：模仿原版成就弹出效果，显示标题+目标名+绿宝石奖励，5秒自动消失
+// 任务完成Toast通知：模仿原版成就弹出效果，显示标题+奖励描述，5秒自动消失
+// 渲染方式：顶部固定"任务完成"黄色标题，下方白色奖励详情，左侧绿宝石图标
+// 使用原版 toast/advancement 底图纹理，保持视觉一致性
 package com.alma.improved_original.quest.client;
 
 import net.minecraft.client.gui.Font;

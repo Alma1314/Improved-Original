@@ -1,4 +1,6 @@
 // 方块注册：5种宝石块+5种矿石+5种深层矿石，自动注册对应的BlockItem
+// 使用 DeferredRegister.Blocks 延迟注册，方块属性复制自原版绿宝石块/绿宝石矿石
+// registerBlocks() 内部同时注册 BlockItem，确保方块在创造模式物品栏中可用
 package com.alma.improved_original.block;
 
 import com.alma.improved_original.ImprovedOriginal;

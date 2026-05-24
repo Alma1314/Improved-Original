@@ -1,4 +1,6 @@
 // 客户端→服务端：请求手动刷新任务（消耗绿宝石）
+// 无数据负载，StreamCodec.unit 表示空包
+// 服务端处理时扣除绿宝石并重新生成未锁定槽位的任务
 package com.alma.improved_original.quest.network;
 
 import com.alma.improved_original.ImprovedOriginal;

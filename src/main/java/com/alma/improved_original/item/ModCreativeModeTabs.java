@@ -1,4 +1,5 @@
-// 创造模式标签页：包含所有宝石、宝石块、矿石及原版绿宝石物品
+// 创造模式标签页"宝石"：包含所有5种宝石、5种宝石块、5种矿石、5种深层矿石
+// 也包含原版绿宝石、绿宝石块、绿宝石矿石和深层绿宝石矿石作为参考
 package com.alma.improved_original.item;
 
 import com.alma.improved_original.ImprovedOriginal;

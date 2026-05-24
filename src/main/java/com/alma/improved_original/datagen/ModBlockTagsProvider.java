@@ -1,4 +1,6 @@
-// 数据生成-方块标签
+// 数据生成-方块标签：为宝石块添加 mineable/pickaxe 标签，确保只能用镐采集
+// 继承 BlockTagsProvider，在 addTags 中添加自定义标签
+// 生成到 src/generated/resources/data/minecraft/tags/block/
 package com.alma.improved_original.datagen;
 
 import com.alma.improved_original.ImprovedOriginal;

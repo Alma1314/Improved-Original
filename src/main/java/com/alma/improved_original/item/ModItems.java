@@ -1,4 +1,6 @@
 // 物品注册：5种宝石（红宝石、蓝宝石、黄宝石、紫宝石、黑宝石）
+// 使用 DeferredRegister.Items 延迟注册，Item.Properties() 使用默认属性
+// 模组专用物品注册表，方块对应的 BlockItem 在 ModBlocks 中自动注册
 package com.alma.improved_original.item;
 
 import com.alma.improved_original.ImprovedOriginal;

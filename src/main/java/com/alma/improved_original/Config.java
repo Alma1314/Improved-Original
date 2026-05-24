@@ -1,4 +1,9 @@
-// 模组配置文件：任务刷新间隔、绿宝石消耗、奖励范围等可配置项
+// 模组配置文件：任务刷新间隔、绿宝石消耗等可配置项
+// ModConfigSpec 构建器模式：BUILDER.comment().define() / defineInRange() 链式定义
+// 配置文件自动生成到 config/improved_original-common.toml
+// QUEST_REFRESH_INTERVAL_MINUTES: 任务自动刷新间隔（分钟）
+// EMERALD_LOCK_COST: 锁定单个槽位消耗的绿宝石数
+// EMERALD_REFRESH_COST: 手动刷新消耗的绿宝石数
 package com.alma.improved_original;
 
 import java.util.List;

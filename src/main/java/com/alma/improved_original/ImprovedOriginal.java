@@ -1,4 +1,7 @@
 // 主模组类：注册所有组件（物品、方块、创造标签、附件、网络包），监听服务端启动事件
+// @Mod 注解标记这是 NeoForge 模组入口，MOD_ID 来自下方常量定义
+// IEventBus 用于注册 DeferredRegister 和各种监听器
+// NeoForge.EVENT_BUS 用于注册服务端事件（ServerStartingEvent 等）
 package com.alma.improved_original;
 
 import com.alma.improved_original.block.ModBlocks;

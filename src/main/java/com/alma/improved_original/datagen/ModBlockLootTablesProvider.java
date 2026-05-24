@@ -1,4 +1,6 @@
 // 数据生成-战利品表：宝石块掉落自身，矿石按精准采集/时运逻辑掉落对应宝石
+// 继承 BlockLootSubProvider 使用 createOreDrop() 处理矿石掉落
+// createOreDrop 自动考虑时运和精准采集附魔效果
 package com.alma.improved_original.datagen;
 
 import com.alma.improved_original.block.ModBlocks;

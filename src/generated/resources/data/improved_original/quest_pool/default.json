@@ -1,7 +1,6 @@
 {
   "entries": [
     {
-      "type": "BREAK_BLOCK",
       "description": "quest.improved_original.desc_text.minecraft.stone",
       "name": "quest.improved_original.name.minecraft.stone",
       "rewards": [
@@ -13,6 +12,7 @@
       ],
       "targets": [
         {
+          "type": "BREAK_BLOCK",
           "countMax": 64,
           "countMin": 10,
           "item": "minecraft:stone"
@@ -21,7 +21,6 @@
       "weight": 20
     },
     {
-      "type": "BREAK_BLOCK",
       "description": "quest.improved_original.desc_text.minecraft.oak_log",
       "name": "quest.improved_original.name.minecraft.oak_log",
       "rewards": [
@@ -33,6 +32,7 @@
       ],
       "targets": [
         {
+          "type": "BREAK_BLOCK",
           "countMax": 48,
           "countMin": 10,
           "item": "minecraft:oak_log"
@@ -41,7 +41,6 @@
       "weight": 15
     },
     {
-      "type": "BREAK_BLOCK",
       "description": "quest.improved_original.desc_text.minecraft.coal_ore",
       "name": "quest.improved_original.name.minecraft.coal_ore",
       "rewards": [
@@ -53,6 +52,7 @@
       ],
       "targets": [
         {
+          "type": "BREAK_BLOCK",
           "countMax": 32,
           "countMin": 8,
           "item": "minecraft:coal_ore"
@@ -61,7 +61,6 @@
       "weight": 10
     },
     {
-      "type": "BREAK_BLOCK",
       "description": "quest.improved_original.desc_text.minecraft.iron_ore",
       "name": "quest.improved_original.name.minecraft.iron_ore",
       "rewards": [
@@ -73,6 +72,7 @@
       ],
       "targets": [
         {
+          "type": "BREAK_BLOCK",
           "countMax": 24,
           "countMin": 5,
           "item": "minecraft:iron_ore"
@@ -81,7 +81,6 @@
       "weight": 8
     },
     {
-      "type": "BREAK_BLOCK",
       "description": "quest.improved_original.desc_text.minecraft.dirt",
       "name": "quest.improved_original.name.minecraft.dirt",
       "rewards": [
@@ -93,6 +92,7 @@
       ],
       "targets": [
         {
+          "type": "BREAK_BLOCK",
           "countMax": 80,
           "countMin": 20,
           "item": "minecraft:dirt"
@@ -101,7 +101,6 @@
       "weight": 20
     },
     {
-      "type": "COLLECT_ITEM",
       "description": "quest.improved_original.desc_text.minecraft.dirt",
       "name": "quest.improved_original.name.minecraft.dirt",
       "rewards": [
@@ -113,6 +112,7 @@
       ],
       "targets": [
         {
+          "type": "COLLECT_ITEM",
           "countMax": 1,
           "countMin": 1,
           "item": "minecraft:dirt"
@@ -121,7 +121,6 @@
       "weight": 5
     },
     {
-      "type": "BREAK_BLOCK",
       "description": "quest.improved_original.desc_text.minecraft.deepslate",
       "name": "quest.improved_original.name.minecraft.deepslate",
       "rewards": [
@@ -133,6 +132,7 @@
       ],
       "targets": [
         {
+          "type": "BREAK_BLOCK",
           "countMax": 64,
           "countMin": 16,
           "item": "minecraft:deepslate"
@@ -141,7 +141,6 @@
       "weight": 18
     },
     {
-      "type": "BREAK_BLOCK",
       "description": "quest.improved_original.desc_text.minecraft.sand",
       "name": "quest.improved_original.name.minecraft.sand",
       "rewards": [
@@ -153,6 +152,7 @@
       ],
       "targets": [
         {
+          "type": "BREAK_BLOCK",
           "countMax": 48,
           "countMin": 12,
           "item": "minecraft:sand"
@@ -161,7 +161,6 @@
       "weight": 15
     },
     {
-      "type": "BREAK_BLOCK",
       "description": "quest.improved_original.desc_text.minecraft.gravel",
       "name": "quest.improved_original.name.minecraft.gravel",
       "rewards": [
@@ -173,6 +172,7 @@
       ],
       "targets": [
         {
+          "type": "BREAK_BLOCK",
           "countMax": 32,
           "countMin": 10,
           "item": "minecraft:gravel"
@@ -181,7 +181,6 @@
       "weight": 12
     },
     {
-      "type": "BREAK_BLOCK",
       "description": "quest.improved_original.desc_text.minecraft.netherrack",
       "name": "quest.improved_original.name.minecraft.netherrack",
       "rewards": [
@@ -193,6 +192,7 @@
       ],
       "targets": [
         {
+          "type": "BREAK_BLOCK",
           "countMax": 80,
           "countMin": 20,
           "item": "minecraft:netherrack"
@@ -201,7 +201,6 @@
       "weight": 15
     },
     {
-      "type": "KILL_ENTITY",
       "description": "quest.improved_original.desc_text.minecraft.zombie",
       "name": "quest.improved_original.name.minecraft.zombie",
       "rewards": [
@@ -213,6 +212,7 @@
       ],
       "targets": [
         {
+          "type": "KILL_ENTITY",
           "countMax": 20,
           "countMin": 5,
           "item": "minecraft:zombie"
@@ -221,7 +221,6 @@
       "weight": 20
     },
     {
-      "type": "KILL_ENTITY",
       "description": "quest.improved_original.desc_text.minecraft.skeleton",
       "name": "quest.improved_original.name.minecraft.skeleton",
       "rewards": [
@@ -233,6 +232,7 @@
       ],
       "targets": [
         {
+          "type": "KILL_ENTITY",
           "countMax": 20,
           "countMin": 5,
           "item": "minecraft:skeleton"
@@ -241,7 +241,6 @@
       "weight": 20
     },
     {
-      "type": "KILL_ENTITY",
       "description": "quest.improved_original.desc_text.minecraft.spider",
       "name": "quest.improved_original.name.minecraft.spider",
       "rewards": [
@@ -253,6 +252,7 @@
       ],
       "targets": [
         {
+          "type": "KILL_ENTITY",
           "countMax": 15,
           "countMin": 3,
           "item": "minecraft:spider"
@@ -261,7 +261,6 @@
       "weight": 15
     },
     {
-      "type": "KILL_ENTITY",
       "description": "quest.improved_original.desc_text.minecraft.creeper",
       "name": "quest.improved_original.name.minecraft.creeper",
       "rewards": [
@@ -273,6 +272,7 @@
       ],
       "targets": [
         {
+          "type": "KILL_ENTITY",
           "countMax": 15,
           "countMin": 3,
           "item": "minecraft:creeper"
@@ -281,7 +281,6 @@
       "weight": 15
     },
     {
-      "type": "KILL_ENTITY",
       "description": "quest.improved_original.desc_text.minecraft.enderman",
       "name": "quest.improved_original.name.minecraft.enderman",
       "rewards": [
@@ -293,6 +292,7 @@
       ],
       "targets": [
         {
+          "type": "KILL_ENTITY",
           "countMax": 10,
           "countMin": 3,
           "item": "minecraft:enderman"
@@ -301,7 +301,6 @@
       "weight": 8
     },
     {
-      "type": "KILL_ENTITY",
       "description": "quest.improved_original.desc_text.minecraft.witch",
       "name": "quest.improved_original.name.minecraft.witch",
       "rewards": [
@@ -313,6 +312,7 @@
       ],
       "targets": [
         {
+          "type": "KILL_ENTITY",
           "countMax": 10,
           "countMin": 3,
           "item": "minecraft:witch"
@@ -321,7 +321,6 @@
       "weight": 8
     },
     {
-      "type": "KILL_ENTITY",
       "description": "quest.improved_original.desc_text.minecraft.drowned",
       "name": "quest.improved_original.name.minecraft.drowned",
       "rewards": [
@@ -333,6 +332,7 @@
       ],
       "targets": [
         {
+          "type": "KILL_ENTITY",
           "countMax": 15,
           "countMin": 3,
           "item": "minecraft:drowned"
@@ -341,7 +341,6 @@
       "weight": 12
     },
     {
-      "type": "KILL_ENTITY",
       "description": "quest.improved_original.desc_text.minecraft.husk",
       "name": "quest.improved_original.name.minecraft.husk",
       "rewards": [
@@ -353,6 +352,7 @@
       ],
       "targets": [
         {
+          "type": "KILL_ENTITY",
           "countMax": 15,
           "countMin": 3,
           "item": "minecraft:husk"
@@ -361,7 +361,6 @@
       "weight": 12
     },
     {
-      "type": "CRAFT_ITEM",
       "description": "quest.improved_original.desc_text.minecraft.crafting_table",
       "name": "quest.improved_original.name.minecraft.crafting_table",
       "rewards": [
@@ -373,6 +372,7 @@
       ],
       "targets": [
         {
+          "type": "CRAFT_ITEM",
           "countMax": 10,
           "countMin": 3,
           "item": "minecraft:crafting_table"
@@ -381,7 +381,6 @@
       "weight": 10
     },
     {
-      "type": "CRAFT_ITEM",
       "description": "quest.improved_original.desc_text.minecraft.furnace",
       "name": "quest.improved_original.name.minecraft.furnace",
       "rewards": [
@@ -393,6 +392,7 @@
       ],
       "targets": [
         {
+          "type": "CRAFT_ITEM",
           "countMax": 8,
           "countMin": 3,
           "item": "minecraft:furnace"
@@ -401,7 +401,6 @@
       "weight": 10
     },
     {
-      "type": "CRAFT_ITEM",
       "description": "quest.improved_original.desc_text.minecraft.iron_pickaxe",
       "name": "quest.improved_original.name.minecraft.iron_pickaxe",
       "rewards": [
@@ -413,6 +412,7 @@
       ],
       "targets": [
         {
+          "type": "CRAFT_ITEM",
           "countMax": 5,
           "countMin": 1,
           "item": "minecraft:iron_pickaxe"
@@ -421,7 +421,6 @@
       "weight": 12
     },
     {
-      "type": "CRAFT_ITEM",
       "description": "quest.improved_original.desc_text.minecraft.iron_sword",
       "name": "quest.improved_original.name.minecraft.iron_sword",
       "rewards": [
@@ -433,6 +432,7 @@
       ],
       "targets": [
         {
+          "type": "CRAFT_ITEM",
           "countMax": 3,
           "countMin": 1,
           "item": "minecraft:iron_sword"
@@ -441,7 +441,6 @@
       "weight": 10
     },
     {
-      "type": "CRAFT_ITEM",
       "description": "quest.improved_original.desc_text.minecraft.torch",
       "name": "quest.improved_original.name.minecraft.torch",
       "rewards": [
@@ -453,6 +452,7 @@
       ],
       "targets": [
         {
+          "type": "CRAFT_ITEM",
           "countMax": 64,
           "countMin": 16,
           "item": "minecraft:torch"
@@ -461,7 +461,6 @@
       "weight": 15
     },
     {
-      "type": "CRAFT_ITEM",
       "description": "quest.improved_original.desc_text.minecraft.bread",
       "name": "quest.improved_original.name.minecraft.bread",
       "rewards": [
@@ -473,6 +472,7 @@
       ],
       "targets": [
         {
+          "type": "CRAFT_ITEM",
           "countMax": 20,
           "countMin": 5,
           "item": "minecraft:bread"
@@ -481,7 +481,6 @@
       "weight": 12
     },
     {
-      "type": "CRAFT_ITEM",
       "description": "quest.improved_original.desc_text.minecraft.stick",
       "name": "quest.improved_original.name.minecraft.stick",
       "rewards": [
@@ -493,6 +492,7 @@
       ],
       "targets": [
         {
+          "type": "CRAFT_ITEM",
           "countMax": 32,
           "countMin": 8,
           "item": "minecraft:stick"
@@ -501,7 +501,6 @@
       "weight": 8
     },
     {
-      "type": "CRAFT_ITEM",
       "description": "quest.improved_original.desc_text.minecraft.iron_chestplate",
       "name": "quest.improved_original.name.minecraft.iron_chestplate",
       "rewards": [
@@ -513,6 +512,7 @@
       ],
       "targets": [
         {
+          "type": "CRAFT_ITEM",
           "countMax": 3,
           "countMin": 1,
           "item": "minecraft:iron_chestplate"
@@ -521,7 +521,6 @@
       "weight": 8
     },
     {
-      "type": "COLLECT_ITEM",
       "description": "quest.improved_original.desc_text.minecraft.coal",
       "name": "quest.improved_original.name.minecraft.coal",
       "rewards": [
@@ -533,6 +532,7 @@
       ],
       "targets": [
         {
+          "type": "COLLECT_ITEM",
           "countMax": 32,
           "countMin": 5,
           "item": "minecraft:coal"
@@ -541,7 +541,6 @@
       "weight": 15
     },
     {
-      "type": "COLLECT_ITEM",
       "description": "quest.improved_original.desc_text.minecraft.iron_ingot",
       "name": "quest.improved_original.name.minecraft.iron_ingot",
       "rewards": [
@@ -553,6 +552,7 @@
       ],
       "targets": [
         {
+          "type": "COLLECT_ITEM",
           "countMax": 16,
           "countMin": 3,
           "item": "minecraft:iron_ingot"
@@ -561,7 +561,6 @@
       "weight": 10
     },
     {
-      "type": "COLLECT_ITEM",
       "description": "quest.improved_original.desc_text.minecraft.wheat",
       "name": "quest.improved_original.name.minecraft.wheat",
       "rewards": [
@@ -573,6 +572,7 @@
       ],
       "targets": [
         {
+          "type": "COLLECT_ITEM",
           "countMax": 32,
           "countMin": 8,
           "item": "minecraft:wheat"
@@ -581,7 +581,6 @@
       "weight": 12
     },
     {
-      "type": "COLLECT_ITEM",
       "description": "quest.improved_original.desc_text.minecraft.apple",
       "name": "quest.improved_original.name.minecraft.apple",
       "rewards": [
@@ -593,6 +592,7 @@
       ],
       "targets": [
         {
+          "type": "COLLECT_ITEM",
           "countMax": 12,
           "countMin": 3,
           "item": "minecraft:apple"
@@ -601,7 +601,6 @@
       "weight": 8
     },
     {
-      "type": "COLLECT_ITEM",
       "description": "quest.improved_original.desc_text.minecraft.rotten_flesh",
       "name": "quest.improved_original.name.minecraft.rotten_flesh",
       "rewards": [
@@ -613,6 +612,7 @@
       ],
       "targets": [
         {
+          "type": "COLLECT_ITEM",
           "countMax": 20,
           "countMin": 5,
           "item": "minecraft:rotten_flesh"
@@ -621,7 +621,6 @@
       "weight": 10
     },
     {
-      "type": "COLLECT_ITEM",
       "description": "quest.improved_original.desc_text.minecraft.bone",
       "name": "quest.improved_original.name.minecraft.bone",
       "rewards": [
@@ -633,6 +632,7 @@
       ],
       "targets": [
         {
+          "type": "COLLECT_ITEM",
           "countMax": 20,
           "countMin": 5,
           "item": "minecraft:bone"
@@ -641,7 +641,6 @@
       "weight": 10
     },
     {
-      "type": "COLLECT_ITEM",
       "description": "quest.improved_original.desc_text.minecraft.gunpowder",
       "name": "quest.improved_original.name.minecraft.gunpowder",
       "rewards": [
@@ -653,6 +652,7 @@
       ],
       "targets": [
         {
+          "type": "COLLECT_ITEM",
           "countMax": 16,
           "countMin": 3,
           "item": "minecraft:gunpowder"
@@ -661,7 +661,6 @@
       "weight": 10
     },
     {
-      "type": "COLLECT_ITEM",
       "description": "quest.improved_original.desc_text.minecraft.ender_pearl",
       "name": "quest.improved_original.name.minecraft.ender_pearl",
       "rewards": [
@@ -673,6 +672,7 @@
       ],
       "targets": [
         {
+          "type": "COLLECT_ITEM",
           "countMax": 5,
           "countMin": 1,
           "item": "minecraft:ender_pearl"
@@ -681,7 +681,6 @@
       "weight": 8
     },
     {
-      "type": "FIND_STRUCTURE",
       "description": "quest.improved_original.desc_text.minecraft.village_plains",
       "name": "quest.improved_original.name.minecraft.village_plains",
       "rewards": [
@@ -693,6 +692,7 @@
       ],
       "targets": [
         {
+          "type": "FIND_STRUCTURE",
           "countMax": 1,
           "countMin": 1,
           "item": "minecraft:village_plains"
@@ -701,7 +701,6 @@
       "weight": 10
     },
     {
-      "type": "FIND_STRUCTURE",
       "description": "quest.improved_original.desc_text.minecraft.village_desert",
       "name": "quest.improved_original.name.minecraft.village_desert",
       "rewards": [
@@ -713,6 +712,7 @@
       ],
       "targets": [
         {
+          "type": "FIND_STRUCTURE",
           "countMax": 1,
           "countMin": 1,
           "item": "minecraft:village_desert"
@@ -721,7 +721,6 @@
       "weight": 8
     },
     {
-      "type": "FIND_STRUCTURE",
       "description": "quest.improved_original.desc_text.minecraft.village_savanna",
       "name": "quest.improved_original.name.minecraft.village_savanna",
       "rewards": [
@@ -733,6 +732,7 @@
       ],
       "targets": [
         {
+          "type": "FIND_STRUCTURE",
           "countMax": 1,
           "countMin": 1,
           "item": "minecraft:village_savanna"
@@ -741,7 +741,6 @@
       "weight": 8
     },
     {
-      "type": "FIND_STRUCTURE",
       "description": "quest.improved_original.desc_text.minecraft.village_taiga",
       "name": "quest.improved_original.name.minecraft.village_taiga",
       "rewards": [
@@ -753,6 +752,7 @@
       ],
       "targets": [
         {
+          "type": "FIND_STRUCTURE",
           "countMax": 1,
           "countMin": 1,
           "item": "minecraft:village_taiga"
@@ -761,7 +761,6 @@
       "weight": 8
     },
     {
-      "type": "FIND_STRUCTURE",
       "description": "quest.improved_original.desc_text.minecraft.village_snowy",
       "name": "quest.improved_original.name.minecraft.village_snowy",
       "rewards": [
@@ -773,6 +772,7 @@
       ],
       "targets": [
         {
+          "type": "FIND_STRUCTURE",
           "countMax": 1,
           "countMin": 1,
           "item": "minecraft:village_snowy"
@@ -781,7 +781,6 @@
       "weight": 8
     },
     {
-      "type": "FIND_STRUCTURE",
       "description": "quest.improved_original.desc_text.minecraft.desert_pyramid",
       "name": "quest.improved_original.name.minecraft.desert_pyramid",
       "rewards": [
@@ -793,6 +792,7 @@
       ],
       "targets": [
         {
+          "type": "FIND_STRUCTURE",
           "countMax": 1,
           "countMin": 1,
           "item": "minecraft:desert_pyramid"
@@ -801,7 +801,6 @@
       "weight": 8
     },
     {
-      "type": "FIND_STRUCTURE",
       "description": "quest.improved_original.desc_text.minecraft.jungle_pyramid",
       "name": "quest.improved_original.name.minecraft.jungle_pyramid",
       "rewards": [
@@ -813,6 +812,7 @@
       ],
       "targets": [
         {
+          "type": "FIND_STRUCTURE",
           "countMax": 1,
           "countMin": 1,
           "item": "minecraft:jungle_pyramid"
@@ -821,7 +821,6 @@
       "weight": 8
     },
     {
-      "type": "FIND_STRUCTURE",
       "description": "quest.improved_original.desc_text.minecraft.pillager_outpost",
       "name": "quest.improved_original.name.minecraft.pillager_outpost",
       "rewards": [
@@ -833,6 +832,7 @@
       ],
       "targets": [
         {
+          "type": "FIND_STRUCTURE",
           "countMax": 1,
           "countMin": 1,
           "item": "minecraft:pillager_outpost"
@@ -841,7 +841,6 @@
       "weight": 8
     },
     {
-      "type": "FIND_STRUCTURE",
       "description": "quest.improved_original.desc_text.minecraft.mineshaft",
       "name": "quest.improved_original.name.minecraft.mineshaft",
       "rewards": [
@@ -853,6 +852,7 @@
       ],
       "targets": [
         {
+          "type": "FIND_STRUCTURE",
           "countMax": 1,
           "countMin": 1,
           "item": "minecraft:mineshaft"
@@ -861,7 +861,6 @@
       "weight": 8
     },
     {
-      "type": "FIND_STRUCTURE",
       "description": "quest.improved_original.desc_text.minecraft.stronghold",
       "name": "quest.improved_original.name.minecraft.stronghold",
       "rewards": [
@@ -873,6 +872,7 @@
       ],
       "targets": [
         {
+          "type": "FIND_STRUCTURE",
           "countMax": 1,
           "countMin": 1,
           "item": "minecraft:stronghold"
@@ -881,7 +881,6 @@
       "weight": 5
     },
     {
-      "type": "FIND_STRUCTURE",
       "description": "quest.improved_original.desc_text.minecraft.ruined_portal",
       "name": "quest.improved_original.name.minecraft.ruined_portal",
       "rewards": [
@@ -893,6 +892,7 @@
       ],
       "targets": [
         {
+          "type": "FIND_STRUCTURE",
           "countMax": 1,
           "countMin": 1,
           "item": "minecraft:ruined_portal"
@@ -901,7 +901,6 @@
       "weight": 8
     },
     {
-      "type": "FIND_STRUCTURE",
       "description": "quest.improved_original.desc_text.minecraft.ocean_ruin_cold",
       "name": "quest.improved_original.name.minecraft.ocean_ruin_cold",
       "rewards": [
@@ -913,6 +912,7 @@
       ],
       "targets": [
         {
+          "type": "FIND_STRUCTURE",
           "countMax": 1,
           "countMin": 1,
           "item": "minecraft:ocean_ruin_cold"
@@ -921,7 +921,6 @@
       "weight": 6
     },
     {
-      "type": "FIND_STRUCTURE",
       "description": "quest.improved_original.desc_text.minecraft.shipwreck",
       "name": "quest.improved_original.name.minecraft.shipwreck",
       "rewards": [
@@ -933,6 +932,7 @@
       ],
       "targets": [
         {
+          "type": "FIND_STRUCTURE",
           "countMax": 1,
           "countMin": 1,
           "item": "minecraft:shipwreck"
@@ -941,7 +941,6 @@
       "weight": 6
     },
     {
-      "type": "FIND_STRUCTURE",
       "description": "quest.improved_original.desc_text.minecraft.buried_treasure",
       "name": "quest.improved_original.name.minecraft.buried_treasure",
       "rewards": [
@@ -953,6 +952,7 @@
       ],
       "targets": [
         {
+          "type": "FIND_STRUCTURE",
           "countMax": 1,
           "countMin": 1,
           "item": "minecraft:buried_treasure"
@@ -961,7 +961,6 @@
       "weight": 6
     },
     {
-      "type": "FIND_STRUCTURE",
       "description": "quest.improved_original.desc_text.minecraft.swamp_hut",
       "name": "quest.improved_original.name.minecraft.swamp_hut",
       "rewards": [
@@ -973,6 +972,7 @@
       ],
       "targets": [
         {
+          "type": "FIND_STRUCTURE",
           "countMax": 1,
           "countMin": 1,
           "item": "minecraft:swamp_hut"
@@ -981,7 +981,6 @@
       "weight": 6
     },
     {
-      "type": "FIND_STRUCTURE",
       "description": "quest.improved_original.desc_text.minecraft.igloo",
       "name": "quest.improved_original.name.minecraft.igloo",
       "rewards": [
@@ -993,6 +992,7 @@
       ],
       "targets": [
         {
+          "type": "FIND_STRUCTURE",
           "countMax": 1,
           "countMin": 1,
           "item": "minecraft:igloo"
@@ -1001,7 +1001,6 @@
       "weight": 5
     },
     {
-      "type": "COLLECT_ITEM",
       "description": "quest.improved_original.desc_text.gem_exchange",
       "name": "quest.improved_original.name.gem_exchange",
       "rewards": [
@@ -1013,38 +1012,70 @@
       ],
       "targets": [
         {
+          "type": "COLLECT_ITEM",
           "countMax": 1,
           "countMin": 1,
           "item": "improved_original:ruby"
         },
         {
+          "type": "COLLECT_ITEM",
           "countMax": 1,
           "countMin": 1,
           "item": "improved_original:sapphire"
         },
         {
+          "type": "COLLECT_ITEM",
           "countMax": 1,
           "countMin": 1,
           "item": "improved_original:topaz"
         },
         {
+          "type": "COLLECT_ITEM",
           "countMax": 1,
           "countMin": 1,
           "item": "improved_original:amethyst"
         },
         {
+          "type": "COLLECT_ITEM",
           "countMax": 1,
           "countMin": 1,
           "item": "improved_original:onyx"
         },
         {
+          "type": "COLLECT_ITEM",
           "countMax": 1,
           "countMin": 1,
           "item": "minecraft:emerald"
         }
       ],
       "weight": 8
+    },
+    {
+      "description": "quest.improved_original.desc_text.mixed_example",
+      "name": "quest.improved_original.name.mixed_example",
+      "rewards": [
+        {
+          "countMax": 3,
+          "countMin": 1,
+          "item": "minecraft:diamond"
+        }
+      ],
+      "targets": [
+        {
+          "type": "BREAK_BLOCK",
+          "countMax": 64,
+          "countMin": 10,
+          "item": "minecraft:stone"
+        },
+        {
+          "type": "KILL_ENTITY",
+          "countMax": 10,
+          "countMin": 3,
+          "item": "minecraft:zombie"
+        }
+      ],
+      "weight": 5
     }
   ],
-  "totalWeight": 540
+  "totalWeight": 545
 }

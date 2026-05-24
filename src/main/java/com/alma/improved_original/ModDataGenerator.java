@@ -1,4 +1,6 @@
-// 数据生成入口：注册所有DataProvider（战利品表、配方、标签、模型、语言文件）
+// 数据生成入口：注册所有DataProvider（战利品表、配方、标签、模型、语言文件、任务池）
+// 通过 GatherDataEvent 触发，使用 ./gradlew runData 执行
+// event.includeServer() 和 event.includeClient() 区分服务端/客户端数据生成
 package com.alma.improved_original;
 
 import com.alma.improved_original.datagen.*;

@@ -1,4 +1,6 @@
-// 数据生成-中文翻译：物品/方块名、任务系统所有文本
+// 数据生成-中文翻译：物品/方块名、任务系统所有文本、JEI界面文本
+// 继承 LanguageProvider 生成 assets/improved_original/lang/zh_cn.json
+// 完整的中文本地化，玩家使用中文语言时自动加载
 package com.alma.improved_original.datagen;
 
 import com.alma.improved_original.ImprovedOriginal;
@@ -187,5 +189,9 @@ public class ModZhCnLangProvider extends LanguageProvider {
         // Gem exchange quest
         add("quest.improved_original.name.gem_exchange", "宝石收藏家");
         add("quest.improved_original.desc_text.gem_exchange", "收集全部6种宝石换取一颗钻石");
+
+        // 混合类型示例
+        add("quest.improved_original.name.mixed_example", "冒险者挑战");
+        add("quest.improved_original.desc_text.mixed_example", "开采石头同时击败僵尸，获取钻石奖励");
     }
 }

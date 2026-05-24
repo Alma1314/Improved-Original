@@ -127,6 +127,7 @@ src/main/java/com/alma/improved_original/
 │   │   ├── S2CQuestSyncPayload.java   # 服务端→客户端同步
 │   │   ├── C2SQuestLockPayload.java   # 客户端→服务端锁定
 │   │   ├── C2SQuestRefreshPayload.java # 客户端→服务端刷新
+│   │   ├── C2SQuestOpenPayload.java   # 客户端→服务端打开面板
 │   │   └── ModPayloadHandlers.java    # 网络包注册
 │   ├── event/
 │   │   ├── QuestEventHandlers.java    # 游戏事件+结构检测
@@ -135,6 +136,7 @@ src/main/java/com/alma/improved_original/
 │   └── client/
 │       ├── ClientQuestCache.java      # 客户端数据缓存
 │       ├── QuestClientEvents.java     # 客户端网络处理
+│       ├── QuestKeyMapping.java       # 按键绑定（O键）
 │       └── QuestToast.java            # 完成通知Toast
 ├── jei/
 │   ├── QuestJeiPlugin.java            # JEI插件注册

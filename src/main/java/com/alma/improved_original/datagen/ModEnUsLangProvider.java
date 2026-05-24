@@ -1,4 +1,6 @@
-// 数据生成-英文翻译：物品/方块名、任务系统所有文本
+// 数据生成-英文翻译：物品/方块名、任务系统所有文本、JEI界面文本
+// 继承 LanguageProvider 生成 assets/improved_original/lang/en_us.json
+// 包含所有 ModItems、ModBlocks 的显示名称以及完整任务系统翻译
 package com.alma.improved_original.datagen;
 
 import com.alma.improved_original.ImprovedOriginal;
@@ -183,5 +185,9 @@ public class ModEnUsLangProvider extends LanguageProvider {
         // Gem exchange quest
         add("quest.improved_original.name.gem_exchange", "Gem Collector");
         add("quest.improved_original.desc_text.gem_exchange", "Collect all 6 gem types to trade for a diamond");
+
+        // Mixed type example
+        add("quest.improved_original.name.mixed_example", "Adventurer's Challenge");
+        add("quest.improved_original.desc_text.mixed_example", "Mine stone AND slay zombies for a diamond reward");
     }
 }

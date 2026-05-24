@@ -1,4 +1,7 @@
 // 玩家完整任务数据：3个槽位、上次刷新时间、激活状态，支持NBT持久化和网络传输
+// active 标记控制"首次打开面板前不追踪进度"行为
+// 通过 AttachmentType 自动附加到每个玩家，退出时保存、重进时恢复
+// CODEC 用于 NBT 持久化，STREAM_CODEC 用于网络包同步
 package com.alma.improved_original.quest;
 
 import com.mojang.serialization.Codec;

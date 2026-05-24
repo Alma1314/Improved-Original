@@ -1,4 +1,6 @@
 // 玩家数据附加器：注册AttachmentType<QuestData>，为每个玩家附加独立的每日任务数据
+// NeoForge Attachment 系统：服务端数据自动持久化到玩家NBT，无需手动保存
+// QuestData.CODEC 负责序列化/反序列化，确保退出重进后任务数据不丢失
 package com.alma.improved_original.quest;
 
 import com.alma.improved_original.ImprovedOriginal;

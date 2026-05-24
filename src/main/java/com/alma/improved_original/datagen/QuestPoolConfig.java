@@ -21,11 +21,12 @@ public class QuestPoolConfig {
         cachedPool = null;
     }
 
-    public record TargetEntry(ResourceLocation item, int countMin, int countMax) {}
+    // 目标条目：类型（必需）、物品ID、数量范围
+    public record TargetEntry(QuestType type, ResourceLocation item, int countMin, int countMax) {}
     public record RewardEntry(ResourceLocation item, int countMin, int countMax) {}
 
+    // 池条目：目标/奖励列表，权重，翻译键
     public record PoolEntry(
-            QuestType type,
             List<TargetEntry> targets,
             List<RewardEntry> rewards,
             int weight,
@@ -66,7 +67,6 @@ public class QuestPoolConfig {
                         for (JsonElement elem : entriesArr) {
                             JsonObject entry = elem.getAsJsonObject();
                             String entryName = entry.has("name") ? entry.get("name").getAsString() : "(unnamed)";
-                            QuestType type = QuestType.valueOf(entry.get("type").getAsString().toUpperCase());
 
                             List<TargetEntry> targets;
                             if (entry.has("targets")) {
@@ -89,7 +89,7 @@ public class QuestPoolConfig {
                             int weight = entry.has("weight") ? entry.get("weight").getAsInt() : 10;
                             String name = entry.has("name") ? entry.get("name").getAsString() : "";
                             String description = entry.has("description") ? entry.get("description").getAsString() : "";
-                            allEntries.add(new PoolEntry(type, targets, rewards, weight, name, description));
+                            allEntries.add(new PoolEntry(targets, rewards, weight, name, description));
                             totalParsed++;
                         }
                     }
@@ -103,6 +103,7 @@ public class QuestPoolConfig {
         return allEntries;
     }
 
+    // 解析targets数组，每个target必须有"type"字段
     private static List<TargetEntry> parseTargetEntries(JsonArray arr) {
         List<TargetEntry> result = new ArrayList<>();
         for (JsonElement e : arr) {
@@ -110,7 +111,8 @@ public class QuestPoolConfig {
             ResourceLocation item = ResourceLocation.parse(o.get("item").getAsString());
             int cMin = o.has("countMin") ? o.get("countMin").getAsInt() : 1;
             int cMax = o.has("countMax") ? o.get("countMax").getAsInt() : 1;
-            result.add(new TargetEntry(item, cMin, cMax));
+            QuestType targetType = QuestType.valueOf(o.get("type").getAsString().toUpperCase());
+            result.add(new TargetEntry(targetType, item, cMin, cMax));
         }
         return result;
     }
@@ -206,35 +208,34 @@ public class QuestPoolConfig {
     }
 
     private static void addGemExchangeEntry(JsonArray entries) {
-        String type = "COLLECT_ITEM";
         String[][] targets = {
-            {"improved_original:ruby", "1", "1"},
-            {"improved_original:sapphire", "1", "1"},
-            {"improved_original:topaz", "1", "1"},
-            {"improved_original:amethyst", "1", "1"},
-            {"improved_original:onyx", "1", "1"},
-            {"minecraft:emerald", "1", "1"}
+            {"COLLECT_ITEM", "improved_original:ruby", "1", "1"},
+            {"COLLECT_ITEM", "improved_original:sapphire", "1", "1"},
+            {"COLLECT_ITEM", "improved_original:topaz", "1", "1"},
+            {"COLLECT_ITEM", "improved_original:amethyst", "1", "1"},
+            {"COLLECT_ITEM", "improved_original:onyx", "1", "1"},
+            {"COLLECT_ITEM", "minecraft:emerald", "1", "1"}
         };
         String[][] rewards = {
             {"minecraft:diamond", "1", "1"}
         };
         String name = "quest.improved_original.name.gem_exchange";
         String desc = "quest.improved_original.desc_text.gem_exchange";
-        addMultiEntry(entries, type, targets, rewards, 8, name, desc);
+        addMultiEntry(entries, targets, rewards, 8, name, desc);
     }
 
-    private static void addMultiEntry(JsonArray entries, String type,
+    private static void addMultiEntry(JsonArray entries,
                                        String[][] targets, String[][] rewards,
                                        int weight, String name, String description) {
         JsonObject entry = new JsonObject();
-        entry.addProperty("type", type);
 
         JsonArray targetsArr = new JsonArray();
         for (String[] t : targets) {
             JsonObject tObj = new JsonObject();
-            tObj.addProperty("item", t[0]);
-            tObj.addProperty("countMin", Integer.parseInt(t[1]));
-            tObj.addProperty("countMax", Integer.parseInt(t[2]));
+            tObj.addProperty("type", t[0]); // 每target独立type
+            tObj.addProperty("item", t[1]);
+            tObj.addProperty("countMin", Integer.parseInt(t[2]));
+            tObj.addProperty("countMax", Integer.parseInt(t[3]));
             targetsArr.add(tObj);
         }
         entry.add("targets", targetsArr);
@@ -255,30 +256,30 @@ public class QuestPoolConfig {
         entries.add(entry);
     }
 
-    private static String nameKey(String type, String target) {
+    private static String nameKey(String target) {
         return "quest.improved_original.name." + target.replace(':', '.');
     }
 
-    private static String descKey(String type, String target) {
+    private static String descKey(String target) {
         return "quest.improved_original.desc_text." + target.replace(':', '.');
     }
 
-    private static void addEntry(JsonArray entries, String type, String target,
+    private static void addEntry(JsonArray entries, String targetType, String target,
                                   int countMin, int countMax, String rewardItem,
                                   int rewardCountMin, int rewardCountMax, int weight) {
-        addEntryInternal(entries, type, target, countMin, countMax, rewardItem, rewardCountMin, rewardCountMax, weight,
-                nameKey(type, target), descKey(type, target));
+        addEntryInternal(entries, targetType, target, countMin, countMax, rewardItem, rewardCountMin, rewardCountMax, weight,
+                nameKey(target), descKey(target));
     }
 
-    private static void addEntryInternal(JsonArray entries, String type, String target,
+    private static void addEntryInternal(JsonArray entries, String targetType, String target,
                                   int countMin, int countMax, String rewardItem,
                                   int rewardCountMin, int rewardCountMax, int weight,
                                   String name, String description) {
         JsonObject entry = new JsonObject();
-        entry.addProperty("type", type);
 
         JsonArray targetsArr = new JsonArray();
         JsonObject tObj = new JsonObject();
+        tObj.addProperty("type", targetType); // type写在target内部
         tObj.addProperty("item", target);
         tObj.addProperty("countMin", countMin);
         tObj.addProperty("countMax", countMax);

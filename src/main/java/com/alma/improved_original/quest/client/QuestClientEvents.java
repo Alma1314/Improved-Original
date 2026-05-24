@@ -1,4 +1,6 @@
 // 客户端网络事件处理：接收服务端同步包，更新缓存，刷新面板，显示完成Toast
+// 在 Minecraft.getInstance().execute() 中执行以确保线程安全
+// 三种处理分支：打开面板、刷新已有面板、显示完成Toast（可叠加）
 package com.alma.improved_original.quest.client;
 
 import com.alma.improved_original.quest.network.S2CQuestSyncPayload;

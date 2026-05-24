@@ -1,4 +1,6 @@
 // 客户端→服务端：请求打开任务面板（按键触发）
+// 由 QuestKeyMapping 在客户端按下 O 键时发送
+// 服务端收到后激活任务数据并同步回客户端，触发面板打开
 package com.alma.improved_original.quest.network;
 
 import com.alma.improved_original.ImprovedOriginal;

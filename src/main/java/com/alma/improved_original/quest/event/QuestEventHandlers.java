@@ -1,4 +1,6 @@
 // 游戏事件监听：方块破坏、实体击杀、物品合成、物品拾取、结构探索，触发任务进度更新
+// 所有事件独立处理，仅对生存模式的在线玩家生效
+// 结构检测采用每20tick（约1秒）轮询，避免每tick昂贵的结构查找
 package com.alma.improved_original.quest.event;
 
 import com.alma.improved_original.ImprovedOriginal;

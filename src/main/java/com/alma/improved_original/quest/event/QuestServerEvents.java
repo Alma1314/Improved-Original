@@ -1,4 +1,6 @@
 // 服务端Tick事件：检测任务刷新计时器，到时间自动刷新所有在线玩家任务
+// ServerTickEvent.Post 在每个tick末尾触发，适合做计时器桶检查
+// 委托给 QuestManager.onServerTick 处理具体刷新逻辑
 package com.alma.improved_original.quest.event;
 
 import com.alma.improved_original.ImprovedOriginal;

@@ -1,4 +1,8 @@
 // 服务端→客户端：同步任务数据，可选携带完成信息和打开面板标记
+// 三种工厂方法对应三种使用场景：
+//   syncOnly — 静默更新UI（进度更新时）
+//   withCompletion — 携带完成信息触发Toast
+//   openScreen — 标记打开任务面板（/quest命令或按键）
 package com.alma.improved_original.quest.network;
 
 import com.alma.improved_original.ImprovedOriginal;

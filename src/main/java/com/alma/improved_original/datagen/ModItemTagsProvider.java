@@ -1,4 +1,5 @@
-// 数据生成-物品标签
+// 数据生成-物品标签：为宝石添加 mining_enchantable 标签，允许时运/精准采集附魔生效
+// 继承 ItemTagsProvider，需要传入 BlockTagsProvider 的 contentsGetter
 package com.alma.improved_original.datagen;
 
 import com.alma.improved_original.ImprovedOriginal;

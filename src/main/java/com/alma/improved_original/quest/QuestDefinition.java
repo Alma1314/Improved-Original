@@ -1,5 +1,6 @@
-// 任务定义：类型、多目标物品列表、多奖励物品列表、名称、简介
-// 每个目标和奖励由 ItemCount 记录表示（物品ID + 数量），支持多目标/多奖励
+// 任务定义：多目标任务列表（每目标可独立指定类型）、多奖励物品列表、名称、简介
+// QuestTarget 记录（类型+物品ID+数量）让单个任务可混合BREAK_BLOCK+KILL_ENTITY等不同类型
+// ItemCount 记录（仅物品ID+数量）用于奖励列表，奖励无需区分类型
 package com.alma.improved_original.quest;
 
 import com.alma.improved_original.ImprovedOriginal;
@@ -19,13 +20,31 @@ import net.minecraft.world.item.ItemStack;
 import java.util.List;
 
 public record QuestDefinition(
-        QuestType type,
-        List<ItemCount> targets,
+        List<QuestTarget> targets,
         List<ItemCount> rewards,
         String name,
         String description
 ) {
-    // 物品+数量对：用于目标列表和奖励列表，含Codec/StreamCodec序列化
+    // 任务目标：类型（BREAK_BLOCK等）+ 物品/实体/结构ID + 数量，支持每目标独立类型
+    public record QuestTarget(QuestType type, ResourceLocation item, int count) {
+        public static final Codec<QuestTarget> CODEC = RecordCodecBuilder.create(instance ->
+                instance.group(
+                        QuestType.CODEC.fieldOf("type").forGetter(QuestTarget::type),
+                        ResourceLocation.CODEC.fieldOf("item").forGetter(QuestTarget::item),
+                        Codec.INT.fieldOf("count").forGetter(QuestTarget::count)
+                ).apply(instance, QuestTarget::new)
+        );
+
+        public static final StreamCodec<FriendlyByteBuf, QuestTarget> STREAM_CODEC =
+                StreamCodec.composite(
+                        QuestType.STREAM_CODEC, QuestTarget::type,
+                        ResourceLocation.STREAM_CODEC, QuestTarget::item,
+                        ByteBufCodecs.VAR_INT, QuestTarget::count,
+                        QuestTarget::new
+                );
+    }
+
+    // 奖励物品+数量对：仅需要物品ID和数量，无需类型
     public record ItemCount(ResourceLocation item, int count) {
         public static final Codec<ItemCount> CODEC = RecordCodecBuilder.create(instance ->
                 instance.group(
@@ -54,8 +73,7 @@ public record QuestDefinition(
 
     public static final Codec<QuestDefinition> CODEC = RecordCodecBuilder.create(instance ->
             instance.group(
-                    QuestType.CODEC.fieldOf("type").forGetter(QuestDefinition::type),
-                    Codec.list(ItemCount.CODEC).fieldOf("targets").forGetter(QuestDefinition::targets),
+                    Codec.list(QuestTarget.CODEC).fieldOf("targets").forGetter(QuestDefinition::targets),
                     Codec.list(ItemCount.CODEC).fieldOf("rewards").forGetter(QuestDefinition::rewards),
                     Codec.STRING.optionalFieldOf("name", "").forGetter(QuestDefinition::name),
                     Codec.STRING.optionalFieldOf("description", "").forGetter(QuestDefinition::description)
@@ -64,12 +82,11 @@ public record QuestDefinition(
 
     public static final StreamCodec<FriendlyByteBuf, QuestDefinition> STREAM_CODEC =
             StreamCodec.composite(
-                    QuestType.STREAM_CODEC, QuestDefinition::type,
-                    ItemCount.STREAM_CODEC.apply(ByteBufCodecs.list()), QuestDefinition::targets,
+                    QuestTarget.STREAM_CODEC.apply(ByteBufCodecs.list()), QuestDefinition::targets,
                     ItemCount.STREAM_CODEC.apply(ByteBufCodecs.list()), QuestDefinition::rewards,
                     QuestInfo.STREAM_CODEC, q -> new QuestInfo(q.name, q.description),
-                    (type, targets, rewards, info) ->
-                            new QuestDefinition(type, targets, rewards, info.name, info.description)
+                    (targets, rewards, info) ->
+                            new QuestDefinition(targets, rewards, info.name, info.description)
             );
 
     // 创建所有奖励物品的ItemStack列表
@@ -82,16 +99,11 @@ public record QuestDefinition(
 
     // 所有目标的总数量（用于UI聚合显示）
     public int totalTargetCount() {
-        return targets.stream().mapToInt(ItemCount::count).sum();
+        return targets.stream().mapToInt(QuestTarget::count).sum();
     }
 
-    // 获取任务类型描述键（如 "quest.improved_original.desc.break"）
-    public String getDescriptionKey() {
-        return "quest." + ImprovedOriginal.MOD_ID + ".desc." + type.getTranslationKeySuffix();
-    }
-
-    // 根据任务类型查找单个目标的显示名称（支持方块、物品、实体、结构）
-    public Component getTargetDisplayName(ResourceLocation targetId) {
+    // 根据目标类型查找显示名称（支持方块、物品、实体、结构）
+    public Component getTargetDisplayName(QuestType type, ResourceLocation targetId) {
         return switch (type) {
             case BREAK_BLOCK, CRAFT_ITEM, COLLECT_ITEM ->
                     BuiltInRegistries.ITEM.getOptional(targetId)
@@ -111,7 +123,7 @@ public record QuestDefinition(
 
     // 获取所有目标的显示名称列表
     public List<Component> getTargetDisplayNames() {
-        return targets.stream().map(t -> getTargetDisplayName(t.item())).toList();
+        return targets.stream().map(t -> getTargetDisplayName(t.type(), t.item())).toList();
     }
 
     // 查找单个奖励物品的显示名称
