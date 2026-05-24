@@ -27,9 +27,9 @@ public class QuestRecipeCategory extends AbstractRecipeCategory<QuestRecipe> {
                 Component.translatable("quest.improved_original.jei.category"),
                 guiHelper.createDrawableItemStack(new ItemStack(Items.EMERALD)),
                 150,
-                54
+                68
         );
-        this.background = guiHelper.createBlankDrawable(150, 54);
+        this.background = guiHelper.createBlankDrawable(150, 68);
         this.slotDrawable = guiHelper.getSlotDrawable();
     }
 
@@ -97,5 +97,11 @@ public class QuestRecipeCategory extends AbstractRecipeCategory<QuestRecipe> {
         // Arrow between slots
         guiGraphics.drawString(font, Component.translatable("quest.improved_original.jei.arrow"),
                 60, 24, ChatFormatting.GRAY.getColor());
+
+        // Description below the number line (wrapped if needed, max ~140px wide)
+        if (recipe.descKey() != null && !recipe.descKey().isEmpty()) {
+            Component desc = Component.translatable(recipe.descKey()).withStyle(ChatFormatting.DARK_GRAY);
+            guiGraphics.drawWordWrap(font, desc, 5, 52, 140, ChatFormatting.DARK_GRAY.getColor());
+        }
     }
 }

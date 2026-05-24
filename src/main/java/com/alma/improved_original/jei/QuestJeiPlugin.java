@@ -51,10 +51,22 @@ public class QuestJeiPlugin implements IModPlugin {
 
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
-        // Register the emerald as a catalyst so users can find quest recipes
-        // by looking at an emerald in JEI
+        // Load quest pool to register catalysts for target/reward items
+        Path configDir = FMLPaths.CONFIGDIR.get();
+        List<QuestPoolConfig.PoolEntry> pool = QuestPoolConfig.loadFromConfig(configDir);
+
+        // Emerald as the main entry point
         registration.addRecipeCatalyst(VanillaTypes.ITEM_STACK,
                 new ItemStack(Items.EMERALD), QUEST_RECIPE_TYPE);
+
+        // Register each target item as a catalyst
+        for (QuestPoolConfig.PoolEntry entry : pool) {
+            Item targetItem = getTargetItem(entry.type(), entry.target());
+            if (targetItem != null) {
+                registration.addRecipeCatalyst(VanillaTypes.ITEM_STACK,
+                        new ItemStack(targetItem), QUEST_RECIPE_TYPE);
+            }
+        }
     }
 
     @Override
@@ -86,11 +98,6 @@ public class QuestJeiPlugin implements IModPlugin {
 
         LOGGER.info("JEI: Registering {} quest recipes", recipes.size());
         registration.addRecipes(QUEST_RECIPE_TYPE, recipes);
-
-        for (QuestRecipe recipe : recipes) {
-            registration.addIngredientInfo(recipe.target(), VanillaTypes.ITEM_STACK,
-                    Component.translatable("quest.improved_original.jei.quest_target_info"));
-        }
     }
 
     private static Item getTargetItem(QuestType type, ResourceLocation targetId) {
