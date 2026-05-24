@@ -24,7 +24,7 @@
 - 面板显示刷新倒计时
 - 首次打开面板前任务不激活（不追踪进度）
 - 自然刷新时聊天栏提示
-- **JEI 集成**：可在 JEI 中查看所有可能的任务（目标物品 → 奖励）
+- **JEI 集成**：在 JEI 中点击书图标查看所有任务（左侧提交物品区 → 右侧奖励物品区，物品过多可滚动）
 
 ---
 
@@ -100,10 +100,8 @@
 - 翻译键命名规则：`quest.improved_original.name.<namespace>.<path>` 和 `quest.improved_original.desc_text.<namespace>.<path>`
 - 若 `name` 为空则回退显示任务类型描述（如 "破坏 石头 x32"）
 - 支持 en_us / zh_cn，语言文件随数据生成（`runData`）自动更新
-- **向后兼容**：旧格式（`"target"` + `"reward"`）仍然支持，自动转换为新格式
 - 首次启动自动生成默认配置，修改后重启即可生效
 - 支持多个 JSON 文件，所有文件中的 entries 会被合并
-- 自定义任务条目可直接填写纯文本（不使用翻译键），但不会随游戏语言变化
 
 ---
 
@@ -121,8 +119,8 @@ src/main/java/com/alma/improved_original/
 │   └── ModCreativeModeTabs.java       # 创造模式标签页
 ├── quest/
 │   ├── QuestType.java                 # 任务类型枚举（5种）
-│   ├── QuestDefinition.java           # 任务定义（含自定义奖励）
-│   ├── QuestSlotData.java             # 单槽位状态
+│   ├── QuestDefinition.java           # 任务定义（多目标/多奖励）
+│   ├── QuestSlotData.java             # 单槽位状态（每目标独立进度）
 │   ├── QuestData.java                 # 玩家完整任务数据
 │   ├── ModAttachments.java            # AttachmentType注册
 │   ├── QuestManager.java              # 核心逻辑
@@ -140,7 +138,11 @@ src/main/java/com/alma/improved_original/
 │       ├── ClientQuestCache.java      # 客户端数据缓存
 │       ├── QuestClientEvents.java     # 客户端网络处理
 │       └── QuestToast.java            # 完成通知Toast
-└── datagen/                           # 数据生成（10个Provider）
+├── jei/
+│   ├── QuestJeiPlugin.java            # JEI插件注册
+│   ├── QuestRecipe.java               # JEI配方记录
+│   └── QuestRecipeCategory.java       # JEI配方类别渲染
+└── datagen/                           # 数据生成
     ├── ModBlockLootTablesProvider.java # 战利品表
     ├── ModBlockStatesProvider.java     # 方块状态/模型
     ├── ModItemModelsProvider.java      # 物品模型

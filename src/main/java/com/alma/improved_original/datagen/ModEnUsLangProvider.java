@@ -175,8 +175,10 @@ public class ModEnUsLangProvider extends LanguageProvider {
 
         // JEI integration
         add("quest.improved_original.jei.category", "Daily Quests");
-        add("quest.improved_original.jei.arrow", "→");
-        add("quest.improved_original.jei.quest_target_info", "This item is a quest target - complete the quest to earn rewards!");
+        add("quest.improved_original.jei.targets_title", "Submit");
+        add("quest.improved_original.jei.rewards_title", "Reward");
+        add("quest.improved_original.jei.scroll_hint", "Scroll to see more items");
+        add("quest.improved_original.jei.no_description", "No description available");
 
         // Gem exchange quest
         add("quest.improved_original.name.gem_exchange", "Gem Collector");

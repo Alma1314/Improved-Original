@@ -179,8 +179,10 @@ public class ModZhCnLangProvider extends LanguageProvider {
 
         // JEI integration
         add("quest.improved_original.jei.category", "每日任务");
-        add("quest.improved_original.jei.arrow", "→");
-        add("quest.improved_original.jei.quest_target_info", "该物品是任务目标 - 完成任务可获得奖励！");
+        add("quest.improved_original.jei.targets_title", "提交");
+        add("quest.improved_original.jei.rewards_title", "奖励");
+        add("quest.improved_original.jei.scroll_hint", "滚动查看更多物品");
+        add("quest.improved_original.jei.no_description", "暂无简介");
 
         // Gem exchange quest
         add("quest.improved_original.name.gem_exchange", "宝石收藏家");
