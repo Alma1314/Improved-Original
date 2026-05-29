@@ -89,13 +89,10 @@ public class QuestScreen extends Screen {
                     PacketDistributor.sendToServer(new C2SQuestRefreshPayload());
                 }
         ).bounds(px + PANEL_W / 2 - 62, btnY, 80, 20).build();
-        this.addRenderableWidget(refreshBtn);
-
         doneBtn = Button.builder(
                 Component.translatable("quest.improved_original.done"),
                 b -> onClose()
-        ).bounds(px + PANEL_W / 2 + 22, btnY, 40, 20).build();
-        this.addRenderableWidget(doneBtn);
+        ).build();
     }
 
     @Override
@@ -158,12 +155,9 @@ public class QuestScreen extends Screen {
                         : Component.translatable("quest.improved_original.lock_button").getString();
                 boolean hovered = mx >= lb.x && mx <= lb.x + lb.w && my >= lb.y && my <= lb.y + 20;
 
-                int bgColor = hovered ? 0xCC555555 : 0xCC333333;
-                int borderColor = hovered ? 0xFFFFFFFF : 0xFF888888;
-                g.fill(lb.x, lb.y, lb.x + lb.w, lb.y + 20, bgColor);
-                g.renderOutline(lb.x, lb.y, lb.x + lb.w, lb.y + 20, borderColor);
+                int textColor = hovered ? 0xFFFFAA00 : 0xFFAAAAAA;
                 g.drawCenteredString(this.font, Component.literal(label),
-                        lb.x + lb.w / 2, lb.y + 6, 0xFFFFFFFF);
+                        lb.x + lb.w / 2, lb.y + 6, textColor);
             }
         }
 
@@ -180,13 +174,9 @@ public class QuestScreen extends Screen {
 
     private void renderBottomButton(GuiGraphics g, int mx, int my, Button btn, int bx, int by, int bw, int bh) {
         boolean hovered = btn.active && mx >= bx && mx <= bx + bw && my >= by && my <= by + bh;
-        int bgColor = !btn.active ? 0xFF666666 : hovered ? 0xFF888888 : 0xFF555555;
+        int bgColor = !btn.active ? 0xFF555555 : hovered ? 0xFF777777 : 0xFF555555;
         g.fill(bx, by, bx + bw, by + bh, bgColor);
-        g.fill(bx, by, bx - 1 + bw, by + 1, 0xFFAAAAAA);
-        g.fill(bx, by, bx + 1, by + bh, 0xFFAAAAAA);
-        g.fill(bx - 1 + bw, by, bx + bw, by + bh, 0xFF333333);
-        g.fill(bx, by - 1 + bh, bx + bw, by + bh, 0xFF333333);
-        int textColor = btn.active ? 0xFFFFFFFF : 0xFFAAAAAA;
+        int textColor = !btn.active ? 0xFF777777 : hovered ? 0xFFFFCC00 : 0xFFCCCCCC;
         g.drawCenteredString(this.font, btn.getMessage(), bx + bw / 2, by + (bh - 8) / 2, textColor);
     }
 
