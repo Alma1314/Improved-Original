@@ -1,5 +1,5 @@
 // 每日任务主面板
-// 布局：上1/4标题+倒计时 | 中2/4=3个任务槽位平分 | 下1/4刷新+关闭按钮
+// 布局：上1/5标题+倒计时 | 中3/5=3个任务槽位平分 | 下1/5刷新+关闭按钮
 // 每个槽位内：左3/4可滚动任务内容 | 右1/4锁定按钮
 package com.alma.improved_original.quest.screen;
 
@@ -11,6 +11,7 @@ import com.alma.improved_original.quest.client.ClientQuestCache;
 import com.alma.improved_original.quest.network.C2SQuestLockPayload;
 import com.alma.improved_original.quest.network.C2SQuestRefreshPayload;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -20,15 +21,20 @@ import java.util.List;
 public class QuestScreen extends Screen {
 
     private static final int PANEL_W = 256;
-    private static final int PANEL_H = 200;
-    private static final int HEADER_H = PANEL_H / 4;          // 50 — 上1/4
-    private static final int FOOTER_H = PANEL_H / 4;          // 50 — 下1/4
-    private static final int SLOT_H = (PANEL_H - HEADER_H - FOOTER_H) / QuestData.SLOT_COUNT; // 33每槽 — 中2/4平分
+    private static final int PANEL_H = 220;
+    private static final int HEADER_H = PANEL_H / 5;          // 44 — 上1/5
+    private static final int FOOTER_H = PANEL_H / 5;          // 44 — 下1/5
+    private static final int SLOTS_AREA_H = PANEL_H - HEADER_H - FOOTER_H; // 132 — 中3/5
+    private static final int SLOT_H = SLOTS_AREA_H / QuestData.SLOT_COUNT;  // 44 每槽
     private static final int SEP_H = 1;
 
     private QuestData questData;
     private final int[] scrollOffset = new int[QuestData.SLOT_COUNT];
     private final int[] maxScroll = new int[QuestData.SLOT_COUNT];
+
+    // lock button definitions per slot — only position, rendered manually
+    private record LockBtn(int x, int y, int w) {}
+    private final LockBtn[] lockBtns = new LockBtn[QuestData.SLOT_COUNT];
 
     public QuestScreen(QuestData questData) {
         super(Component.translatable("screen.improved_original.quest"));
@@ -40,18 +46,19 @@ public class QuestScreen extends Screen {
     private int panelX() { return (this.width - PANEL_W) / 2; }
     private int panelY() { return (this.height - PANEL_H) / 2; }
 
-    private int contentLeft(int i) { return panelX() + PANEL_W * 3 / 4; }      // 右1/4起始 — 锁按钮区
-    private int contentW() { return PANEL_W * 3 / 4 - 8; }                     // 左3/4宽度 — 任务内容
+    private int contentLeft() { return panelX() + PANEL_W * 3 / 4; }  // 右1/4起始
+    private int contentRightX() { return contentLeft() + 1; }          // 分隔线右侧
+    private int contentW() { return PANEL_W * 3 / 4 - 6; }            // 左3/4内容宽度
 
     private int slotY(int i) {
-        return panelY() + HEADER_H + i * (SLOT_H + SEP_H);
+        return panelY() + HEADER_H + i * SLOT_H;
     }
 
     private int contentH(int i) {
         var q = questData.getQuest(i);
         if (q.isEmpty()) return SLOT_H;
         QuestDefinition d = q.get();
-        return Math.max(SLOT_H, 18 + d.targets().size() * 16 + d.rewards().size() * 12 + 4);
+        return Math.max(SLOT_H, 16 + d.targets().size() * 14 + d.rewards().size() * 11 + 4);
     }
 
     // ---- init ----
@@ -61,10 +68,37 @@ public class QuestScreen extends Screen {
         QuestData latest = ClientQuestCache.get();
         if (latest != null) this.questData = latest;
 
+        int px = panelX();
+
         for (int i = 0; i < QuestData.SLOT_COUNT; i++) {
             maxScroll[i] = Math.max(0, contentH(i) - SLOT_H);
             if (scrollOffset[i] > maxScroll[i]) scrollOffset[i] = maxScroll[i];
+
+            // 预先计算锁按钮位置
+            int sy = slotY(i);
+            int btnW = Math.max(40, PANEL_W / 4 - 12);
+            int btnX = contentRightX() + (PANEL_W / 4 - btnW) / 2;
+            int btnY = sy + SLOT_H / 2 - 10;
+            lockBtns[i] = new LockBtn(btnX, btnY, btnW);
         }
+
+        // 底部按钮 — 用原版 Button widget
+        int footerY = panelY() + PANEL_H - FOOTER_H;
+        int btnY = footerY + (FOOTER_H - 20) / 2;
+        int refreshCost = Config.EMERALD_REFRESH_COST.getAsInt();
+
+        this.addRenderableWidget(Button.builder(
+                Component.translatable("quest.improved_original.refresh_button", refreshCost),
+                b -> {
+                    b.active = false;
+                    PacketDistributor.sendToServer(new C2SQuestRefreshPayload());
+                }
+        ).bounds(px + PANEL_W / 2 - 62, btnY, 80, 20).build());
+
+        this.addRenderableWidget(Button.builder(
+                Component.translatable("quest.improved_original.done"),
+                b -> onClose()
+        ).bounds(px + PANEL_W / 2 + 22, btnY, 40, 20).build());
     }
 
     // ---- render ----
@@ -79,9 +113,9 @@ public class QuestScreen extends Screen {
         // ---- 面板背景 ----
         g.fill(px, py, px + PANEL_W, py + PANEL_H, 0xCC000000);
 
-        // ---- 上1/4: 标题 + 倒计时 ----
+        // ---- 上1/5: 标题 + 倒计时 ----
         g.fill(px, py, px + PANEL_W, py + HEADER_H, 0xEE111111);
-        g.drawCenteredString(this.font, this.title, px + PANEL_W / 2, py + 8, 0xFFFFAA00);
+        g.drawCenteredString(this.font, this.title, px + PANEL_W / 2, py + 6, 0xFFFFAA00);
         if (this.minecraft != null && this.minecraft.level != null) {
             long tick = this.minecraft.level.getGameTime();
             long iv = 20L * 60 * Config.QUEST_REFRESH_INTERVAL_MINUTES.getAsInt();
@@ -89,94 +123,70 @@ public class QuestScreen extends Screen {
             long sec = (iv - tick % iv) / 20;
             g.drawCenteredString(this.font,
                     Component.translatable("quest.improved_original.countdown", sec / 60, sec % 60),
-                    px + PANEL_W / 2, py + 22, 0xFFAAAAAA);
+                    px + PANEL_W / 2, py + 20, 0xFFAAAAAA);
         }
-        // header 底部线
-        g.fill(px, py + HEADER_H, px + PANEL_W, py + HEADER_H + 1, 0xFF444444);
+        g.fill(px, py + HEADER_H, px + PANEL_W, py + HEADER_H + SEP_H, 0xFF444444);
 
-        // ---- 中2/4: 3个任务槽位 ----
-        int lockCost = Config.EMERALD_LOCK_COST.getAsInt();
-
+        // ---- 中3/5: 3个任务槽位 ----
         for (int i = 0; i < QuestData.SLOT_COUNT; i++) {
             int sy = slotY(i);
-            int leftW = PANEL_W * 3 / 4;  // 左3/4 = 内容区
+            int dividerX = contentLeft();
 
-            // 槽位分隔线
-            g.fill(px, sy, px + PANEL_W, sy + SEP_H, 0xFF444444);
+            // 槽位顶部分隔线
+            if (i > 0) g.fill(px, sy, px + PANEL_W, sy + SEP_H, 0xFF444444);
 
-            // 左3/4: 任务内容（可滚动、scissor裁剪）
-            g.enableScissor(px + 1, sy + SEP_H, px + leftW - 1, sy + SEP_H + SLOT_H);
+            // 左3/4: 任务内容（scissor裁剪 + 滚动）
+            int clipTop = sy + (i > 0 ? SEP_H : 0);
+            int clipH = SLOT_H - (i > 0 ? SEP_H : 0);
+            g.enableScissor(px + 1, clipTop, dividerX - 1, clipTop + clipH);
 
             pose.pushPose();
             pose.translate(0, -scrollOffset[i], 0);
-            renderSlotContent(g, i, px + 4, sy + SEP_H + 2);
+            renderSlotContent(g, i, px + 4, clipTop + 2);
             pose.popPose();
 
             g.disableScissor();
 
-            // 内容区右侧边线（分隔内容与按钮）
-            g.fill(px + leftW, sy + SEP_H, px + leftW + 1, sy + SEP_H + SLOT_H, 0xFF333333);
+            // 内容/按钮分隔竖线
+            g.fill(dividerX, sy, dividerX + 1, sy + SLOT_H, 0xFF333333);
 
-            // 右1/4: 锁定按钮区域
-            int btnZoneX = px + contentLeft(i) - panelX();
+            // 右1/4: 锁定按钮
             var qo = questData.getQuest(i);
             boolean hasQuest = qo.isPresent();
             boolean done = hasQuest && questData.getSlot(i).isComplete();
 
             if (hasQuest && !done) {
+                LockBtn lb = lockBtns[i];
                 String label = questData.isSlotLocked(i)
                         ? Component.translatable("quest.improved_original.locked").getString()
                         : Component.translatable("quest.improved_original.lock_button").getString();
-                int btnW = contentLeft(i) - panelX() - (px + leftW) - 8; // 按钮区可用宽度
-                int btnX = px + leftW + 4;
-                int btnY = sy + SEP_H + SLOT_H / 2 - 10;
+                boolean hovered = mx >= lb.x && mx <= lb.x + lb.w && my >= lb.y && my <= lb.y + 20;
 
-                boolean hovered = mx >= btnX && mx <= btnX + btnW && my >= btnY && my <= btnY + 20;
                 int bgColor = hovered ? 0xCC555555 : 0xCC333333;
                 int borderColor = hovered ? 0xFFFFFFFF : 0xFF888888;
 
-                g.fill(btnX, btnY, btnX + btnW, btnY + 20, bgColor);
-                g.renderOutline(btnX, btnY, btnX + btnW, btnY + 20, borderColor);
+                g.fill(lb.x, lb.y, lb.x + lb.w, lb.y + 20, bgColor);
+                g.renderOutline(lb.x, lb.y, lb.x + lb.w, lb.y + 20, borderColor);
                 g.drawCenteredString(this.font, Component.literal(label),
-                        btnX + btnW / 2, btnY + 6, 0xFFFFFFFF);
+                        lb.x + lb.w / 2, lb.y + 6, 0xFFFFFFFF);
             }
         }
 
-        // 槽位底部线
-        int slotsBottom = slotY(QuestData.SLOT_COUNT - 1) + SLOT_H + SEP_H;
-        g.fill(px, slotsBottom, px + PANEL_W, slotsBottom + 1, 0xFF444444);
+        // 底部区域分隔线
+        int slotsBottom = panelY() + HEADER_H + SLOTS_AREA_H;
+        g.fill(px, slotsBottom, px + PANEL_W, slotsBottom + SEP_H, 0xFF444444);
 
-        // ---- 下1/4: 刷新 + 关闭按钮 ----
-        int footerY = py + PANEL_H - FOOTER_H;
+        // ---- 下1/5 背景 ----
+        int footerY = panelY() + PANEL_H - FOOTER_H;
         g.fill(px, footerY, px + PANEL_W, py + PANEL_H, 0xEE111111);
 
-        int refreshCost = Config.EMERALD_REFRESH_COST.getAsInt();
-        String refreshLabel = Component.translatable("quest.improved_original.refresh_button", refreshCost).getString();
-        String doneLabel = Component.translatable("quest.improved_original.done").getString();
-
-        int btnW1 = 80, btnW2 = 40;
-        int btnY = footerY + 16;
-        int btnX1 = px + PANEL_W / 2 - btnW1 - 4;
-        int btnX2 = px + PANEL_W / 2 + 4;
-
-        // 刷新按钮
-        boolean rfHover = mx >= btnX1 && mx <= btnX1 + btnW1 && my >= btnY && my <= btnY + 16;
-        g.fill(btnX1, btnY, btnX1 + btnW1, btnY + 16, rfHover ? 0xCC666666 : 0xCC444444);
-        g.renderOutline(btnX1, btnY, btnX1 + btnW1, btnY + 16, rfHover ? 0xFFFFFFFF : 0xFF888888);
-        g.drawCenteredString(this.font, Component.literal(refreshLabel),
-                btnX1 + btnW1 / 2, btnY + 4, 0xFFFFFFFF);
-
-        // 关闭按钮
-        boolean dnHover = mx >= btnX2 && mx <= btnX2 + btnW2 && my >= btnY && my <= btnY + 16;
-        g.fill(btnX2, btnY, btnX2 + btnW2, btnY + 16, dnHover ? 0xCC666666 : 0xCC444444);
-        g.renderOutline(btnX2, btnY, btnX2 + btnW2, btnY + 16, dnHover ? 0xFFFFFFFF : 0xFF888888);
-        g.drawCenteredString(this.font, Component.literal(doneLabel),
-                btnX2 + btnW2 / 2, btnY + 4, 0xFFFFFFFF);
+        // ---- 原版 Button widgets 渲染（z=0，原生） ----
+        super.render(g, mx, my, pt);
     }
 
     private void renderSlotContent(GuiGraphics g, int i, int cx, int sy) {
         var qo = questData.getQuest(i);
-        int cw = contentW() - 10;
+        int cw = contentW();
 
         if (qo.isEmpty()) {
             g.drawString(this.font, Component.translatable("quest.improved_original.empty_slot"),
@@ -192,17 +202,19 @@ public class QuestScreen extends Screen {
         // 槽位编号 + 任务名
         Component name = buildName(q);
         int color = done ? 0xFF55FF55 : 0xFFFFFFFF;
-        g.drawString(this.font, "[" + (i + 1) + "] ", cx, sy, 0xFF555555);
-        g.drawString(this.font, name, cx + this.font.width("[x] "), sy, color);
+        String prefix = "[" + (i + 1) + "] ";
+        g.drawString(this.font, prefix, cx, sy, 0xFF555555);
+        g.drawString(this.font, name, cx + this.font.width(prefix) + 2, sy, color);
 
         if (questData.isSlotLocked(i)) {
+            int afterName = cx + this.font.width(prefix) + 2 + this.font.width(name) + 4;
             g.drawString(this.font, Component.translatable("quest.improved_original.locked"),
-                    cx + this.font.width("[x] ") + this.font.width(name) + 4, sy, 0xFFFF5555);
+                    afterName, sy, 0xFFFF5555);
         }
 
         // 进度条
         int lineY = sy + 11;
-        int barW = Math.min(cw - 4, 120);
+        int barW = Math.min(cw, 120);
         for (int t = 0; t < q.targets().size(); t++) {
             QuestDefinition.QuestTarget tg = q.targets().get(t);
             int prog = t < pt.size() ? pt.get(t) : 0;
@@ -230,7 +242,7 @@ public class QuestScreen extends Screen {
         }
 
         // 奖励
-        lineY = Math.max(lineY, sy + 12 + q.targets().size() * 12);
+        lineY = Math.max(lineY + 1, sy + 12 + q.targets().size() * 12);
         var rn = q.getRewardDisplayNames();
         for (int r = 0; r < q.rewards().size(); r++) {
             QuestDefinition.ItemCount rw = q.rewards().get(r);
@@ -239,11 +251,12 @@ public class QuestScreen extends Screen {
             lineY += this.font.lineHeight + 1;
         }
 
-        // 滚动条指示器（在内容区右边缘内侧）
+        // 滚动条指示器
         if (maxScroll[i] > 0) {
-            int barX = panelX() + PANEL_W * 3 / 4 - 4;
+            int barX = contentLeft() - 4;
             int barH = Math.max(8, SLOT_H * SLOT_H / contentH(i));
-            int barY = slotY(i) + SEP_H + scrollOffset[i] * (SLOT_H - barH) / maxScroll[i];
+            int slotTop = slotY(i) + (i > 0 ? SEP_H : 0);
+            int barY = slotTop + scrollOffset[i] * (SLOT_H - barH) / maxScroll[i];
             g.fill(barX, barY, barX + 2, barY + barH, 0x66AAAAAA);
         }
     }
@@ -256,8 +269,7 @@ public class QuestScreen extends Screen {
         int leftW = PANEL_W * 3 / 4;
         for (int i = 0; i < QuestData.SLOT_COUNT; i++) {
             if (maxScroll[i] <= 0) continue;
-            int sy = slotY(i) + SEP_H;
-            // 只在内容区域（左3/4）响应滚动
+            int sy = slotY(i) + (i > 0 ? SEP_H : 0);
             if (mx >= px && mx <= px + leftW && my >= sy && my <= sy + SLOT_H) {
                 scrollOffset[i] = clamp(scrollOffset[i] - (int) scrollY * 10, 0, maxScroll[i]);
                 return true;
@@ -270,42 +282,16 @@ public class QuestScreen extends Screen {
     public boolean mouseClicked(double mx, double my, int btn) {
         if (btn != 0) return super.mouseClicked(mx, my, btn);
 
-        int px = panelX(), py = panelY();
-        int leftW = PANEL_W * 3 / 4;
-
-        // 锁按钮点击
+        // 锁按钮点击 — 手动检测，区域与渲染一致
         for (int i = 0; i < QuestData.SLOT_COUNT; i++) {
-            final int slot = i;
             var qo = questData.getQuest(i);
-            boolean hasQuest = qo.isPresent();
-            boolean done = hasQuest && questData.getSlot(i).isComplete();
-            if (!hasQuest || done) continue;
+            if (qo.isEmpty() || questData.getSlot(i).isComplete()) continue;
 
-            int sy = slotY(i) + SEP_H;
-            int btnX = px + leftW + 4;
-            int btnW = PANEL_W / 4 - 12;
-            int btnY = sy + SLOT_H / 2 - 10;
-
-            if (mx >= btnX && mx <= btnX + btnW && my >= btnY && my <= btnY + 20) {
-                PacketDistributor.sendToServer(new C2SQuestLockPayload(slot));
+            LockBtn lb = lockBtns[i];
+            if (mx >= lb.x && mx <= lb.x + lb.w && my >= lb.y && my <= lb.y + 20) {
+                PacketDistributor.sendToServer(new C2SQuestLockPayload(i));
                 return true;
             }
-        }
-
-        // 底部按钮点击
-        int footerY = py + PANEL_H - FOOTER_H;
-        int btnY = footerY + 16;
-        int btnW1 = 80, btnW2 = 40;
-        int btnX1 = px + PANEL_W / 2 - btnW1 - 4;
-        int btnX2 = px + PANEL_W / 2 + 4;
-
-        if (mx >= btnX1 && mx <= btnX1 + btnW1 && my >= btnY && my <= btnY + 16) {
-            PacketDistributor.sendToServer(new C2SQuestRefreshPayload());
-            return true;
-        }
-        if (mx >= btnX2 && mx <= btnX2 + btnW2 && my >= btnY && my <= btnY + 16) {
-            onClose();
-            return true;
         }
 
         return super.mouseClicked(mx, my, btn);
