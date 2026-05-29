@@ -103,6 +103,7 @@ public class QuestScreen extends Screen {
         // 模糊背景 — 最下层
         this.renderBackground(g, mx, my, pt);
 
+        // 完全手绘，不调用 super.render() 避免其内部再次 renderBackground
         int px = panelX(), py = panelY();
         var pose = g.pose();
 
@@ -172,8 +173,21 @@ public class QuestScreen extends Screen {
         int footerY = panelY() + PANEL_H - FOOTER_H;
         g.fill(px, footerY, px + PANEL_W, py + PANEL_H, 0xEE111111);
 
-        // 底部按钮（原版 Button 渲染在最上层，自动处理 hover/点击）
-        super.render(g, mx, my, pt);
+        // 底部按钮 — 手绘（不依赖 super.render 避免重复 renderBackground）
+        renderBottomButton(g, mx, my, refreshBtn, px + PANEL_W / 2 - 62, footerY + (FOOTER_H - 20) / 2, 80, 20);
+        renderBottomButton(g, mx, my, doneBtn, px + PANEL_W / 2 + 22, footerY + (FOOTER_H - 20) / 2, 40, 20);
+    }
+
+    private void renderBottomButton(GuiGraphics g, int mx, int my, Button btn, int bx, int by, int bw, int bh) {
+        boolean hovered = btn.active && mx >= bx && mx <= bx + bw && my >= by && my <= by + bh;
+        int bgColor = !btn.active ? 0xFF666666 : hovered ? 0xFF888888 : 0xFF555555;
+        g.fill(bx, by, bx + bw, by + bh, bgColor);
+        g.fill(bx, by, bx - 1 + bw, by + 1, 0xFFAAAAAA);
+        g.fill(bx, by, bx + 1, by + bh, 0xFFAAAAAA);
+        g.fill(bx - 1 + bw, by, bx + bw, by + bh, 0xFF333333);
+        g.fill(bx, by - 1 + bh, bx + bw, by + bh, 0xFF333333);
+        int textColor = btn.active ? 0xFFFFFFFF : 0xFFAAAAAA;
+        g.drawCenteredString(this.font, btn.getMessage(), bx + bw / 2, by + (bh - 8) / 2, textColor);
     }
 
     private void renderSlotContent(GuiGraphics g, int i, int cx, int sy) {
@@ -274,6 +288,23 @@ public class QuestScreen extends Screen {
             LockBtn lb = lockBtns[i];
             if (mx >= lb.x && mx <= lb.x + lb.w && my >= lb.y && my <= lb.y + 20) {
                 PacketDistributor.sendToServer(new C2SQuestLockPayload(i));
+                return true;
+            }
+        }
+
+        // 底部按钮点击
+        if (refreshBtn != null && doneBtn != null) {
+            int footerY = panelY() + PANEL_H - FOOTER_H;
+            int btnY = footerY + (FOOTER_H - 20) / 2;
+            int px = panelX();
+            if (refreshBtn.active && mx >= px + PANEL_W / 2 - 62 && mx <= px + PANEL_W / 2 + 18
+                    && my >= btnY && my <= btnY + 20) {
+                refreshBtn.onPress();
+                return true;
+            }
+            if (doneBtn.active && mx >= px + PANEL_W / 2 + 22 && mx <= px + PANEL_W / 2 + 62
+                    && my >= btnY && my <= btnY + 20) {
+                doneBtn.onPress();
                 return true;
             }
         }
