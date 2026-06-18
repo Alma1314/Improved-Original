@@ -22,6 +22,10 @@ repositories {
         name = "Jared's maven"
         url = "https://maven.blamejared.com/"
     }
+    maven {
+        name = "IzzelAliz"
+        url = "https://maven.izzel.io/releases"
+    }
 }
 
 base {
@@ -118,6 +122,10 @@ dependencies {
     // JEI integration — compile against API, use full mod at runtime
     compileOnly "mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}"
     localRuntime "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
+
+    // ModernUI integration — compile against API, use full mod at runtime
+    compileOnly "icyllis.modernui:ModernUI-NeoForge:${modernui_version}"
+    localRuntime "icyllis.modernui:ModernUI-NeoForge:${modernui_version}"
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.

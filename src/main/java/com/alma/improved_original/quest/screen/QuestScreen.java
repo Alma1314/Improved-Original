@@ -97,18 +97,18 @@ public class QuestScreen extends Screen {
 
     @Override
     public void render(GuiGraphics g, int mx, int my, float pt) {
-        // 模糊背景 — 最下层
-        this.renderBackground(g, mx, my, pt);
+        // 模糊背景 — 最下层（ModernUI 存在时使用 Gaussian blur）
+        ModernUIHelper.renderBackground(this, g, mx, my, pt);
 
         // 完全手绘，不调用 super.render() 避免其内部再次 renderBackground
         int px = panelX(), py = panelY();
         var pose = g.pose();
 
-        // 面板背景
-        g.fill(px, py, px + PANEL_W, py + PANEL_H, 0xCC000000);
+        // 面板背景（圆角矩形）
+        ModernUIHelper.fillPanelBg(g, px, py, px + PANEL_W, py + PANEL_H);
 
-        // 上1/5: 标题 + 倒计时
-        g.fill(px, py, px + PANEL_W, py + HEADER_H, 0xEE111111);
+        // 上1/5: 标题 + 倒计时（仅上两角圆角）
+        ModernUIHelper.fillHeaderBg(g, px, py, px + PANEL_W, py + HEADER_H);
         g.drawCenteredString(this.font, this.title, px + PANEL_W / 2, py + 6, 0xFFFFAA00);
         if (this.minecraft != null && this.minecraft.level != null) {
             long tick = this.minecraft.level.getGameTime();
@@ -165,7 +165,8 @@ public class QuestScreen extends Screen {
         int slotsBottom = panelY() + HEADER_H + SLOTS_AREA_H;
         g.fill(px, slotsBottom, px + PANEL_W, slotsBottom + SEP_H, 0xFF444444);
         int footerY = panelY() + PANEL_H - FOOTER_H;
-        g.fill(px, footerY, px + PANEL_W, py + PANEL_H, 0xEE111111);
+        // 底部背景（仅下两角圆角）
+        ModernUIHelper.fillFooterBg(g, px, footerY, px + PANEL_W, py + PANEL_H);
 
         // 底部按钮 — 手绘（不依赖 super.render 避免重复 renderBackground）
         renderBottomButton(g, mx, my, refreshBtn, px + PANEL_W / 2 - 62, footerY + (FOOTER_H - 20) / 2, 80, 20);
@@ -175,7 +176,7 @@ public class QuestScreen extends Screen {
     private void renderBottomButton(GuiGraphics g, int mx, int my, Button btn, int bx, int by, int bw, int bh) {
         boolean hovered = btn.active && mx >= bx && mx <= bx + bw && my >= by && my <= by + bh;
         int bgColor = !btn.active ? 0xFF555555 : hovered ? 0xFF777777 : 0xFF555555;
-        g.fill(bx, by, bx + bw, by + bh, bgColor);
+        ModernUIHelper.fillButtonBg(g, bx, by, bx + bw, by + bh, bgColor);
         int textColor = !btn.active ? 0xFF777777 : hovered ? 0xFFFFCC00 : 0xFFCCCCCC;
         g.drawCenteredString(this.font, btn.getMessage(), bx + bw / 2, by + (bh - 8) / 2, textColor);
     }
