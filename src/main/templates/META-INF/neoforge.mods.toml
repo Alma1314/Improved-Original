@@ -90,10 +90,13 @@ config="${mod_id}.mixins.json"
     side="BOTH"
 
 # ModernUI — required dependency
+# The version declared in ModernUI's own mods.toml is "3.13.0.1"
+# The artifact version (from Gradle) is "1.21.1-3.13.0.1"
+# FML compares the version declared in mods.toml (3.13.0.1), not the Maven artifact version
 [[dependencies.${mod_id}]]
     modId="modernui"
     type="required"
-    versionRange="[1.21.1-3.13,)"
+    versionRange="[3.13.0.0,)"
     ordering="AFTER"
     side="CLIENT"
 

@@ -8,8 +8,18 @@ import net.minecraft.client.gui.screens.Screen;
 
 final class ModernUIHelper {
 
-    private static final float PANEL_RADIUS = 8.0f;
-    private static final float BUTTON_RADIUS = 4.0f;
+    // ── 公共颜色常量（QuestFragment 也引用这些值）──
+    static final int COLOR_BG = 0xCC000000;
+    static final int COLOR_HEADER = 0xEE111111;
+    static final int COLOR_GOLD = 0xFFFFAA00;
+    static final int COLOR_ACCENT = 0xFF4488FF;
+    static final int COLOR_GREEN = 0xFF55FF55;
+    static final int COLOR_GRAY = 0xFFAAAAAA;
+    static final int COLOR_WHITE = 0xFFFFFFFF;
+    static final int COLOR_RED = 0xFFFF5555;
+
+    static final float PANEL_RADIUS = 8.0f;
+    static final float BUTTON_RADIUS = 4.0f;
 
     // ── 圆角矩形填充 ──
     static void fillRoundRect(GuiGraphics g, float left, float top, float right, float bottom, float radius, int color) {

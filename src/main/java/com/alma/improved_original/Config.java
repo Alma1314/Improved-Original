@@ -44,7 +44,7 @@ public class Config {
             .comment("Number of emeralds consumed when manually refreshing quests")
             .defineInRange("emeraldRefreshCost", 10, 1, 64);
 
-    static final ModConfigSpec SPEC = BUILDER.build();
+    public static final ModConfigSpec SPEC = BUILDER.build();
 
     private static boolean validateItemName(final Object obj) {
         return obj instanceof String itemName && BuiltInRegistries.ITEM.containsKey(ResourceLocation.parse(itemName));

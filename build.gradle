@@ -57,6 +57,10 @@ neoForge {
 
             // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
             systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+
+            // 离线开发环境：跳过 Mojang 账号验证和遥测
+            jvmArgument '-Dminecraft.api.services='
+            jvmArgument '-Dmojang.sessionserver='
         }
 
         server {
@@ -136,10 +140,16 @@ dependencies {
     compileOnly "mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}"
     localRuntime "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
 
-    // ModernUI — required dependency (core via localRuntime so FML can see it)
+    // ModernUI — required dependency
+    // modernui-core must be available at runtime for FML's ModuleLayer because
+    // ModernUIClient extends ModernUI, and MixinConfigPlugin.onLoad()
+    // calls ModernUIMod.getBootstrapProperty() which triggers class loading.
+    // Using compileOnly for compile-time, localRuntime for FML discovery,
+    // and additionalRuntimeClasspath (required for MC <= 1.21.8 moddev).
     compileOnly "dev.icyllis:modernui-core:${modernui_core_version}"
     localRuntime "dev.icyllis:modernui-core:${modernui_core_version}"
     implementation "icyllis.modernui:ModernUI-NeoForge:${modernui_mc_version}"
+    additionalRuntimeClasspath "dev.icyllis:modernui-core:${modernui_core_version}"
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.

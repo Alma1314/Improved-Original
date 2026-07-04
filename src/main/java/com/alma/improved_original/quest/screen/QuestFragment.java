@@ -27,13 +27,14 @@ import java.util.List;
 
 public class QuestFragment extends Fragment implements ScreenCallback {
 
-    private static final int BG_COLOR = 0xCC000000;
-    private static final int HEADER_COLOR = 0xEE111111;
-    private static final int GOLD = 0xFFFFAA00;
-    private static final int ACCENT = 0xFF4488FF;
-    private static final int GREEN = 0xFF55FF55;
-    private static final int GRAY = 0xFFAAAAAA;
-    private static final int WHITE = 0xFFFFFFFF;
+    // 引用 ModernUIHelper 中的统一颜色常量
+    private static final int BG_COLOR = ModernUIHelper.COLOR_BG;
+    private static final int HEADER_COLOR = ModernUIHelper.COLOR_HEADER;
+    private static final int GOLD = ModernUIHelper.COLOR_GOLD;
+    private static final int ACCENT = ModernUIHelper.COLOR_ACCENT;
+    private static final int GREEN = ModernUIHelper.COLOR_GREEN;
+    private static final int GRAY = ModernUIHelper.COLOR_GRAY;
+    private static final int WHITE = ModernUIHelper.COLOR_WHITE;
 
     private QuestData questData;
     private TextView countdownText;
@@ -285,13 +286,14 @@ public class QuestFragment extends Fragment implements ScreenCallback {
                 Component.translatable("quest.improved_original.refresh_button", refreshCost).getString(),
                 () -> PacketDistributor.sendToServer(new C2SQuestRefreshPayload()));
 
-        // 关闭按钮
+        // 关闭按钮 — 必须在 Minecraft Render 线程上关闭 Screen
+        // ModernUI 的 onClick 回调运行在 UI thread，需要线程切换
         TextView closeBtn = buildButton(ctx, ref,
                 Component.translatable("quest.improved_original.done").getString(),
-                () -> {
+                () -> Minecraft.getInstance().execute(() -> {
                     var screen = Minecraft.getInstance().screen;
                     if (screen != null) screen.onClose();
-                });
+                }));
 
         footer.addView(refreshBtn, new LinearLayout.LayoutParams(dp(ref, 110), dp(ref, 22)));
         footer.addView(closeBtn, new LinearLayout.LayoutParams(dp(ref, 50), dp(ref, 22)));
@@ -334,9 +336,9 @@ public class QuestFragment extends Fragment implements ScreenCallback {
     }
 
     private void tickCountdown() {
-        updateCountdown(getView());
         View view = getView();
         if (view != null && isAdded()) {
+            updateCountdown(view);
             view.postDelayed(this::tickCountdown, 1000);
         }
     }

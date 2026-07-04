@@ -10,9 +10,6 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.level.block.Block;
-import org.jetbrains.annotations.NotNull;
-
-
 import java.util.Set;
 
 public class ModBlockLootTablesProvider extends BlockLootSubProvider {

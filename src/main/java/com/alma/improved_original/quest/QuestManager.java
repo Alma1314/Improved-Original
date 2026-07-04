@@ -38,7 +38,9 @@ public class QuestManager {
 
     public static void onServerTick(MinecraftServer server) {
         long intervalTicks = 20L * 60 * Config.QUEST_REFRESH_INTERVAL_MINUTES.getAsInt();
-        long gameTime = server.overworld().getGameTime();
+        var overworld = server.getLevel(net.minecraft.world.level.Level.OVERWORLD);
+        if (overworld == null) return;
+        long gameTime = overworld.getGameTime();
         long currentBucket = gameTime / intervalTicks;
 
         if (lastRefreshBucket < 0) {
