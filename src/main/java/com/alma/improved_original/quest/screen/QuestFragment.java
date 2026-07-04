@@ -63,8 +63,8 @@ public class QuestFragment extends Fragment implements ScreenCallback {
         panelBg.setColor(BG_COLOR);
         panel.setBackground(panelBg);
 
-        int panelW = dp(panel, 280);
-        panel.setLayoutParams(new FrameLayout.LayoutParams(panelW, dp(panel, 220), Gravity.CENTER));
+        int panelW = dp(panel, 560);
+        panel.setLayoutParams(new FrameLayout.LayoutParams(panelW, dp(panel, 440), Gravity.CENTER));
 
         // ---- 标题栏 ----
         panel.addView(buildHeader(ctx, panel));
@@ -88,22 +88,22 @@ public class QuestFragment extends Fragment implements ScreenCallback {
         headerBg.setColor(HEADER_COLOR);
         header.setBackground(headerBg);
 
-        int headerW = dp(ref, 280);
-        int headerH = dp(ref, 40);
+        int headerW = dp(ref, 560);
+        int headerH = dp(ref, 80);
 
         TextView title = new TextView(ctx);
         title.setText(Component.translatable("screen.improved_original.quest").getString());
-        title.setTextSize(14);
+        title.setTextSize(21);
         title.setTextColor(GOLD);
         title.setGravity(Gravity.CENTER);
-        header.addView(title, new LinearLayout.LayoutParams(headerW, dp(ref, 18)));
+        header.addView(title, new LinearLayout.LayoutParams(headerW, dp(ref, 36)));
 
         countdownText = new TextView(ctx);
-        countdownText.setTextSize(11);
+        countdownText.setTextSize(16);
         countdownText.setTextColor(GRAY);
         countdownText.setGravity(Gravity.CENTER);
         updateCountdown(ref);
-        header.addView(countdownText, new LinearLayout.LayoutParams(headerW, dp(ref, 14)));
+        header.addView(countdownText, new LinearLayout.LayoutParams(headerW, dp(ref, 28)));
 
         header.setLayoutParams(new LinearLayout.LayoutParams(headerW, headerH));
         return header;
@@ -112,13 +112,13 @@ public class QuestFragment extends Fragment implements ScreenCallback {
     private View buildSlots(Context ctx, View ref) {
         LinearLayout slotsLayout = new LinearLayout(ctx);
         slotsLayout.setOrientation(LinearLayout.VERTICAL);
-        int panelW = dp(ref, 280);
-        int slotH = dp(ref, 46);
+        int panelW = dp(ref, 560);
+        int slotH = dp(ref, 92);
 
         for (int i = 0; i < QuestData.SLOT_COUNT; i++) {
             if (i > 0) {
                 View sep = new View(ctx);
-                sep.setLayoutParams(new LinearLayout.LayoutParams(panelW, dp(ref, 1)));
+                sep.setLayoutParams(new LinearLayout.LayoutParams(panelW, dp(ref, 2)));
                 ShapeDrawable sepBg = new ShapeDrawable();
                 sepBg.setColor(0xFF444444);
                 sep.setBackground(sepBg);
@@ -127,7 +127,7 @@ public class QuestFragment extends Fragment implements ScreenCallback {
             slotsLayout.addView(buildSlot(ctx, ref, i, panelW, slotH));
         }
 
-        slotsLayout.setLayoutParams(new LinearLayout.LayoutParams(panelW, dp(ref, 140)));
+        slotsLayout.setLayoutParams(new LinearLayout.LayoutParams(panelW, dp(ref, 280)));
         return slotsLayout;
     }
 
@@ -139,7 +139,7 @@ public class QuestFragment extends Fragment implements ScreenCallback {
         LinearLayout row = new LinearLayout(ctx);
         row.setOrientation(LinearLayout.HORIZONTAL);
         row.setGravity(Gravity.CENTER_VERTICAL);
-        row.setPadding(dp(ref, 4), dp(ref, 2), dp(ref, 2), dp(ref, 2));
+        row.setPadding(dp(ref, 8), dp(ref, 4), dp(ref, 4), dp(ref, 4));
 
         int contentW = panelW * 3 / 4;
 
@@ -161,12 +161,12 @@ public class QuestFragment extends Fragment implements ScreenCallback {
             }
             TextView name = new TextView(ctx);
             name.setText(nameStr);
-            name.setTextSize(10);
+            name.setTextSize(15);
             name.setTextColor(done ? GREEN : questData.isSlotLocked(slotIndex) ? 0xFFFF5555 : WHITE);
             content.addView(name, new LinearLayout.LayoutParams(contentW, ViewGroup.LayoutParams.WRAP_CONTENT));
 
             // 进度条 (每个target一个)
-            int barW = dp(ref, 50);
+            int barW = dp(ref, 100);
             for (int t = 0; t < q.targets().size(); t++) {
                 QuestDefinition.QuestTarget tg = q.targets().get(t);
                 int prog = t < pt.size() ? pt.get(t) : 0;
@@ -179,19 +179,19 @@ public class QuestFragment extends Fragment implements ScreenCallback {
 
                 TextView targetLabel = new TextView(ctx);
                 targetLabel.setText(q.getTargetDisplayName(tg.type(), tg.item()).getString());
-                targetLabel.setTextSize(8);
+                targetLabel.setTextSize(12);
                 targetLabel.setTextColor(0xFFCCCCCC);
-                barRow.addView(targetLabel, new LinearLayout.LayoutParams(dp(ref, 56), ViewGroup.LayoutParams.WRAP_CONTENT));
+                barRow.addView(targetLabel, new LinearLayout.LayoutParams(dp(ref, 112), ViewGroup.LayoutParams.WRAP_CONTENT));
 
                 // 进度条
                 FrameLayout barFrame = new FrameLayout(ctx);
-                barFrame.setLayoutParams(new LinearLayout.LayoutParams(barW, dp(ref, 5)));
+                barFrame.setLayoutParams(new LinearLayout.LayoutParams(barW, dp(ref, 10)));
 
                 View barBg = new View(ctx);
                 ShapeDrawable sd1 = new ShapeDrawable();
                 sd1.setColor(0xFF333333);
                 barBg.setBackground(sd1);
-                barFrame.addView(barBg, new FrameLayout.LayoutParams(barW, dp(ref, 5)));
+                barFrame.addView(barBg, new FrameLayout.LayoutParams(barW, dp(ref, 10)));
 
                 if (max > 0) {
                     int fillW = (int) ((float) prog / max * barW);
@@ -200,16 +200,16 @@ public class QuestFragment extends Fragment implements ScreenCallback {
                         ShapeDrawable sd2 = new ShapeDrawable();
                         sd2.setColor(tc ? GREEN : ACCENT);
                         barFg.setBackground(sd2);
-                        barFrame.addView(barFg, new FrameLayout.LayoutParams(fillW, dp(ref, 5)));
+                        barFrame.addView(barFg, new FrameLayout.LayoutParams(fillW, dp(ref, 10)));
                     }
                 }
                 barRow.addView(barFrame);
 
                 TextView count = new TextView(ctx);
                 count.setText(prog + "/" + max);
-                count.setTextSize(7);
+                count.setTextSize(10);
                 count.setTextColor(GRAY);
-                barRow.addView(count, new LinearLayout.LayoutParams(dp(ref, 24), ViewGroup.LayoutParams.WRAP_CONTENT));
+                barRow.addView(count, new LinearLayout.LayoutParams(dp(ref, 48), ViewGroup.LayoutParams.WRAP_CONTENT));
 
                 content.addView(barRow, new LinearLayout.LayoutParams(contentW, ViewGroup.LayoutParams.WRAP_CONTENT));
             }
@@ -226,7 +226,7 @@ public class QuestFragment extends Fragment implements ScreenCallback {
                 }
                 TextView reward = new TextView(ctx);
                 reward.setText(sb.toString());
-                reward.setTextSize(8);
+                reward.setTextSize(12);
                 reward.setTextColor(done ? GREEN : GOLD);
                 content.addView(reward, new LinearLayout.LayoutParams(contentW, ViewGroup.LayoutParams.WRAP_CONTENT));
             }
@@ -235,20 +235,20 @@ public class QuestFragment extends Fragment implements ScreenCallback {
         } else {
             TextView empty = new TextView(ctx);
             empty.setText(Component.translatable("quest.improved_original.empty_slot").getString());
-            empty.setTextSize(10);
+            empty.setTextSize(15);
             empty.setTextColor(0xFF666666);
             row.addView(empty, new LinearLayout.LayoutParams(contentW, ViewGroup.LayoutParams.WRAP_CONTENT));
         }
 
         // 右1/4: 锁定按钮
         if (hasQuest && !done) {
-            int btnW = panelW / 4 - dp(ref, 12);
+            int btnW = panelW / 4 - dp(ref, 24);
             String label = questData.isSlotLocked(slotIndex)
                     ? Component.translatable("quest.improved_original.locked").getString()
                     : Component.translatable("quest.improved_original.lock_button").getString();
             TextView lockBtn = new TextView(ctx);
             lockBtn.setText(label);
-            lockBtn.setTextSize(9);
+            lockBtn.setTextSize(13);
             lockBtn.setTextColor(GRAY);
             lockBtn.setGravity(Gravity.CENTER);
             lockBtn.setClickable(true);
@@ -260,7 +260,7 @@ public class QuestFragment extends Fragment implements ScreenCallback {
             lockBg.setColor(0x66333333);
             lockBtn.setBackground(lockBg);
 
-            row.addView(lockBtn, new LinearLayout.LayoutParams(btnW, dp(ref, 18)));
+            row.addView(lockBtn, new LinearLayout.LayoutParams(btnW, dp(ref, 36)));
         }
 
         row.setLayoutParams(new LinearLayout.LayoutParams(panelW, slotH));
@@ -277,8 +277,8 @@ public class QuestFragment extends Fragment implements ScreenCallback {
         footerBg.setColor(HEADER_COLOR);
         footer.setBackground(footerBg);
 
-        int footerH = dp(ref, 40);
-        int panelW = dp(ref, 280);
+        int footerH = dp(ref, 80);
+        int panelW = dp(ref, 560);
 
         // 刷新按钮
         int refreshCost = Config.EMERALD_REFRESH_COST.getAsInt();
@@ -295,8 +295,10 @@ public class QuestFragment extends Fragment implements ScreenCallback {
                     if (screen != null) screen.onClose();
                 }));
 
-        footer.addView(refreshBtn, new LinearLayout.LayoutParams(dp(ref, 110), dp(ref, 22)));
-        footer.addView(closeBtn, new LinearLayout.LayoutParams(dp(ref, 50), dp(ref, 22)));
+        LinearLayout.LayoutParams refreshParams = new LinearLayout.LayoutParams(dp(ref, 220), dp(ref, 44));
+        refreshParams.setMargins(0, 0, dp(ref, 16), 0);
+        footer.addView(refreshBtn, refreshParams);
+        footer.addView(closeBtn, new LinearLayout.LayoutParams(dp(ref, 100), dp(ref, 44)));
 
         footer.setLayoutParams(new LinearLayout.LayoutParams(panelW, footerH));
         return footer;
@@ -305,7 +307,7 @@ public class QuestFragment extends Fragment implements ScreenCallback {
     private TextView buildButton(Context ctx, View ref, String text, Runnable onClick) {
         TextView btn = new TextView(ctx);
         btn.setText(text);
-        btn.setTextSize(11);
+        btn.setTextSize(16);
         btn.setTextColor(0xFFCCCCCC);
         btn.setGravity(Gravity.CENTER);
         btn.setClickable(true);
