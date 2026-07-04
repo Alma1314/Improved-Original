@@ -50,6 +50,21 @@ public class QuestManager {
             lastRefreshBucket = currentBucket;
             refreshAllPlayersQuests(server);
         }
+
+        // 批量同步有脏标记的玩家
+        flushDirtyPlayers(server);
+    }
+
+    // 将所有有脏标记的玩家数据同步到客户端
+    private static void flushDirtyPlayers(MinecraftServer server) {
+        for (ServerPlayer player : server.getPlayerList().getPlayers()) {
+            QuestData data = player.getData(ModAttachments.QUEST_DATA.get());
+            if (data.isDirty()) {
+                data.clearDirty();
+                player.setData(ModAttachments.QUEST_DATA.get(), data);
+                PacketDistributor.sendToPlayer(player, S2CQuestSyncPayload.syncOnly(data));
+            }
+        }
     }
 
     private static void refreshAllPlayersQuests(MinecraftServer server) {
@@ -180,18 +195,26 @@ public class QuestManager {
             if (questOpt.isEmpty()) continue;
             QuestDefinition quest = questOpt.get();
 
-            // 遍历每个target，只匹配类型和物品ID都符合的target
-            List<Integer> progress = new ArrayList<>(data.getSlot(i).perTargetProgress());
+            List<Integer> progress = data.getSlot(i).perTargetProgress();
+            List<Integer> modified = null;
             for (int t = 0; t < quest.targets().size(); t++) {
                 QuestDefinition.QuestTarget target = quest.targets().get(t);
-                if (target.type() != type) continue; // 每target独立类型匹配
-                if (target.item().equals(targetId)) {
-                    int current = t < progress.size() ? progress.get(t) : 0;
-                    int newProg = Math.min(current + amount, target.count());
-                    progress.set(t, newProg);
-                    data.setProgress(i, progress);
-                    changed = true;
+                if (target.type() != type) continue;
+                if (!target.item().equals(targetId)) continue;
+
+                int current = t < progress.size() ? progress.get(t) : 0;
+                int newProg = Math.min(current + amount, target.count());
+                if (newProg == current) continue;
+
+                if (modified == null) {
+                    modified = new ArrayList<>(progress);
                 }
+                modified.set(t, newProg);
+                changed = true;
+            }
+
+            if (modified != null) {
+                data.setProgress(i, modified);
             }
 
             if (data.getSlot(i).isComplete()) {
@@ -200,8 +223,7 @@ public class QuestManager {
         }
 
         if (changed) {
-            player.setData(ModAttachments.QUEST_DATA.get(), data);
-            syncToPlayerSilent(player, data);
+            data.markDirty();
         }
     }
 

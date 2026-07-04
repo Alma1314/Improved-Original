@@ -97,8 +97,8 @@ public class QuestScreen extends Screen {
 
     @Override
     public void render(GuiGraphics g, int mx, int my, float pt) {
-        // 模糊背景 — 最下层（ModernUI 存在时使用 Gaussian blur）
-        ModernUIHelper.renderBackground(this, g, mx, my, pt);
+        // 模糊背景 — 最下层（ModernUI Gaussian blur）
+        ModernUIHelper.renderBackground(this, g);
 
         // 完全手绘，不调用 super.render() 避免其内部再次 renderBackground
         int px = panelX(), py = panelY();

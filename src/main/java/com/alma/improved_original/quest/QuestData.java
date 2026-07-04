@@ -21,6 +21,7 @@ public class QuestData {
     private final List<QuestSlotData> slots;
     private long lastRefreshTick;
     private boolean active;
+    private transient boolean dirty;
 
     public QuestData(List<QuestSlotData> slots, long lastRefreshTick) {
         this(slots, lastRefreshTick, false);
@@ -107,6 +108,31 @@ public class QuestData {
 
     public boolean hasAnyQuest() {
         return slots.stream().anyMatch(s -> s.quest().isPresent());
+    }
+
+    public boolean isDirty() {
+        return dirty;
+    }
+
+    public void markDirty() {
+        this.dirty = true;
+    }
+
+    public void clearDirty() {
+        this.dirty = false;
+    }
+
+    // 检查是否有 FIND_STRUCTURE 类型目标，用于跳过结构检查
+    public boolean hasStructureTargets() {
+        if (!active) return false;
+        for (QuestSlotData slot : slots) {
+            if (slot.quest().isPresent() && !slot.isComplete()) {
+                for (var target : slot.quest().get().targets()) {
+                    if (target.type() == QuestType.FIND_STRUCTURE) return true;
+                }
+            }
+        }
+        return false;
     }
 
     public static final Codec<QuestData> CODEC = RecordCodecBuilder.create(instance ->

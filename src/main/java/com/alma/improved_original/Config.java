@@ -44,11 +44,6 @@ public class Config {
             .comment("Number of emeralds consumed when manually refreshing quests")
             .defineInRange("emeraldRefreshCost", 10, 1, 64);
 
-    // ModernUI compatibility
-    public static final ModConfigSpec.BooleanValue MODERN_UI_ENABLED = BUILDER
-            .comment("Enable ModernUI enhanced rendering (rounded panels, gradient buttons, etc.). Only has effect when ModernUI is loaded.")
-            .define("modernUIEnabled", true);
-
     static final ModConfigSpec SPEC = BUILDER.build();
 
     private static boolean validateItemName(final Object obj) {

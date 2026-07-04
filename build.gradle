@@ -26,6 +26,8 @@ repositories {
         name = "IzzelAliz"
         url = "https://maven.izzel.io/releases"
     }
+    // ModernUI core is on Maven Central
+    mavenCentral()
 }
 
 base {
@@ -90,6 +92,10 @@ neoForge {
             // "REGISTRYDUMP": For getting the contents of all registries.
             systemProperty 'forge.logging.markers', 'REGISTRIES'
 
+            // Allocate reasonable memory for dev client
+            jvmArgument '-Xmx4G'
+            jvmArgument '-Xms512M'
+
             // Recommended logging level for the console
             // You can set various levels here.
             // Please read: https://stackoverflow.com/questions/2031163/when-to-use-the-different-log-levels
@@ -116,6 +122,13 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 // "optional", meaning it will not be pulled by dependents of this mod.
 configurations {
     runtimeClasspath.extendsFrom localRuntime
+    // ModernUI core needs newer transitive deps than MC 1.21.1 ships
+    all {
+        resolutionStrategy {
+            force "com.ibm.icu:icu4j:76.1"
+            force "it.unimi.dsi:fastutil:8.5.15"
+        }
+    }
 }
 
 dependencies {
@@ -123,9 +136,10 @@ dependencies {
     compileOnly "mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}"
     localRuntime "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
 
-    // ModernUI integration — compile against API, use full mod at runtime
-    compileOnly "icyllis.modernui:ModernUI-NeoForge:${modernui_version}"
-    localRuntime "icyllis.modernui:ModernUI-NeoForge:${modernui_version}"
+    // ModernUI — required dependency (core via localRuntime so FML can see it)
+    compileOnly "dev.icyllis:modernui-core:${modernui_core_version}"
+    localRuntime "dev.icyllis:modernui-core:${modernui_core_version}"
+    implementation "icyllis.modernui:ModernUI-NeoForge:${modernui_mc_version}"
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.
