@@ -28,6 +28,11 @@ public class ModRecipesProvider extends RecipeProvider implements IConditionBuil
     private record GemRecipe(DeferredBlock<Block> ore, DeferredBlock<Block> deepslateOre,
                              DeferredBlock<Block> block, DeferredItem<Item> item) {}
 
+    private static final float ORE_XP = 0.25f;
+    private static final int SMELTING_TIME = 200;
+    private static final int BLASTING_TIME = 100;
+    private static final int DECOMPOSE_COUNT = 9;
+
     private static final GemRecipe[] GEMS = {
         new GemRecipe(ModBlocks.RUBY_ORE, ModBlocks.DEEPSLATE_RUBY_ORE, ModBlocks.RUBY_BLOCK, ModItems.RUBY),
         new GemRecipe(ModBlocks.SAPPHIRE_ORE, ModBlocks.DEEPSLATE_SAPPHIRE_ORE, ModBlocks.SAPPHIRE_BLOCK, ModItems.SAPPHIRE),
@@ -88,8 +93,8 @@ public class ModRecipesProvider extends RecipeProvider implements IConditionBuil
             ItemLike item = gem.item.get();
 
             // 烧炼 + 高炉
-            oreSmelting(recipeOutput, ores, RecipeCategory.MISC, item, 0.25f, 200, "gemstone");
-            oreBlasting(recipeOutput, ores, RecipeCategory.MISC, item, 0.25f, 100, "gemstone");
+            oreSmelting(recipeOutput, ores, RecipeCategory.MISC, item, ORE_XP, SMELTING_TIME, "gemstone");
+            oreBlasting(recipeOutput, ores, RecipeCategory.MISC, item, ORE_XP, BLASTING_TIME, "gemstone");
 
             // 3x3 合成块
             ShapedRecipeBuilder.shaped(RecipeCategory.BUILDING_BLOCKS, gem.block)
@@ -101,7 +106,7 @@ public class ModRecipesProvider extends RecipeProvider implements IConditionBuil
                     .save(recipeOutput);
 
             // 分解（9:1）
-            ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, item, 9)
+            ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, item, DECOMPOSE_COUNT)
                     .requires(gem.block)
                     .unlockedBy(getHasName(gem.block), has(gem.block))
                     .save(recipeOutput, ImprovedOriginal.MOD_ID + ":" + getItemName(item) + "_from_block");

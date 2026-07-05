@@ -24,9 +24,7 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 0
       - name: 'Qodana Scan'
-        uses: JetBrains/qodana-action@v2026.1
-        env:
-          QODANA_TOKEN: ${{ secrets.QODANA_TOKEN }}
+        uses: JetBrains/qodana-action@v2024.3
         with:
           # When pr-mode is set to true, Qodana analyzes only the files that have been changed
           pr-mode: false

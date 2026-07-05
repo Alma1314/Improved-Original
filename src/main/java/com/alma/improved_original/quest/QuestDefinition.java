@@ -97,11 +97,6 @@ public record QuestDefinition(
         }).toList();
     }
 
-    // 所有目标的总数量（用于UI聚合显示）
-    public int totalTargetCount() {
-        return targets.stream().mapToInt(QuestTarget::count).sum();
-    }
-
     // 根据目标类型查找显示名称（支持方块、物品、实体、结构）
     public Component getTargetDisplayName(QuestType type, ResourceLocation targetId) {
         return switch (type) {

@@ -33,13 +33,12 @@ public class QuestPoolConfig {
     public static List<PoolEntry> loadFromConfig(Path configDir) {
         LOGGER.info("QuestConfig: loadFromConfig called with {}", configDir);
         Path questsDir = configDir.resolve("quests");
-        List<PoolEntry> allEntries = new ArrayList<>();
 
         try {
             Files.createDirectories(questsDir);
         } catch (IOException e) {
             LOGGER.error("QuestConfig: Failed to create quests directory", e);
-            return allEntries;
+            return List.of();
         }
 
         File[] files = questsDir.toFile().listFiles(f -> f.getName().endsWith(".json"));
@@ -50,11 +49,7 @@ public class QuestPoolConfig {
             files = questsDir.toFile().listFiles(f -> f.getName().endsWith(".json"));
         }
 
-        if (files != null) {
-            allEntries = parseAllFiles(files);
-        }
-
-        return allEntries;
+        return files != null ? parseAllFiles(files) : List.of();
     }
 
     private static List<PoolEntry> parseAllFiles(File[] files) {

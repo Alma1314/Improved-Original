@@ -144,127 +144,162 @@ public class QuestFragment extends Fragment implements ScreenCallback {
         int contentW = panelW * 3 / 4;
 
         if (hasQuest) {
-            QuestDefinition q = qo.get();
-            QuestSlotData sl = questData.getSlot(slotIndex);
-            List<Integer> pt = sl.perTargetProgress();
-
-            LinearLayout content = new LinearLayout(ctx);
-            content.setOrientation(LinearLayout.VERTICAL);
-
-            // 任务名 + 锁定标记
-            String nameStr = "[" + (slotIndex + 1) + "] ";
-            if (q.name() != null && !q.name().isEmpty()) {
-                nameStr += Component.translatable(q.name()).getString();
-            }
-            if (questData.isSlotLocked(slotIndex)) {
-                nameStr += " " + Component.translatable("quest.improved_original.locked").getString();
-            }
-            TextView name = new TextView(ctx);
-            name.setText(nameStr);
-            name.setTextSize(15);
-            name.setTextColor(done ? GREEN : questData.isSlotLocked(slotIndex) ? 0xFFFF5555 : WHITE);
-            content.addView(name, new LinearLayout.LayoutParams(contentW, ViewGroup.LayoutParams.WRAP_CONTENT));
-
-            // 进度条 (每个target一个)
-            int barW = dp(ref, 100);
-            for (int t = 0; t < q.targets().size(); t++) {
-                QuestDefinition.QuestTarget tg = q.targets().get(t);
-                int prog = t < pt.size() ? pt.get(t) : 0;
-                int max = tg.count();
-                boolean tc = prog >= max;
-
-                LinearLayout barRow = new LinearLayout(ctx);
-                barRow.setOrientation(LinearLayout.HORIZONTAL);
-                barRow.setGravity(Gravity.CENTER_VERTICAL);
-
-                TextView targetLabel = new TextView(ctx);
-                targetLabel.setText(q.getTargetDisplayName(tg.type(), tg.item()).getString());
-                targetLabel.setTextSize(12);
-                targetLabel.setTextColor(0xFFCCCCCC);
-                barRow.addView(targetLabel, new LinearLayout.LayoutParams(dp(ref, 112), ViewGroup.LayoutParams.WRAP_CONTENT));
-
-                // 进度条
-                FrameLayout barFrame = new FrameLayout(ctx);
-                barFrame.setLayoutParams(new LinearLayout.LayoutParams(barW, dp(ref, 10)));
-
-                View barBg = new View(ctx);
-                ShapeDrawable sd1 = new ShapeDrawable();
-                sd1.setColor(0xFF333333);
-                barBg.setBackground(sd1);
-                barFrame.addView(barBg, new FrameLayout.LayoutParams(barW, dp(ref, 10)));
-
-                if (max > 0) {
-                    int fillW = (int) ((float) prog / max * barW);
-                    if (fillW > 0) {
-                        View barFg = new View(ctx);
-                        ShapeDrawable sd2 = new ShapeDrawable();
-                        sd2.setColor(tc ? GREEN : ACCENT);
-                        barFg.setBackground(sd2);
-                        barFrame.addView(barFg, new FrameLayout.LayoutParams(fillW, dp(ref, 10)));
-                    }
-                }
-                barRow.addView(barFrame);
-
-                TextView count = new TextView(ctx);
-                count.setText(prog + "/" + max);
-                count.setTextSize(10);
-                count.setTextColor(GRAY);
-                barRow.addView(count, new LinearLayout.LayoutParams(dp(ref, 48), ViewGroup.LayoutParams.WRAP_CONTENT));
-
-                content.addView(barRow, new LinearLayout.LayoutParams(contentW, ViewGroup.LayoutParams.WRAP_CONTENT));
-            }
-
-            // 奖励列表
-            if (!q.rewards().isEmpty()) {
-                var rn = q.getRewardDisplayNames();
-                LinearLayout rewardRow = new LinearLayout(ctx);
-                rewardRow.setOrientation(LinearLayout.HORIZONTAL);
-                StringBuilder sb = new StringBuilder();
-                for (int r = 0; r < q.rewards().size(); r++) {
-                    if (r > 0) sb.append(", ");
-                    sb.append(Component.translatable("quest.improved_original.reward", q.rewards().get(r).count(), rn.get(r)).getString());
-                }
-                TextView reward = new TextView(ctx);
-                reward.setText(sb.toString());
-                reward.setTextSize(12);
-                reward.setTextColor(done ? GREEN : GOLD);
-                content.addView(reward, new LinearLayout.LayoutParams(contentW, ViewGroup.LayoutParams.WRAP_CONTENT));
-            }
-
-            row.addView(content, new LinearLayout.LayoutParams(contentW, ViewGroup.LayoutParams.WRAP_CONTENT));
+            row.addView(buildQuestContent(ctx, ref, qo.get(), slotIndex, done, contentW),
+                    new LinearLayout.LayoutParams(contentW, ViewGroup.LayoutParams.WRAP_CONTENT));
         } else {
-            TextView empty = new TextView(ctx);
-            empty.setText(Component.translatable("quest.improved_original.empty_slot").getString());
-            empty.setTextSize(15);
-            empty.setTextColor(0xFF666666);
-            row.addView(empty, new LinearLayout.LayoutParams(contentW, ViewGroup.LayoutParams.WRAP_CONTENT));
+            row.addView(buildEmptySlot(ctx, contentW),
+                    new LinearLayout.LayoutParams(contentW, ViewGroup.LayoutParams.WRAP_CONTENT));
         }
 
-        // 右1/4: 锁定按钮
         if (hasQuest && !done) {
-            int btnW = panelW / 4 - dp(ref, 24);
-            String label = questData.isSlotLocked(slotIndex)
-                    ? Component.translatable("quest.improved_original.locked").getString()
-                    : Component.translatable("quest.improved_original.lock_button").getString();
-            TextView lockBtn = new TextView(ctx);
-            lockBtn.setText(label);
-            lockBtn.setTextSize(13);
-            lockBtn.setTextColor(GRAY);
-            lockBtn.setGravity(Gravity.CENTER);
-            lockBtn.setClickable(true);
-            int si = slotIndex;
-            lockBtn.setOnClickListener(v -> PacketDistributor.sendToServer(new C2SQuestLockPayload(si)));
-
-            ShapeDrawable lockBg = new ShapeDrawable();
-            lockBg.setCornerRadius(dp(ref, 4));
-            lockBg.setColor(0x66333333);
-            lockBtn.setBackground(lockBg);
-
-            row.addView(lockBtn, new LinearLayout.LayoutParams(btnW, dp(ref, 36)));
+            row.addView(buildLockButton(ctx, ref, slotIndex, panelW));
         }
 
         row.setLayoutParams(new LinearLayout.LayoutParams(panelW, slotH));
         return row;
+    }
+
+    private View buildQuestContent(Context ctx, View ref, QuestDefinition q, int slotIndex, boolean done, int contentW) {
+        QuestSlotData sl = questData.getSlot(slotIndex);
+
+        LinearLayout content = new LinearLayout(ctx);
+        content.setOrientation(LinearLayout.VERTICAL);
+
+        content.addView(buildQuestName(ctx, q, slotIndex, done, contentW),
+                new LinearLayout.LayoutParams(contentW, ViewGroup.LayoutParams.WRAP_CONTENT));
+
+        // 进度条 (每个target一个)
+        for (int t = 0; t < q.targets().size(); t++) {
+            int prog = t < sl.perTargetProgress().size() ? sl.perTargetProgress().get(t) : 0;
+            content.addView(buildProgressBar(ctx, ref, q, t, prog, contentW),
+                    new LinearLayout.LayoutParams(contentW, ViewGroup.LayoutParams.WRAP_CONTENT));
+        }
+
+        if (!q.rewards().isEmpty()) {
+            content.addView(buildRewardText(ctx, q, done, contentW),
+                    new LinearLayout.LayoutParams(contentW, ViewGroup.LayoutParams.WRAP_CONTENT));
+        }
+
+        return content;
+    }
+
+    private TextView buildQuestName(Context ctx, QuestDefinition q, int slotIndex, boolean done, int contentW) {
+        boolean locked = questData.isSlotLocked(slotIndex);
+        int color;
+        if (done) {
+            color = GREEN;
+        } else if (locked) {
+            color = 0xFFFF5555;
+        } else {
+            color = WHITE;
+        }
+
+        StringBuilder sb = new StringBuilder("[");
+        sb.append(slotIndex + 1).append("] ");
+        if (q.name() != null && !q.name().isEmpty()) {
+            sb.append(Component.translatable(q.name()).getString());
+        }
+        if (locked) {
+            sb.append(" ").append(Component.translatable("quest.improved_original.locked").getString());
+        }
+
+        TextView name = new TextView(ctx);
+        name.setText(sb.toString());
+        name.setTextSize(15);
+        name.setTextColor(color);
+        return name;
+    }
+
+    private View buildProgressBar(Context ctx, View ref, QuestDefinition q, int targetIndex, int prog, int contentW) {
+        QuestDefinition.QuestTarget tg = q.targets().get(targetIndex);
+        int max = tg.count();
+        int barW = dp(ref, 100);
+
+        LinearLayout barRow = new LinearLayout(ctx);
+        barRow.setOrientation(LinearLayout.HORIZONTAL);
+        barRow.setGravity(Gravity.CENTER_VERTICAL);
+
+        TextView targetLabel = new TextView(ctx);
+        targetLabel.setText(q.getTargetDisplayName(tg.type(), tg.item()).getString());
+        targetLabel.setTextSize(12);
+        targetLabel.setTextColor(0xFFCCCCCC);
+        barRow.addView(targetLabel, new LinearLayout.LayoutParams(dp(ref, 112), ViewGroup.LayoutParams.WRAP_CONTENT));
+
+        FrameLayout barFrame = new FrameLayout(ctx);
+        barFrame.setLayoutParams(new LinearLayout.LayoutParams(barW, dp(ref, 10)));
+
+        View barBg = new View(ctx);
+        ShapeDrawable sd1 = new ShapeDrawable();
+        sd1.setColor(0xFF333333);
+        barBg.setBackground(sd1);
+        barFrame.addView(barBg, new FrameLayout.LayoutParams(barW, dp(ref, 10)));
+
+        if (max > 0) {
+            int fillW = (int) ((float) prog / max * barW);
+            if (fillW > 0) {
+                View barFg = new View(ctx);
+                ShapeDrawable sd2 = new ShapeDrawable();
+                sd2.setColor(prog >= max ? GREEN : ACCENT);
+                barFg.setBackground(sd2);
+                barFrame.addView(barFg, new FrameLayout.LayoutParams(fillW, dp(ref, 10)));
+            }
+        }
+        barRow.addView(barFrame);
+
+        TextView count = new TextView(ctx);
+        count.setText(prog + "/" + max);
+        count.setTextSize(10);
+        count.setTextColor(GRAY);
+        barRow.addView(count, new LinearLayout.LayoutParams(dp(ref, 48), ViewGroup.LayoutParams.WRAP_CONTENT));
+
+        return barRow;
+    }
+
+    private TextView buildRewardText(Context ctx, QuestDefinition q, boolean done, int contentW) {
+        var rn = q.getRewardDisplayNames();
+        StringBuilder sb = new StringBuilder();
+        for (int r = 0; r < q.rewards().size(); r++) {
+            if (r > 0) sb.append(", ");
+            sb.append(Component.translatable("quest.improved_original.reward",
+                    q.rewards().get(r).count(), rn.get(r)).getString());
+        }
+        TextView reward = new TextView(ctx);
+        reward.setText(sb.toString());
+        reward.setTextSize(12);
+        reward.setTextColor(done ? GREEN : GOLD);
+        return reward;
+    }
+
+    private TextView buildEmptySlot(Context ctx, int contentW) {
+        TextView empty = new TextView(ctx);
+        empty.setText(Component.translatable("quest.improved_original.empty_slot").getString());
+        empty.setTextSize(15);
+        empty.setTextColor(0xFF666666);
+        return empty;
+    }
+
+    private TextView buildLockButton(Context ctx, View ref, int slotIndex, int panelW) {
+        String label = questData.isSlotLocked(slotIndex)
+                ? Component.translatable("quest.improved_original.locked").getString()
+                : Component.translatable("quest.improved_original.lock_button").getString();
+        int btnW = panelW / 4 - dp(ref, 24);
+
+        TextView lockBtn = new TextView(ctx);
+        lockBtn.setText(label);
+        lockBtn.setTextSize(13);
+        lockBtn.setTextColor(GRAY);
+        lockBtn.setGravity(Gravity.CENTER);
+        lockBtn.setClickable(true);
+        int si = slotIndex;
+        lockBtn.setOnClickListener(v -> PacketDistributor.sendToServer(new C2SQuestLockPayload(si)));
+
+        ShapeDrawable lockBg = new ShapeDrawable();
+        lockBg.setCornerRadius(dp(ref, 4));
+        lockBg.setColor(0x66333333);
+        lockBtn.setBackground(lockBg);
+
+        lockBtn.setLayoutParams(new LinearLayout.LayoutParams(btnW, dp(ref, 36)));
+        return lockBtn;
     }
 
     private View buildFooter(Context ctx, View ref) {
