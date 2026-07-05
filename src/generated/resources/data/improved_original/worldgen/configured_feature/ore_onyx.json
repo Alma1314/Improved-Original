@@ -6,7 +6,7 @@
     "targets": [
       {
         "state": {
-          "Name": "improved_original:topaz_ore"
+          "Name": "improved_original:onyx_ore"
         },
         "target": {
           "predicate_type": "minecraft:tag_match",
@@ -15,7 +15,7 @@
       },
       {
         "state": {
-          "Name": "improved_original:deepslate_topaz_ore"
+          "Name": "improved_original:deepslate_onyx_ore"
         },
         "target": {
           "predicate_type": "minecraft:tag_match",

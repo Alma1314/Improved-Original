@@ -1049,33 +1049,7 @@
         }
       ],
       "weight": 8
-    },
-    {
-      "description": "quest.improved_original.desc_text.mixed_example",
-      "name": "quest.improved_original.name.mixed_example",
-      "rewards": [
-        {
-          "countMax": 3,
-          "countMin": 1,
-          "item": "minecraft:diamond"
-        }
-      ],
-      "targets": [
-        {
-          "type": "BREAK_BLOCK",
-          "countMax": 64,
-          "countMin": 10,
-          "item": "minecraft:stone"
-        },
-        {
-          "type": "KILL_ENTITY",
-          "countMax": 10,
-          "countMin": 3,
-          "item": "minecraft:zombie"
-        }
-      ],
-      "weight": 5
     }
   ],
-  "totalWeight": 545
+  "totalWeight": 540
 }

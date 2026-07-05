@@ -1,9 +1,19 @@
 {
   "values": [
-    "improved_original:amethyst_block",
     "improved_original:ruby_block",
-    "improved_original:onyx_block",
+    "improved_original:sapphire_block",
     "improved_original:topaz_block",
-    "improved_original:sapphire_block"
+    "improved_original:amethyst_block",
+    "improved_original:onyx_block",
+    "improved_original:ruby_ore",
+    "improved_original:sapphire_ore",
+    "improved_original:topaz_ore",
+    "improved_original:amethyst_ore",
+    "improved_original:onyx_ore",
+    "improved_original:deepslate_ruby_ore",
+    "improved_original:deepslate_sapphire_ore",
+    "improved_original:deepslate_topaz_ore",
+    "improved_original:deepslate_amethyst_ore",
+    "improved_original:deepslate_onyx_ore"
   ]
 }

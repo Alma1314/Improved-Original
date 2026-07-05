@@ -6,7 +6,7 @@
     "targets": [
       {
         "state": {
-          "Name": "improved_original:amethyst_ore"
+          "Name": "improved_original:ruby_ore"
         },
         "target": {
           "predicate_type": "minecraft:tag_match",
@@ -15,7 +15,7 @@
       },
       {
         "state": {
-          "Name": "improved_original:deepslate_amethyst_ore"
+          "Name": "improved_original:deepslate_ruby_ore"
         },
         "target": {
           "predicate_type": "minecraft:tag_match",

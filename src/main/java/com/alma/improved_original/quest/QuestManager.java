@@ -243,6 +243,10 @@ public class QuestManager {
     // 手动刷新任务
     public static void handleRefreshPacket(Player player) {
         if (!(player instanceof ServerPlayer serverPlayer)) return;
+        if (serverPlayer.isCreative()) {
+            manualRefreshPlayer(serverPlayer);
+            return;
+        }
         int refreshCost = Config.REFRESH_COST.getAsInt();
         if (!consumeCurrency(serverPlayer, refreshCost)) {
             serverPlayer.sendSystemMessage(
@@ -256,9 +260,7 @@ public class QuestManager {
 
     public static void manualRefreshPlayer(ServerPlayer player) {
         QuestData data = player.getData(ModAttachments.QUEST_DATA.get());
-        data.refreshUnlockedSlots(QuestManager::generateRandomQuest, player.getRandom());
-        data.setLastRefreshTick(player.serverLevel().getGameTime());
-        saveAndSync(player, data);
+        refreshPlayerQuests(player, data);
     }
 
     public static boolean lockSlot(ServerPlayer player, QuestData data, int slot) {
@@ -275,7 +277,7 @@ public class QuestManager {
             return false;
         }
         int lockCost = Config.LOCK_COST.getAsInt();
-        if (!consumeCurrency(player, lockCost)) {
+        if (!player.isCreative() && !consumeCurrency(player, lockCost)) {
             player.sendSystemMessage(Component.translatable("quest.improved_original.lock.no_emeralds", lockCost));
             return false;
         }
