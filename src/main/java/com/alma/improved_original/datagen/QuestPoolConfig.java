@@ -16,11 +16,6 @@ import java.util.*;
 public class QuestPoolConfig {
 
     private static final Logger LOGGER = LogUtils.getLogger();
-    private static List<PoolEntry> cachedPool = null;
-
-    public static void reloadCache() {
-        cachedPool = null;
-    }
 
     // 目标条目：类型（必需）、物品ID、数量范围
     public record TargetEntry(QuestType type, ResourceLocation item, int countMin, int countMax) {}
@@ -109,25 +104,43 @@ public class QuestPoolConfig {
     // 解析targets数组，每个target必须有"type"字段
     private static List<TargetEntry> parseTargetEntries(JsonArray arr) {
         List<TargetEntry> result = new ArrayList<>();
-        for (JsonElement e : arr) {
-            JsonObject o = e.getAsJsonObject();
-            ResourceLocation item = ResourceLocation.parse(o.get("item").getAsString());
-            int cMin = o.has("countMin") ? o.get("countMin").getAsInt() : 1;
-            int cMax = o.has("countMax") ? o.get("countMax").getAsInt() : 1;
-            QuestType targetType = QuestType.valueOf(o.get("type").getAsString().toUpperCase());
-            result.add(new TargetEntry(targetType, item, cMin, cMax));
+        for (int idx = 0; idx < arr.size(); idx++) {
+            JsonElement e = arr.get(idx);
+            try {
+                JsonObject o = e.getAsJsonObject();
+                if (!o.has("item") || !o.has("type")) {
+                    LOGGER.warn("QuestConfig: Skipping target #{} — missing 'item' or 'type'", idx);
+                    continue;
+                }
+                ResourceLocation item = ResourceLocation.parse(o.get("item").getAsString());
+                int cMin = o.has("countMin") ? o.get("countMin").getAsInt() : 1;
+                int cMax = o.has("countMax") ? o.get("countMax").getAsInt() : 1;
+                QuestType targetType = QuestType.valueOf(o.get("type").getAsString().toUpperCase());
+                result.add(new TargetEntry(targetType, item, cMin, cMax));
+            } catch (Exception ex) {
+                LOGGER.warn("QuestConfig: Skipping target #{} — parse error: {}", idx, ex.getMessage());
+            }
         }
         return result;
     }
 
     private static List<RewardEntry> parseRewardEntries(JsonArray arr) {
         List<RewardEntry> result = new ArrayList<>();
-        for (JsonElement e : arr) {
-            JsonObject o = e.getAsJsonObject();
-            ResourceLocation item = ResourceLocation.parse(o.get("item").getAsString());
-            int cMin = o.has("countMin") ? o.get("countMin").getAsInt() : 1;
-            int cMax = o.has("countMax") ? o.get("countMax").getAsInt() : 1;
-            result.add(new RewardEntry(item, cMin, cMax));
+        for (int idx = 0; idx < arr.size(); idx++) {
+            JsonElement e = arr.get(idx);
+            try {
+                JsonObject o = e.getAsJsonObject();
+                if (!o.has("item")) {
+                    LOGGER.warn("QuestConfig: Skipping reward #{} — missing 'item'", idx);
+                    continue;
+                }
+                ResourceLocation item = ResourceLocation.parse(o.get("item").getAsString());
+                int cMin = o.has("countMin") ? o.get("countMin").getAsInt() : 1;
+                int cMax = o.has("countMax") ? o.get("countMax").getAsInt() : 1;
+                result.add(new RewardEntry(item, cMin, cMax));
+            } catch (Exception ex) {
+                LOGGER.warn("QuestConfig: Skipping reward #{} — parse error: {}", idx, ex.getMessage());
+            }
         }
         return result;
     }

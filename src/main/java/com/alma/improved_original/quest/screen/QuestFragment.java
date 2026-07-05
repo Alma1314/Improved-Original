@@ -281,7 +281,7 @@ public class QuestFragment extends Fragment implements ScreenCallback {
         int panelW = dp(ref, 560);
 
         // 刷新按钮
-        int refreshCost = Config.EMERALD_REFRESH_COST.getAsInt();
+        int refreshCost = Config.REFRESH_COST.getAsInt();
         TextView refreshBtn = buildButton(ctx, ref,
                 Component.translatable("quest.improved_original.refresh_button", refreshCost).getString(),
                 () -> PacketDistributor.sendToServer(new C2SQuestRefreshPayload()));

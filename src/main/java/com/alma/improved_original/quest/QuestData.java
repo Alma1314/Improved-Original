@@ -9,11 +9,11 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.*;
+import java.util.function.BiFunction;
 
 public class QuestData {
     public static final int SLOT_COUNT = 3;
@@ -77,17 +77,21 @@ public class QuestData {
         QuestSlotData old = slots.get(index);
         List<Integer> initProgress = new ArrayList<>();
         for (int i = 0; i < quest.targets().size(); i++) initProgress.add(0);
-        slots.set(index, new QuestSlotData(Optional.of(quest), initProgress, old.locked()));
+        slots.set(index, new QuestSlotData(Optional.of(quest), initProgress, old.locked(), false));
     }
 
     public void setProgress(int index, List<Integer> progress) {
         QuestSlotData old = slots.get(index);
-        slots.set(index, new QuestSlotData(old.quest(), List.copyOf(progress), old.locked()));
+        slots.set(index, new QuestSlotData(old.quest(), List.copyOf(progress), old.locked(), false));
+    }
+
+    public boolean isSlotComplete(int index) {
+        return slots.get(index).isComplete();
     }
 
     public void setSlotLocked(int index, boolean locked) {
         QuestSlotData old = slots.get(index);
-        slots.set(index, new QuestSlotData(old.quest(), old.perTargetProgress(), locked));
+        slots.set(index, new QuestSlotData(old.quest(), old.perTargetProgress(), locked, false));
     }
 
     public void clearSlot(int index) {
@@ -133,6 +137,28 @@ public class QuestData {
             }
         }
         return false;
+    }
+
+    // 收集当前所有任务的target item列表，用于去重
+    public Set<ResourceLocation> getExistingTargetItems() {
+        Set<ResourceLocation> result = new HashSet<>();
+        for (QuestSlotData slot : slots) {
+            slot.quest().ifPresent(q ->
+                q.targets().forEach(t -> result.add(t.item())));
+        }
+        return result;
+    }
+
+    // 刷新所有未锁定槽位，传入 quest supplier
+    public void refreshUnlockedSlots(BiFunction<RandomSource, QuestData, QuestDefinition> supplier, RandomSource random) {
+        for (int i = 0; i < SLOT_COUNT; i++) {
+            if (!isSlotLocked(i)) {
+                QuestDefinition quest = supplier.apply(random, this);
+                if (quest != null) {
+                    setQuest(i, quest);
+                }
+            }
+        }
     }
 
     public static final Codec<QuestData> CODEC = RecordCodecBuilder.create(instance ->

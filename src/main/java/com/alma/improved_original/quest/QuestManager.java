@@ -8,7 +8,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.minecraft.network.chat.Component;
@@ -63,7 +62,6 @@ public class QuestManager {
             QuestData data = player.getData(ModAttachments.QUEST_DATA.get());
             if (data.isDirty()) {
                 data.clearDirty();
-                player.setData(ModAttachments.QUEST_DATA.get(), data);
                 PacketDistributor.sendToPlayer(player, S2CQuestSyncPayload.syncOnly(data));
             }
         }
@@ -78,29 +76,22 @@ public class QuestManager {
         }
     }
 
-    public static void refreshPlayerQuests(ServerPlayer player, QuestData data) {
-        for (int i = 0; i < QuestData.SLOT_COUNT; i++) {
-            if (!data.isSlotLocked(i)) {
-                QuestDefinition quest = generateRandomQuest(player.getRandom(), data);
-                if (quest != null) {
-                    data.setQuest(i, quest);
-                }
-            }
-        }
-        data.setLastRefreshTick(player.serverLevel().getGameTime());
+    // 保存数据到玩家attachment并同步到客户端
+    private static void saveAndSync(ServerPlayer player, QuestData data) {
         player.setData(ModAttachments.QUEST_DATA.get(), data);
         syncToPlayerSilent(player, data);
+    }
+
+    public static void refreshPlayerQuests(ServerPlayer player, QuestData data) {
+        data.refreshUnlockedSlots(QuestManager::generateRandomQuest, player.getRandom());
+        data.setLastRefreshTick(player.serverLevel().getGameTime());
+        saveAndSync(player, data);
     }
 
     public static void ensureQuestsInitialized(ServerPlayer player, QuestData data) {
         boolean changed = false;
         if (!data.hasAnyQuest()) {
-            for (int i = 0; i < QuestData.SLOT_COUNT; i++) {
-                QuestDefinition quest = generateRandomQuest(player.getRandom(), data);
-                if (quest != null) {
-                    data.setQuest(i, quest);
-                }
-            }
+            data.refreshUnlockedSlots(QuestManager::generateRandomQuest, player.getRandom());
             changed = true;
         }
         if (!data.isActive()) {
@@ -108,8 +99,7 @@ public class QuestManager {
             changed = true;
         }
         if (changed) {
-            player.setData(ModAttachments.QUEST_DATA.get(), data);
-            syncToPlayerSilent(player, data);
+            saveAndSync(player, data);
         }
     }
 
@@ -117,12 +107,8 @@ public class QuestManager {
         List<QuestPoolConfig.PoolEntry> pool = getQuestPool();
         if (pool.isEmpty()) return null;
 
-        Set<ResourceLocation> existingTargets = new HashSet<>();
-        for (int i = 0; i < QuestData.SLOT_COUNT; i++) {
-            existingData.getQuest(i).ifPresent(q ->
-                q.targets().forEach(t -> existingTargets.add(t.item())));
-        }
-
+        // 去重: 过滤掉与已有任务target重复的条目
+        Set<ResourceLocation> existingTargets = existingData.getExistingTargetItems();
         List<QuestPoolConfig.PoolEntry> available = pool.stream()
                 .filter(e -> e.targets().stream().noneMatch(t -> existingTargets.contains(t.item())))
                 .toList();
@@ -132,6 +118,9 @@ public class QuestManager {
         }
 
         int totalWeight = available.stream().mapToInt(QuestPoolConfig.PoolEntry::weight).sum();
+        if (totalWeight <= 0) return null;
+
+        // 加权随机选择
         int roll = random.nextInt(totalWeight);
         int cumulative = 0;
         QuestPoolConfig.PoolEntry chosen = available.get(0);
@@ -142,13 +131,13 @@ public class QuestManager {
                 break;
             }
         }
-        // 将目标数量范围解析为具体数值（每个target自带类型）
+
+        // 解析数量范围到具体数值（目标和奖励分别处理）
         List<QuestDefinition.QuestTarget> resolvedTargets = chosen.targets().stream().map(t ->
             new QuestDefinition.QuestTarget(t.type(), t.item(),
                 t.countMin() + random.nextInt(t.countMax() - t.countMin() + 1))
         ).toList();
 
-        // 将奖励数量范围解析为具体数值
         List<QuestDefinition.ItemCount> resolvedRewards = chosen.rewards().stream().map(r ->
             new QuestDefinition.ItemCount(r.item(),
                 r.countMin() + random.nextInt(r.countMax() - r.countMin() + 1))
@@ -197,6 +186,9 @@ public class QuestManager {
             if (questOpt.isEmpty()) continue;
             QuestDefinition quest = questOpt.get();
 
+            // 快速跳过: 此槽位没有此类型的target
+            if (quest.targets().stream().noneMatch(t -> t.type() == type)) continue;
+
             List<Integer> progress = data.getSlot(i).perTargetProgress();
             List<Integer> modified = null;
             for (int t = 0; t < quest.targets().size(); t++) {
@@ -217,10 +209,11 @@ public class QuestManager {
 
             if (modified != null) {
                 data.setProgress(i, modified);
-            }
-
-            if (data.getSlot(i).isComplete()) {
-                completeQuest(player, data, i);
+                // setProgress 构造新的 QuestSlotData 时已预计算 isComplete
+                if (data.isSlotComplete(i)) {
+                    completeQuest(player, data, i);
+                    continue; // 该槽位已清空，跳过后续槽位
+                }
             }
         }
 
@@ -252,8 +245,8 @@ public class QuestManager {
     // 手动刷新任务
     public static void handleRefreshPacket(Player player) {
         if (!(player instanceof ServerPlayer serverPlayer)) return;
-        int refreshCost = Config.EMERALD_REFRESH_COST.getAsInt();
-        if (!consumeEmeralds(serverPlayer, refreshCost)) {
+        int refreshCost = Config.REFRESH_COST.getAsInt();
+        if (!consumeCurrency(serverPlayer, refreshCost)) {
             serverPlayer.sendSystemMessage(
                     Component.translatable("quest.improved_original.refresh.no_emeralds", refreshCost));
             return;
@@ -265,17 +258,9 @@ public class QuestManager {
 
     public static void manualRefreshPlayer(ServerPlayer player) {
         QuestData data = player.getData(ModAttachments.QUEST_DATA.get());
-        for (int i = 0; i < QuestData.SLOT_COUNT; i++) {
-            if (!data.isSlotLocked(i)) {
-                QuestDefinition quest = generateRandomQuest(player.getRandom(), data);
-                if (quest != null) {
-                    data.setQuest(i, quest);
-                }
-            }
-        }
+        data.refreshUnlockedSlots(QuestManager::generateRandomQuest, player.getRandom());
         data.setLastRefreshTick(player.serverLevel().getGameTime());
-        player.setData(ModAttachments.QUEST_DATA.get(), data);
-        syncToPlayerSilent(player, data);
+        saveAndSync(player, data);
     }
 
     public static boolean lockSlot(ServerPlayer player, QuestData data, int slot) {
@@ -291,14 +276,13 @@ public class QuestManager {
             player.sendSystemMessage(Component.translatable("quest.improved_original.lock.completed"));
             return false;
         }
-        int lockCost = Config.EMERALD_LOCK_COST.getAsInt();
-        if (!consumeEmeralds(player, lockCost)) {
+        int lockCost = Config.LOCK_COST.getAsInt();
+        if (!consumeCurrency(player, lockCost)) {
             player.sendSystemMessage(Component.translatable("quest.improved_original.lock.no_emeralds", lockCost));
             return false;
         }
         data.setSlotLocked(slot, true);
-        player.setData(ModAttachments.QUEST_DATA.get(), data);
-        syncToPlayerSilent(player, data);
+        saveAndSync(player, data);
         player.sendSystemMessage(Component.translatable("quest.improved_original.lock.success", slot + 1));
         return true;
     }
@@ -309,8 +293,7 @@ public class QuestManager {
             return false;
         }
         data.setSlotLocked(slot, false);
-        player.setData(ModAttachments.QUEST_DATA.get(), data);
-        syncToPlayerSilent(player, data);
+        saveAndSync(player, data);
         player.sendSystemMessage(Component.translatable("quest.improved_original.unlock.success", slot + 1));
         return true;
     }
@@ -320,33 +303,52 @@ public class QuestManager {
         if (questOpt.isEmpty()) return;
         QuestDefinition quest = questOpt.get();
 
-        List<ItemStack> rewards = quest.createRewards();
-        for (ItemStack reward : rewards) {
+        // 发放奖励
+        for (ItemStack reward : quest.createRewards()) {
             if (!player.getInventory().add(reward)) {
                 player.drop(reward, false);
             }
         }
 
+        // 构建完成通知字符串
         String targetNames = quest.getTargetDisplayNames().stream()
                 .map(Component::getString).collect(Collectors.joining(", "));
         String rewardNames = quest.getRewardDisplayNames().stream()
                 .map(Component::getString).collect(Collectors.joining(", "));
-        data.clearSlot(slot);
 
+        data.clearSlot(slot);
         syncToPlayerWithCompletion(player, data, targetNames, rewardNames);
     }
 
-    private static boolean consumeEmeralds(ServerPlayer player, int amount) {
-        int remaining = amount;
+    private static boolean consumeCurrency(ServerPlayer player, int amount) {
+        ResourceLocation currencyId = Config.getCurrencyItem();
+        // 预检查: 先统计所有货币数量（包括offhand），确认足够再扣除
+        List<ItemStack> stacks = new ArrayList<>();
         for (ItemStack stack : player.getInventory().items) {
-            if (stack.is(Items.EMERALD)) {
-                int toRemove = Math.min(stack.getCount(), remaining);
-                stack.shrink(toRemove);
-                remaining -= toRemove;
-                if (remaining <= 0) return true;
+            if (isCurrencyItem(stack, currencyId)) {
+                stacks.add(stack);
             }
         }
+        ItemStack offhand = player.getOffhandItem();
+        if (isCurrencyItem(offhand, currencyId)) {
+            stacks.add(offhand);
+        }
+
+        int totalCount = stacks.stream().mapToInt(ItemStack::getCount).sum();
+        if (totalCount < amount) return false;
+
+        int remaining = amount;
+        for (ItemStack stack : stacks) {
+            int toRemove = Math.min(stack.getCount(), remaining);
+            stack.shrink(toRemove);
+            remaining -= toRemove;
+            if (remaining <= 0) return true;
+        }
         return false;
+    }
+
+    private static boolean isCurrencyItem(ItemStack stack, ResourceLocation currencyId) {
+        return net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(stack.getItem()).equals(currencyId);
     }
 
     public static void syncToPlayerSilent(ServerPlayer player, QuestData data) {

@@ -59,8 +59,6 @@ public class QuestJeiPlugin implements IModPlugin {
 
     @Override
     public void registerRecipes(IRecipeRegistration registration) {
-        // 清空缓存确保读取最新配置
-        QuestPoolConfig.reloadCache();
         Path configDir = FMLPaths.CONFIGDIR.get();
         LOGGER.info("JEI: Loading quest recipes from {}", configDir);
         List<QuestPoolConfig.PoolEntry> pool = QuestPoolConfig.loadFromConfig(configDir);

@@ -1,52 +1,40 @@
-// 模组配置文件：任务刷新间隔、绿宝石消耗等可配置项
+// 模组配置文件：任务刷新间隔、货币物品、消耗数量等可配置项
 // ModConfigSpec 构建器模式：BUILDER.comment().define() / defineInRange() 链式定义
 // 配置文件自动生成到 config/improved_original-common.toml
 // QUEST_REFRESH_INTERVAL_MINUTES: 任务自动刷新间隔（分钟）
-// EMERALD_LOCK_COST: 锁定单个槽位消耗的绿宝石数
-// EMERALD_REFRESH_COST: 手动刷新消耗的绿宝石数
+// CURRENCY_ITEM: 锁定/刷新消耗的货币物品ID，默认绿宝石
+// LOCK_COST: 锁定单个槽位消耗的货币数量
+// REFRESH_COST: 手动刷新消耗的货币数量
 package com.alma.improved_original;
 
-import java.util.List;
-
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class Config {
     private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
 
-    public static final ModConfigSpec.BooleanValue LOG_DIRT_BLOCK = BUILDER
-            .comment("Whether to log the dirt block on common setup")
-            .define("logDirtBlock", true);
-
-    public static final ModConfigSpec.IntValue MAGIC_NUMBER = BUILDER
-            .comment("A magic number")
-            .defineInRange("magicNumber", 42, 0, Integer.MAX_VALUE);
-
-    public static final ModConfigSpec.ConfigValue<String> MAGIC_NUMBER_INTRODUCTION = BUILDER
-            .comment("What you want the introduction message to be for the magic number")
-            .define("magicNumberIntroduction", "The magic number is... ");
-
-    public static final ModConfigSpec.ConfigValue<List<? extends String>> ITEM_STRINGS = BUILDER
-            .comment("A list of items to log on common setup.")
-            .defineListAllowEmpty("items", List.of("minecraft:iron_ingot"), () -> "", Config::validateItemName);
-
     // Quest system configuration
     public static final ModConfigSpec.IntValue QUEST_REFRESH_INTERVAL_MINUTES = BUILDER
             .comment("How often (in minutes) quests refresh for all players")
             .defineInRange("questRefreshIntervalMinutes", 60, 1, 1440);
 
-    public static final ModConfigSpec.IntValue EMERALD_LOCK_COST = BUILDER
-            .comment("Number of emeralds consumed when locking a quest")
-            .defineInRange("emeraldLockCost", 5, 1, 64);
+    public static final ModConfigSpec.ConfigValue<String> CURRENCY_ITEM = BUILDER
+            .comment("The item ID used as currency for locking and refreshing quests",
+                     "Change this to use a modded coin item instead of emeralds",
+                     "Example: \"thererelics:silver_coin\" or \"minecraft:diamond\"")
+            .define("currencyItem", "minecraft:emerald");
 
-    public static final ModConfigSpec.IntValue EMERALD_REFRESH_COST = BUILDER
-            .comment("Number of emeralds consumed when manually refreshing quests")
-            .defineInRange("emeraldRefreshCost", 10, 1, 64);
+    public static final ModConfigSpec.IntValue LOCK_COST = BUILDER
+            .comment("Number of currency items consumed when locking a quest")
+            .defineInRange("lockCost", 5, 1, 64);
+
+    public static final ModConfigSpec.IntValue REFRESH_COST = BUILDER
+            .comment("Number of currency items consumed when manually refreshing quests")
+            .defineInRange("refreshCost", 10, 1, 64);
 
     public static final ModConfigSpec SPEC = BUILDER.build();
 
-    private static boolean validateItemName(final Object obj) {
-        return obj instanceof String itemName && BuiltInRegistries.ITEM.containsKey(ResourceLocation.parse(itemName));
+    public static ResourceLocation getCurrencyItem() {
+        return ResourceLocation.parse(CURRENCY_ITEM.get());
     }
 }
