@@ -17,7 +17,9 @@ import net.minecraft.util.RandomSource;
 import net.neoforged.fml.loading.FMLPaths;
 
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class QuestManager {
@@ -186,9 +188,6 @@ public class QuestManager {
             if (questOpt.isEmpty()) continue;
             QuestDefinition quest = questOpt.get();
 
-            // 快速跳过: 此槽位没有此类型的target
-            if (quest.targets().stream().noneMatch(t -> t.type() == type)) continue;
-
             List<Integer> progress = data.getSlot(i).perTargetProgress();
             List<Integer> modified = null;
             for (int t = 0; t < quest.targets().size(); t++) {
@@ -212,7 +211,6 @@ public class QuestManager {
                 // setProgress 构造新的 QuestSlotData 时已预计算 isComplete
                 if (data.isSlotComplete(i)) {
                     completeQuest(player, data, i);
-                    continue; // 该槽位已清空，跳过后续槽位
                 }
             }
         }
@@ -344,6 +342,7 @@ public class QuestManager {
             remaining -= toRemove;
             if (remaining <= 0) return true;
         }
+        // 预检查已确认 totalCount >= amount，此处不可达
         return false;
     }
 

@@ -12,7 +12,11 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.function.BiFunction;
 
 public class QuestData {
@@ -82,7 +86,7 @@ public class QuestData {
 
     public void setProgress(int index, List<Integer> progress) {
         QuestSlotData old = slots.get(index);
-        slots.set(index, new QuestSlotData(old.quest(), List.copyOf(progress), old.locked(), false));
+        slots.set(index, new QuestSlotData(old.quest(), progress, old.locked(), false));
     }
 
     public boolean isSlotComplete(int index) {
