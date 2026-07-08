@@ -122,6 +122,10 @@ public class QuestRecipeCategory extends AbstractRecipeCategory<QuestRecipe> {
                 g.fill(R_C1 - 4, midY + d, R_C1 - 4 + w + 2, midY + d + 1, 0xFF888888);
         }
 
+        // 稀有度边框：在配方区域绘制1px稀有度颜色边框
+        int rarityColor = recipe.rarity().getColor();
+        g.renderOutline(0, 0, W, H, rarityColor);
+
         // 简介
         g.fill(0, DESC_TOP, W, DESC_TOP + DESC_H, 0x15000000);
         g.renderOutline(0, DESC_TOP, W, DESC_H, 0xFF444444);

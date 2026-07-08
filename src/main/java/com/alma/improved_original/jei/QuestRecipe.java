@@ -4,6 +4,7 @@
 package com.alma.improved_original.jei;
 
 import com.alma.improved_original.quest.QuestType;
+import com.alma.improved_original.quest.component.Rarity;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
@@ -18,5 +19,6 @@ public record QuestRecipe(
         List<Integer> countMaxs,
         List<Integer> rewardCountMins,
         List<Integer> rewardCountMaxs,
-        int weight
+        int weight,
+        Rarity rarity
 ) {}

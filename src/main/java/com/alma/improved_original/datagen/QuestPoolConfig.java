@@ -4,6 +4,8 @@
 package com.alma.improved_original.datagen;
 
 import com.alma.improved_original.quest.QuestType;
+import com.alma.improved_original.quest.component.ConditionComponent;
+import com.alma.improved_original.quest.component.Rarity;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
@@ -32,11 +34,15 @@ public class QuestPoolConfig {
     public record TargetEntry(QuestType type, ResourceLocation item, int countMin, int countMax) {}
     public record RewardEntry(ResourceLocation item, int countMin, int countMax) {}
 
-    // 池条目：目标/奖励列表，权重，翻译键
+    // 池条目：ID/目标/奖励/条件/解锁/权重/稀有度/名称/描述
     public record PoolEntry(
+            String id,
             List<TargetEntry> targets,
             List<RewardEntry> rewards,
+            List<ConditionComponent> conditions,
+            List<String> unlocks,
             int weight,
+            Rarity rarity,
             String name,
             String description
     ) {}
@@ -92,10 +98,32 @@ public class QuestPoolConfig {
 
                         List<TargetEntry> targets = parseTargetEntries(entry.getAsJsonArray("targets"));
                         List<RewardEntry> rewards = parseRewardEntries(entry.getAsJsonArray("rewards"));
+                        String entryId = entry.has("id") ? entry.get("id").getAsString() : "";
+                        Rarity rarity = entry.has("rarity")
+                                ? Rarity.valueOf(entry.get("rarity").getAsString().toUpperCase())
+                                : Rarity.COMMON;
+                        List<ConditionComponent> conditions = new ArrayList<>();
+                        if (entry.has("conditions")) {
+                            JsonArray condArr = entry.getAsJsonArray("conditions");
+                            for (JsonElement ce : condArr) {
+                                JsonObject co = ce.getAsJsonObject();
+                                String rid = co.get("requiredQuestId").getAsString();
+                                int rc = co.has("requiredCount") ? co.get("requiredCount").getAsInt() : 1;
+                                conditions.add(new ConditionComponent(rid, rc));
+                            }
+                        }
+                        List<String> unlocks = new ArrayList<>();
+                        if (entry.has("unlocks")) {
+                            JsonArray ulArr = entry.getAsJsonArray("unlocks");
+                            for (JsonElement ue : ulArr) {
+                                unlocks.add(ue.getAsString());
+                            }
+                        }
                         int weight = entry.has("weight") ? entry.get("weight").getAsInt() : 10;
                         String name = entry.has("name") ? entry.get("name").getAsString() : "";
                         String description = entry.has("description") ? entry.get("description").getAsString() : "";
-                        allEntries.add(new PoolEntry(targets, rewards, weight, name, description));
+                        allEntries.add(new PoolEntry(entryId, targets, rewards, conditions, unlocks,
+                                weight, rarity, name, description));
                         totalParsed++;
                     }
                 }

@@ -104,7 +104,8 @@ public class QuestJeiPlugin implements IModPlugin {
             recipes.add(new QuestRecipe(
                     targetStacks, rewardStacks, targetTypes,
                     entry.name(), entry.description(),
-                    tMin, tMax, rMin, rMax, entry.weight()
+                    tMin, tMax, rMin, rMax, entry.weight(),
+                    entry.rarity()
             ));
         }
 

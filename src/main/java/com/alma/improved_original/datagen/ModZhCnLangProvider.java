@@ -193,5 +193,19 @@ public class ModZhCnLangProvider extends LanguageProvider {
         // 混合类型示例
         add("quest.improved_original.name.mixed_example", "冒险者挑战");
         add("quest.improved_original.desc_text.mixed_example", "开采石头同时击败僵尸，获取钻石奖励");
+
+        // Rarity and chain translations
+        add("quest.improved_original.rarity.common", "普通");
+        add("quest.improved_original.rarity.rare", "稀有");
+        add("quest.improved_original.rarity.epic", "史诗");
+        add("quest.improved_original.rarity.legendary", "传说");
+        add("quest.improved_original.chain.next_unlocked", "链任务已解锁：%s");
+        add("quest.improved_original.view_chains", "查看所有任务链");
+        add("screen.improved_original.chain_progress", "任务链进度");
+        add("quest.improved_original.chains.active", "进行中的链");
+        add("quest.improved_original.chains.empty", "暂无活跃的任务链");
+        add("quest.improved_original.chains.completed", "已完成的链");
+        add("quest.improved_original.chains.no_completed", "暂无已完成的链");
+        add("quest.improved_original.chain_section", "任务链");
     }
 }

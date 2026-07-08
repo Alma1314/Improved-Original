@@ -189,5 +189,21 @@ public class ModEnUsLangProvider extends LanguageProvider {
         // Mixed type example
         add("quest.improved_original.name.mixed_example", "Adventurer's Challenge");
         add("quest.improved_original.desc_text.mixed_example", "Mine stone AND slay zombies for a diamond reward");
+
+        // Rarity translations
+        add("quest.improved_original.rarity.common", "COMMON");
+        add("quest.improved_original.rarity.rare", "RARE");
+        add("quest.improved_original.rarity.epic", "EPIC");
+        add("quest.improved_original.rarity.legendary", "LEGENDARY");
+
+        // Chain quest translations
+        add("quest.improved_original.chain.next_unlocked", "Chain quest unlocked: %s");
+        add("quest.improved_original.view_chains", "View All Chains");
+        add("screen.improved_original.chain_progress", "Quest Chain Progress");
+        add("quest.improved_original.chains.active", "Active Chains");
+        add("quest.improved_original.chains.empty", "No active chains");
+        add("quest.improved_original.chains.completed", "Completed Chains");
+        add("quest.improved_original.chains.no_completed", "No completed chains");
+        add("quest.improved_original.chain_section", "Quest Chains");
     }
 }

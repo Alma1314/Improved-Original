@@ -5,7 +5,7 @@
 package com.alma.improved_original.quest.client;
 
 import com.alma.improved_original.ImprovedOriginal;
-import com.alma.improved_original.quest.network.C2SQuestOpenPayload;
+import com.alma.improved_original.quest.network.QuestActionPayload;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
 import net.neoforged.api.distmarker.Dist;
@@ -37,7 +37,7 @@ public class QuestKeyMapping {
     @SubscribeEvent
     public static void onClientTick(ClientTickEvent.Post event) {
         while (OPEN_QUEST_KEY.consumeClick()) {
-            PacketDistributor.sendToServer(new C2SQuestOpenPayload());
+            PacketDistributor.sendToServer(QuestActionPayload.open());
         }
     }
 }

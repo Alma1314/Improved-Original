@@ -8,6 +8,7 @@ import com.alma.improved_original.block.ModBlocks;
 import com.alma.improved_original.item.ModCreativeModeTabs;
 import com.alma.improved_original.item.ModItems;
 import com.alma.improved_original.quest.ModAttachments;
+import com.alma.improved_original.quest.engine.QuestEngine;
 import com.alma.improved_original.quest.network.ModPayloadHandlers;
 import org.slf4j.Logger;
 
@@ -48,5 +49,7 @@ public class ImprovedOriginal {
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event) {
         LOGGER.info("HELLO from server starting");
+        // 在服务端启动时初始化 QuestEngine（确保配置已加载）
+        QuestEngine.get().reloadQuestPool();
     }
 }

@@ -1,12 +1,8 @@
-// 游戏事件监听：方块破坏、实体击杀、物品合成、物品拾取，触发任务进度更新
-// 所有事件独立处理，仅对生存模式的在线玩家生效
-// 结构探索检测和任务Tick逻辑已移至 QuestServerEvents 统一管理
+// 游戏事件监听：方块破坏、实体击杀、物品合成、物品拾取 → QuestEngine
 package com.alma.improved_original.quest.event;
 
 import com.alma.improved_original.ImprovedOriginal;
-import com.alma.improved_original.quest.ModAttachments;
-import com.alma.improved_original.quest.QuestData;
-import com.alma.improved_original.quest.QuestManager;
+import com.alma.improved_original.quest.engine.QuestEngine;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -22,28 +18,28 @@ public class QuestEventHandlers {
     public static void onBlockBreak(BlockEvent.BreakEvent event) {
         if (event.getPlayer() instanceof ServerPlayer player) {
             if (player.gameMode.getGameModeForPlayer() != GameType.SURVIVAL) return;
-            QuestManager.onBlockBroken(player, event.getState().getBlock());
+            QuestEngine.get().onBlockBroken(player, event.getState().getBlock());
         }
     }
 
     @SubscribeEvent
     public static void onEntityKill(LivingDeathEvent event) {
         if (event.getSource().getEntity() instanceof ServerPlayer player) {
-            QuestManager.onEntityKilled(player, event.getEntity());
+            QuestEngine.get().onEntityKilled(player, event.getEntity());
         }
     }
 
     @SubscribeEvent
     public static void onItemCrafted(net.neoforged.neoforge.event.entity.player.PlayerEvent.ItemCraftedEvent event) {
         if (event.getEntity() instanceof ServerPlayer player) {
-            QuestManager.onItemCrafted(player, event.getCrafting(), event.getCrafting().getCount());
+            QuestEngine.get().onItemCrafted(player, event.getCrafting(), event.getCrafting().getCount());
         }
     }
 
     @SubscribeEvent
     public static void onItemPickup(ItemEntityPickupEvent.Pre event) {
         if (event.getPlayer() instanceof ServerPlayer player) {
-            QuestManager.onItemCollected(player, event.getItemEntity().getItem(),
+            QuestEngine.get().onItemCollected(player, event.getItemEntity().getItem(),
                     event.getItemEntity().getItem().getCount());
         }
     }

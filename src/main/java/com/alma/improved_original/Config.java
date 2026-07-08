@@ -32,9 +32,54 @@ public class Config {
             .comment("Number of currency items consumed when manually refreshing quests")
             .defineInRange("refreshCost", 10, 1, 64);
 
+    public static final ModConfigSpec.IntValue DAILY_SLOTS = BUILDER
+            .comment("Number of daily quest slots")
+            .defineInRange("dailySlots", 3, 1, 5);
+
+    public static final ModConfigSpec.IntValue CHAIN_SLOTS = BUILDER
+            .comment("Number of chain quest slots. Set to 0 to disable chain quests")
+            .defineInRange("chainSlots", 2, 0, 5);
+
+    public static final ModConfigSpec.DoubleValue COMMON_WEIGHT = BUILDER
+            .comment("Generation weight multiplier for COMMON rarity quests")
+            .defineInRange("commonWeight", 1.0, 0.0, 10.0);
+
+    public static final ModConfigSpec.DoubleValue RARE_WEIGHT = BUILDER
+            .comment("Generation weight multiplier for RARE rarity quests")
+            .defineInRange("rareWeight", 0.5, 0.0, 10.0);
+
+    public static final ModConfigSpec.DoubleValue EPIC_WEIGHT = BUILDER
+            .comment("Generation weight multiplier for EPIC rarity quests")
+            .defineInRange("epicWeight", 0.2, 0.0, 10.0);
+
+    public static final ModConfigSpec.DoubleValue LEGENDARY_WEIGHT = BUILDER
+            .comment("Generation weight multiplier for LEGENDARY rarity quests")
+            .defineInRange("legendaryWeight", 0.05, 0.0, 10.0);
+
     public static final ModConfigSpec SPEC = BUILDER.build();
 
     public static ResourceLocation getCurrencyItem() {
         return ResourceLocation.parse(CURRENCY_ITEM.get());
+    }
+
+    public static double getRarityWeight(com.alma.improved_original.quest.component.Rarity rarity) {
+        return switch (rarity) {
+            case COMMON -> COMMON_WEIGHT.get();
+            case RARE -> RARE_WEIGHT.get();
+            case EPIC -> EPIC_WEIGHT.get();
+            case LEGENDARY -> LEGENDARY_WEIGHT.get();
+        };
+    }
+
+    public static int getTotalSlotCount() {
+        return DAILY_SLOTS.getAsInt() + CHAIN_SLOTS.getAsInt();
+    }
+
+    public static int getDailySlotCount() {
+        return DAILY_SLOTS.getAsInt();
+    }
+
+    public static int getChainSlotCount() {
+        return CHAIN_SLOTS.getAsInt();
     }
 }

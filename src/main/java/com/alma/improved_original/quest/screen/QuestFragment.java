@@ -1,21 +1,23 @@
 // ModernUI Fragment 实现的每日任务面板
 // 面板尺寸按窗口固定比例，头部和底部固定，任务区域可滚动
 // 增量刷新：数据变化时直接更新对应 View（文字、进度条宽度、颜色），不再重建整个 Fragment
+// Task 17: 稀有度颜色边框、链任务区域、"查看全部链"按钮
 package com.alma.improved_original.quest.screen;
 
 import com.alma.improved_original.Config;
 import com.alma.improved_original.quest.QuestData;
-import com.alma.improved_original.quest.QuestDefinition;
 import com.alma.improved_original.quest.QuestSlotData;
 import com.alma.improved_original.quest.client.ClientQuestCache;
-import com.alma.improved_original.quest.network.C2SQuestLockPayload;
-import com.alma.improved_original.quest.network.C2SQuestRefreshPayload;
+import com.alma.improved_original.quest.component.Rarity;
+import com.alma.improved_original.quest.component.RewardComponent;
+import com.alma.improved_original.quest.component.TargetComponent;
+import com.alma.improved_original.quest.network.QuestActionPayload;
+import com.alma.improved_original.quest.task.IQuestTask;
 import icyllis.modernui.annotation.NonNull;
 import icyllis.modernui.annotation.Nullable;
 import icyllis.modernui.core.Context;
 import icyllis.modernui.fragment.Fragment;
 import icyllis.modernui.graphics.drawable.ShapeDrawable;
-import icyllis.modernui.mc.MuiModApi;
 import icyllis.modernui.mc.ScreenCallback;
 import icyllis.modernui.util.DataSet;
 import icyllis.modernui.view.*;
@@ -49,15 +51,19 @@ public class QuestFragment extends Fragment implements ScreenCallback {
     private QuestData questData;
     private long lastKnownVersion; // 用于检测数据变化
 
+    // 缓存的计算值
+    private int totalSlots;
+    private int dailySlots;
+
     // 缓存的 View 引用，用于增量刷新
     private TextView countdownText;
-    private final TextView[] slotNameTexts = new TextView[QuestData.SLOT_COUNT];
+    private TextView[] slotNameTexts;
     // 每个槽位每个目标的 {barFg View, count TextView}
-    private final View[][] slotBarFgs = new View[QuestData.SLOT_COUNT][];
-    private final TextView[][] slotBarCounts = new TextView[QuestData.SLOT_COUNT][];
-    private final TextView[] slotRewardTexts = new TextView[QuestData.SLOT_COUNT];
-    private final TextView[] slotLockButtons = new TextView[QuestData.SLOT_COUNT];
-    private final View[] slotLockBtnContainers = new View[QuestData.SLOT_COUNT]; // lockBtn 的父容器（整个slot row），用于显示/隐藏
+    private View[][] slotBarFgs;
+    private TextView[][] slotBarCounts;
+    private TextView[] slotRewardTexts;
+    private TextView[] slotLockButtons;
+    private View[] slotLockBtnContainers; // lockBtn 的父容器（整个slot row），用于显示/隐藏
 
     // 缓存的计算值
     private int barW; // 进度条像素宽度
@@ -70,6 +76,14 @@ public class QuestFragment extends Fragment implements ScreenCallback {
         QuestData latest = ClientQuestCache.get();
         this.questData = latest != null ? latest : QuestData.createFresh();
         this.lastKnownVersion = ClientQuestCache.getVersion();
+        this.totalSlots = Config.getTotalSlotCount();
+        this.dailySlots = Config.getDailySlotCount();
+        this.slotNameTexts = new TextView[totalSlots];
+        this.slotBarFgs = new View[totalSlots][];
+        this.slotBarCounts = new TextView[totalSlots][];
+        this.slotRewardTexts = new TextView[totalSlots];
+        this.slotLockButtons = new TextView[totalSlots];
+        this.slotLockBtnContainers = new View[totalSlots];
     }
 
     @Nullable
@@ -84,6 +98,16 @@ public class QuestFragment extends Fragment implements ScreenCallback {
 
         Context ctx = requireContext();
         this.barW = dpPx(ctx, 120); // 进度条宽度从 100dp 提升到 120dp
+        this.totalSlots = Config.getTotalSlotCount();
+        this.dailySlots = Config.getDailySlotCount();
+
+        // 重新分配缓存数组（slot count 可能随配置变化）
+        this.slotNameTexts = new TextView[totalSlots];
+        this.slotBarFgs = new View[totalSlots][];
+        this.slotBarCounts = new TextView[totalSlots][];
+        this.slotRewardTexts = new TextView[totalSlots];
+        this.slotLockButtons = new TextView[totalSlots];
+        this.slotLockBtnContainers = new View[totalSlots];
 
         LinearLayout panel = new LinearLayout(ctx);
         panel.setOrientation(LinearLayout.VERTICAL);
@@ -180,15 +204,73 @@ public class QuestFragment extends Fragment implements ScreenCallback {
         LinearLayout slotsLayout = new LinearLayout(ctx);
         slotsLayout.setOrientation(LinearLayout.VERTICAL);
 
-        for (int i = 0; i < QuestData.SLOT_COUNT; i++) {
-            if (i > 0) {
+        // 每日任务槽位
+        for (int i = 0; i < totalSlots; i++) {
+            // 在每日任务区结束后插入链分区隔线
+            if (i == dailySlots && dailySlots > 0 && dailySlots < totalSlots) {
+                slotsLayout.addView(buildSectionDivider(ctx, contentW,
+                        Component.translatable("quest.improved_original.chain_section").getString()));
+            }
+
+            if (i > 0 && i != dailySlots) {
                 slotsLayout.addView(buildSeparator(ctx, contentW));
             }
             slotsLayout.addView(buildSlot(ctx, i, contentW));
         }
 
+        // "View All Chains" button after all slots
+        int chainSlotCount = Config.getChainSlotCount();
+        if (chainSlotCount > 0) {
+            TextView chainsBtn = buildClickableButton(ctx,
+                    Component.translatable("quest.improved_original.view_chains").getString(),
+                    15, 0xFF555555, panelW,
+                    v -> PacketDistributor.sendToServer(QuestActionPayload.chainPanel()));
+            LinearLayout.LayoutParams btnParams = new LinearLayout.LayoutParams(contentW, dpPx(ctx, 40));
+            btnParams.setMargins(0, dpPx(ctx, SECTION_GAP_DP), 0, 0);
+            slotsLayout.addView(chainsBtn, btnParams);
+        }
+
         slotsLayout.setLayoutParams(new LinearLayout.LayoutParams(contentW, ViewGroup.LayoutParams.WRAP_CONTENT));
         return slotsLayout;
+    }
+
+    /**
+     * 构建分区标题行（例如："链任务"）
+     */
+    private View buildSectionDivider(Context ctx, int contentW, String sectionTitle) {
+        LinearLayout row = new LinearLayout(ctx);
+        row.setOrientation(LinearLayout.HORIZONTAL);
+        row.setGravity(Gravity.CENTER_VERTICAL);
+        int padV = dpPx(ctx, 4);
+        row.setPadding(0, padV, 0, padV);
+
+        // 左侧线
+        View leftLine = new View(ctx);
+        leftLine.setLayoutParams(new LinearLayout.LayoutParams(0, 1, 1));
+        ShapeDrawable ls = new ShapeDrawable();
+        ls.setColor(0xFF666666);
+        leftLine.setBackground(ls);
+        row.addView(leftLine);
+
+        // 标题文字
+        TextView title = new TextView(ctx);
+        title.setText(sectionTitle);
+        title.setTextSize(14);
+        title.setTextColor(GOLD);
+        title.setGravity(Gravity.CENTER);
+        title.setPadding(dpPx(ctx, CONTENT_GAP_DP), 0, dpPx(ctx, CONTENT_GAP_DP), 0);
+        row.addView(title, new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+
+        // 右侧线
+        View rightLine = new View(ctx);
+        rightLine.setLayoutParams(new LinearLayout.LayoutParams(0, 1, 1));
+        ShapeDrawable rs = new ShapeDrawable();
+        rs.setColor(0xFF666666);
+        rightLine.setBackground(rs);
+        row.addView(rightLine);
+
+        row.setLayoutParams(new LinearLayout.LayoutParams(contentW, ViewGroup.LayoutParams.WRAP_CONTENT));
+        return row;
     }
 
     private LinearLayout buildSlot(Context ctx, int slotIndex, int panelW) {
@@ -201,6 +283,20 @@ public class QuestFragment extends Fragment implements ScreenCallback {
         row.setGravity(Gravity.CENTER_VERTICAL);
         int gap = dpPx(ctx, CONTENT_GAP_DP);
         row.setPadding(gap, dpPx(ctx, 8), gap, dpPx(ctx, 8));
+
+        // 稀有度边框
+        if (hasQuest) {
+            IQuestTask task = qo.get();
+            Rarity rarity = task.rarity();
+            int borderColor = ModernUIHelper.getRarityBorderColor(rarity);
+            int bgColor = ModernUIHelper.getRarityBgColor(rarity);
+
+            ShapeDrawable slotBg = new ShapeDrawable();
+            slotBg.setCornerRadius(dpPx(ctx, 6));
+            slotBg.setColor(bgColor);
+            slotBg.setStroke(dpPx(ctx, 2), borderColor);
+            row.setBackground(slotBg);
+        }
 
         int contentW = panelW * 3 / 4;
 
@@ -224,7 +320,7 @@ public class QuestFragment extends Fragment implements ScreenCallback {
         return row;
     }
 
-    private View buildQuestContent(Context ctx, QuestDefinition q, int slotIndex, boolean done, int contentW) {
+    private View buildQuestContent(Context ctx, IQuestTask q, int slotIndex, boolean done, int contentW) {
         LinearLayout content = new LinearLayout(ctx);
         content.setOrientation(LinearLayout.VERTICAL);
 
@@ -261,19 +357,21 @@ public class QuestFragment extends Fragment implements ScreenCallback {
         return content;
     }
 
-    private TextView buildQuestName(Context ctx, QuestDefinition q, int slotIndex, boolean done) {
+    private TextView buildQuestName(Context ctx, IQuestTask q, int slotIndex, boolean done) {
         boolean locked = questData.isSlotLocked(slotIndex);
+        Rarity rarity = q.rarity();
         int color;
         if (done) {
             color = GREEN;
         } else if (locked) {
             color = 0xFFFF5555;
         } else {
-            color = WHITE;
+            color = ModernUIHelper.getRarityBorderColor(rarity);
         }
 
         StringBuilder sb = new StringBuilder("[");
         sb.append(slotIndex + 1).append("] ");
+        sb.append(rarity.name()).append(" ");
         if (q.name() != null && !q.name().isEmpty()) {
             sb.append(Component.translatable(q.name()).getString());
         }
@@ -293,8 +391,8 @@ public class QuestFragment extends Fragment implements ScreenCallback {
      * 返回的 View 是 barRow (LinearLayout，HORIZONTAL)。
      * 内部 fill View 和 count TextView 的引用缓存在 slotBarFgs[slotIndex][targetIndex] 和 slotBarCounts[slotIndex][targetIndex] 中。
      */
-    private View buildProgressBar(Context ctx, QuestDefinition q, int targetIndex, int prog, int slotIndex) {
-        QuestDefinition.QuestTarget tg = q.targets().get(targetIndex);
+    private View buildProgressBar(Context ctx, IQuestTask q, int targetIndex, int prog, int slotIndex) {
+        TargetComponent tg = q.targets().get(targetIndex);
         int max = tg.count();
         int gap = dpPx(ctx, 4);
         int barH = dpPx(ctx, 12); // 进度条高度从 10dp 提升到 12dp
@@ -305,7 +403,7 @@ public class QuestFragment extends Fragment implements ScreenCallback {
 
         // 目标名称标签 — 固定宽度，左对齐
         TextView targetLabel = new TextView(ctx);
-        targetLabel.setText(q.getTargetDisplayName(tg.type(), tg.item()).getString());
+        targetLabel.setText(q.getTargetDisplayName(tg).getString());
         targetLabel.setTextSize(12);
         targetLabel.setTextColor(0xFFCCCCCC);
         barRow.addView(targetLabel, new LinearLayout.LayoutParams(dpPx(ctx, 140), ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -357,13 +455,16 @@ public class QuestFragment extends Fragment implements ScreenCallback {
         return barRow;
     }
 
-    private TextView buildRewardText(Context ctx, QuestDefinition q, boolean done) {
+    private TextView buildRewardText(Context ctx, IQuestTask q, boolean done) {
         var rn = q.getRewardDisplayNames();
         StringBuilder sb = new StringBuilder();
         for (int r = 0; r < q.rewards().size(); r++) {
             if (r > 0) sb.append(", ");
+            RewardComponent reward = q.rewards().get(r);
+            // Display the reward count range as the average/range
+            int avgCount = (reward.countMin() + reward.countMax()) / 2;
             sb.append(Component.translatable("quest.improved_original.reward",
-                    q.rewards().get(r).count(), rn.get(r)).getString());
+                    avgCount, rn.get(r)).getString());
         }
         TextView reward = new TextView(ctx);
         reward.setText(sb.toString());
@@ -388,7 +489,7 @@ public class QuestFragment extends Fragment implements ScreenCallback {
         int btnW = panelW / 4 - dpPx(ctx, 24);
 
         TextView lockBtn = buildClickableButton(ctx, label, 13, 0x66333333, panelW,
-                v -> PacketDistributor.sendToServer(new C2SQuestLockPayload(slotIndex)));
+                v -> PacketDistributor.sendToServer(QuestActionPayload.lock(slotIndex)));
 
         slotLockButtons[slotIndex] = lockBtn;
         lockBtn.setLayoutParams(new LinearLayout.LayoutParams(btnW, dpPx(ctx, 36)));
@@ -413,7 +514,7 @@ public class QuestFragment extends Fragment implements ScreenCallback {
         TextView refreshBtn = buildClickableButton(ctx,
                 Component.translatable("quest.improved_original.refresh_button", Config.REFRESH_COST.getAsInt()).getString(),
                 15, 0xFF555555, panelW,
-                v -> PacketDistributor.sendToServer(new C2SQuestRefreshPayload()));
+                v -> PacketDistributor.sendToServer(QuestActionPayload.refresh()));
 
         TextView closeBtn = buildClickableButton(ctx,
                 Component.translatable("quest.improved_original.done").getString(),
@@ -492,7 +593,7 @@ public class QuestFragment extends Fragment implements ScreenCallback {
         if (latest == null) return;
         questData = latest;
 
-        for (int i = 0; i < QuestData.SLOT_COUNT; i++) {
+        for (int i = 0; i < totalSlots; i++) {
             refreshSlotUI(i);
         }
     }
@@ -501,25 +602,27 @@ public class QuestFragment extends Fragment implements ScreenCallback {
      * 增量更新单个槽位的 UI：任务名、进度条、奖励文字、锁定按钮。
      */
     private void refreshSlotUI(int slotIndex) {
+        if (slotIndex >= questData.getSlots().size()) return;
+
         QuestSlotData sl = questData.getSlot(slotIndex);
         var qo = questData.getQuest(slotIndex);
         boolean done = sl.isComplete();
 
         // 更新任务名文字和颜色
         if (slotNameTexts[slotIndex] != null && qo.isPresent()) {
-            QuestDefinition q = qo.get();
+            IQuestTask q = qo.get();
             refreshQuestName(slotIndex, q, done);
         }
 
         // 更新进度条
         if (qo.isPresent()) {
-            QuestDefinition q = qo.get();
+            IQuestTask q = qo.get();
             List<Integer> progress = sl.perTargetProgress();
             View[] barFgs = slotBarFgs[slotIndex];
             TextView[] barCounts = slotBarCounts[slotIndex];
             if (barFgs != null) {
                 for (int t = 0; t < q.targets().size() && t < barFgs.length; t++) {
-                    QuestDefinition.QuestTarget tg = q.targets().get(t);
+                    TargetComponent tg = q.targets().get(t);
                     int max = tg.count();
                     int prog = t < progress.size() ? progress.get(t) : 0;
                     int fillW = max > 0 ? Math.max((int) ((float) prog / max * barW), 1) : 0;
@@ -550,47 +653,54 @@ public class QuestFragment extends Fragment implements ScreenCallback {
         // 更新奖励文字
         TextView rewardTv = slotRewardTexts[slotIndex];
         if (rewardTv != null && qo.isPresent()) {
-            QuestDefinition q = qo.get();
+            IQuestTask q = qo.get();
             var rn = q.getRewardDisplayNames();
             StringBuilder sb = new StringBuilder();
             for (int r = 0; r < q.rewards().size(); r++) {
                 if (r > 0) sb.append(", ");
+                RewardComponent reward = q.rewards().get(r);
+                int avgCount = (reward.countMin() + reward.countMax()) / 2;
                 sb.append(Component.translatable("quest.improved_original.reward",
-                        q.rewards().get(r).count(), rn.get(r)).getString());
+                        avgCount, rn.get(r)).getString());
             }
             rewardTv.setText(sb.toString());
             rewardTv.setTextColor(done ? GREEN : GOLD);
         }
 
         // 更新锁定按钮文字
-        TextView lockBtn = slotLockButtons[slotIndex];
-        if (lockBtn != null) {
-            boolean locked = questData.isSlotLocked(slotIndex);
-            lockBtn.setText(locked
-                    ? Component.translatable("quest.improved_original.locked").getString()
-                    : Component.translatable("quest.improved_original.lock_button").getString());
+        if (slotIndex < slotLockButtons.length) {
+            TextView lockBtn = slotLockButtons[slotIndex];
+            if (lockBtn != null) {
+                boolean locked = questData.isSlotLocked(slotIndex);
+                lockBtn.setText(locked
+                        ? Component.translatable("quest.improved_original.locked").getString()
+                        : Component.translatable("quest.improved_original.lock_button").getString());
+            }
         }
     }
 
     /**
      * 刷新单个任务名文字和颜色。
      */
-    private void refreshQuestName(int slotIndex, QuestDefinition q, boolean done) {
+    private void refreshQuestName(int slotIndex, IQuestTask q, boolean done) {
+        if (slotIndex >= slotNameTexts.length) return;
         TextView nameView = slotNameTexts[slotIndex];
         if (nameView == null) return;
 
         boolean locked = questData.isSlotLocked(slotIndex);
+        Rarity rarity = q.rarity();
         int color;
         if (done) {
             color = GREEN;
         } else if (locked) {
             color = 0xFFFF5555;
         } else {
-            color = WHITE;
+            color = ModernUIHelper.getRarityBorderColor(rarity);
         }
 
         StringBuilder sb = new StringBuilder("[");
         sb.append(slotIndex + 1).append("] ");
+        sb.append(rarity.name()).append(" ");
         if (q.name() != null && !q.name().isEmpty()) {
             sb.append(Component.translatable(q.name()).getString());
         }
@@ -627,7 +737,7 @@ public class QuestFragment extends Fragment implements ScreenCallback {
                 }
             }
         }));
-        // 启动倒计时定时器
+        // 启动倒计时定时器（每秒刷新一次文字，倒计时以 mm:ss 显示）
         view.postDelayed(this::tickCountdown, 1000);
     }
 
@@ -642,7 +752,7 @@ public class QuestFragment extends Fragment implements ScreenCallback {
 
     private void clearCachedRefs() {
         countdownText = null;
-        for (int i = 0; i < QuestData.SLOT_COUNT; i++) {
+        for (int i = 0; i < slotNameTexts.length; i++) {
             slotNameTexts[i] = null;
             slotBarFgs[i] = null;
             slotBarCounts[i] = null;
@@ -652,21 +762,11 @@ public class QuestFragment extends Fragment implements ScreenCallback {
         }
     }
 
-    /**
-     * 每秒 tick：更新倒计时，检测数据版本变化。
-     * 数据变化时通过版本号比较，增量刷新（不再 openScreen）。
-     */
     private void tickCountdown() {
         View view = getView();
         if (view != null && isAdded()) {
             updateCountdownText();
-
-            long currentVersion = ClientQuestCache.getVersion();
-            if (currentVersion != lastKnownVersion) {
-                lastKnownVersion = currentVersion;
-                scheduleRefresh();
-            }
-
+            // Refresh the countdown text every second so the mm:ss display stays live
             view.postDelayed(this::tickCountdown, 1000);
         }
     }

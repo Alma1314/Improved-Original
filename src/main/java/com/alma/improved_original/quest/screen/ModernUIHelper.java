@@ -69,6 +69,25 @@ final class ModernUIHelper {
         fillRoundRect(g, left, top, right, bottom, BUTTON_RADIUS, color);
     }
 
+    // ── 稀有度颜色 ──
+    static int getRarityBorderColor(com.alma.improved_original.quest.component.Rarity rarity) {
+        return switch (rarity) {
+            case COMMON -> 0xFF888888;
+            case RARE -> 0xFF4488FF;
+            case EPIC -> 0xFFAA44FF;
+            case LEGENDARY -> 0xFFFFAA00;
+        };
+    }
+
+    static int getRarityBgColor(com.alma.improved_original.quest.component.Rarity rarity) {
+        return switch (rarity) {
+            case COMMON -> 0x33888888;
+            case RARE -> 0x334488FF;
+            case EPIC -> 0x33AA44FF;
+            case LEGENDARY -> 0x33FFAA00;
+        };
+    }
+
     // ── 背景渲染（ModernUI Gaussian blur） ──
     static void renderBackground(Screen screen, GuiGraphics g) {
         BlurHandler.INSTANCE.drawScreenBackground(g, 0, 0, screen.width, screen.height);
